@@ -1,3 +1,4 @@
+// Import
 plugins {
     id 'com.android.application'
 }
@@ -26,7 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    // Import
     buildFeatures {
         dataBinding true
     }
@@ -37,6 +38,7 @@ android {
     }
 }
 
+// Import
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
