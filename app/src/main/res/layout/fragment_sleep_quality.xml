@@ -7,7 +7,7 @@
 
         <variable
             name="sleepQualityViewModel"
-            type="edu.hcmus.qt.sleeptracker.quality.SleepQualityViewModel" />
+            type="com.example.awesomehabit.sleeping.quality.SleepQualityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

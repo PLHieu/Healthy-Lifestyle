@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/sleep_tracker_fragment"
-        android:name="edu.hcmus.qt.sleeptracker.tracker.SleepTrackerFragment"
+        android:name="com.example.awesomehabit.sleeping.tracker.SleepTrackerFragment"
         android:label="@string/sleep_tracker_fragment"
         tools:layout="@layout/fragment_sleep_tracker">
         <action
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/sleep_quality_fragment"
-        android:name="edu.hcmus.qt.sleeptracker.quality.SleepQualityFragment"
+        android:name="com.example.awesomehabit.sleeping.quality.SleepQualityFragment"
         android:label="@string/sleep_quality_fragment"
         tools:layout="@layout/fragment_sleep_quality">
         <argument
