@@ -16,7 +16,7 @@ import com.example.awesomehabit.database.sleeping.SleepNight;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Habit.class, Run.class, SleepNight.class},version = 2)
+@Database(entities = {Habit.class, Run.class, SleepNight.class},version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract HabitDao habitDao();
     public abstract RunDao runDao();
@@ -54,9 +54,11 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void run() {
                     HabitDao dao=INSTANCE.habitDao();
-                    Habit habit=new Habit(1,"Running");
+                    Habit habit=new Habit(1,"Running",Habit.TYPE_RUN);
                     dao.insert(habit);
-                    habit=new Habit(2,"Sleeping");
+                    habit=new Habit(2,"Sleeping",Habit.TYPE_SLEEP);
+                    dao.insert(habit);
+                    habit=new Habit(3,"Water drank",Habit.TYPE_COUNT);
                     dao.insert(habit);
                 }
             });

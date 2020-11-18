@@ -6,11 +6,14 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Habit {
-    public Habit(int id, String habitName) {
+    public Habit(int id, String habitName,int type) {
         this.id = id;
         this.habitName = habitName;
+        this.type=type;
     }
-
+    public static final int TYPE_RUN=0;
+    public static final int TYPE_SLEEP=1;
+    public static final int TYPE_COUNT=2;
     @PrimaryKey
     public int id;
 
@@ -25,4 +28,7 @@ public class Habit {
 
     @ColumnInfo(name="repeat")//so ngay lap lai
     public int repeat;
+
+    @ColumnInfo
+    public int type;//"RUN","SLEEP","COUNT","DO"
 }

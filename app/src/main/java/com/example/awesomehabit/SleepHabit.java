@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 public class SleepHabit extends FrameLayout {
     public SleepHabit(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        inflate(getContext(),R.layout.running_habit,this);
-        ImageView imageView=(ImageView)findViewById(R.id.habitIcon);
+        inflate(getContext(),R.layout.running_card,this);
+        ImageView imageView=(ImageView)findViewById(R.id.runHabitIcon);
         imageView.setImageResource(R.drawable.bed);
     }
 }
