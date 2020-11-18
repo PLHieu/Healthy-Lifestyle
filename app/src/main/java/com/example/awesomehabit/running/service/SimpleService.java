@@ -37,19 +37,25 @@ public class SimpleService extends LifecycleService {
     private final String NOTIFICATION_CHANNEL_NAME = "Tracking";
     private final int NOTIFICATION_ID = 1;
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 3000L;
-    private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS;
+    private static final long DEFAULT_MAX_WAIT_TIME = 100;
 
     private boolean first_run = true;
     public static MutableLiveData<Boolean> isTracking  = new MutableLiveData<Boolean>() ;
-    public static MutableLiveData<List<Point>> points = new MutableLiveData<List<Point>>();
-    private static List<Point> data = new ArrayList<>();
+//    public static MutableLiveData<List<Point>> points = new MutableLiveData<List<Point>>();
+//    private static List<Point> data = new ArrayList<>();
     private LocationEngine _locationEngine;
     private LocationChangeListeningActivityLocationCallback callback =
             new LocationChangeListeningActivityLocationCallback();
+
     public static MutableLiveData<Double> totalDistance = new MutableLiveData<Double>();
+
     private static double newdistance = 0.;
     public static int listSize = 0;
     public static Boolean activityonpause = false;
+
+    // version rutgon 1
+    public static MutableLiveData<Location> locationlive = new MutableLiveData<>();
+    protected static Point previousPoint;
 
     @Override
     public void onCreate() {
@@ -65,8 +71,10 @@ public class SimpleService extends LifecycleService {
     }
 
     private void postInitValues(){
-        isTracking.postValue(Boolean.FALSE);
-        points.postValue(new ArrayList<Point>());
+        isTracking.postValue(false);
+//        points.postValue(new ArrayList<Point>());
+        // version 1
+        locationlive.postValue(new Location(""));
         totalDistance.postValue(0.);
     }
 
@@ -119,7 +127,7 @@ public class SimpleService extends LifecycleService {
     private void updateLocationTracking(Boolean istracking){
         if(istracking){
             //
-            Log.d("service", "updateLocationTracking");
+//            Log.d("service", "updateLocationTracking");
             // trong nay co loop de update lai location
             initLocationEngine();
         }else{
@@ -200,15 +208,23 @@ public class SimpleService extends LifecycleService {
             if (location == null) {
                 return;
             }
-            data.add(Point.fromLngLat(location.getLongitude(), location.getLatitude()));
-            listSize ++;
-            points.postValue(data);
-            // tinh toan khoang cach
-            if(listSize>=2){
-                totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
-            }
+//            data.add(Point.fromLngLat(location.getLongitude(), location.getLatitude()));
+//            listSize ++;
+//            points.postValue(data);
+//            // tinh toan khoang cach
+//            if(listSize>=2){
+//                totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
+//            }
 //            Log.d("service", String.valueOf(location.getLatitude()) + ":" + String.valueOf(location.getLongitude()));
-            Log.d("service", String.valueOf(activityonpause));
+//            Log.d("service", String.valueOf(activityonpause));
+
+            // version 1
+            locationlive.postValue(location);
+            if(listSize>=2){
+                totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(previousPoint,Point.fromLngLat(location.getLongitude(), location.getLatitude())));
+            }
+            previousPoint = Point.fromLngLat(location.getLongitude(), location.getLatitude());
+            listSize ++;
 
         }
 

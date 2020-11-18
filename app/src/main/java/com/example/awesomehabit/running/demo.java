@@ -1,6 +1,7 @@
 package com.example.awesomehabit.running;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,14 +34,23 @@ import com.example.awesomehabit.database.running.Run;
 //import com.example.tutorial.database.runninghabit.RunDatabase;
 import com.example.awesomehabit.running.service.SimpleService;
 import com.example.awesomehabit.R;
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineCallback;
+import com.mapbox.android.core.location.LocationEngineProvider;
+import com.mapbox.android.core.location.LocationEngineRequest;
+import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -51,6 +61,7 @@ import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.turf.TurfMeasurement;
 //import com.yashovardhan99.timeit.Stopwatch;
 
 import java.io.IOException;
@@ -84,22 +95,27 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     private Boolean invisible = false;
     private  DecimalFormat df = new DecimalFormat("0.00E0");
 
+    // lay vi tri khi khong chay
+    private LocationEngine _locationEngine;
+    private LocationChangeListeningActivityLocationCallback callback =
+            new LocationChangeListeningActivityLocationCallback();
+
     @Override
+    // todo: check rotation https://docs.mapbox.com/android/maps/examples/location-component-camera-options/
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
+        Log.d("demo", "OnCreate");
         super.onCreate(savedInstanceState);
-       Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.running_activity);
-        _mapView = findViewById(R.id.mapView);
-        _starRunning = findViewById(R.id.btn_startrunning);
-        _stopRunning = findViewById(R.id.btn_stoprunning);
-        _time = findViewById(R.id.time);
-        _dis = findViewById(R.id.distance);
-        _chronometer = findViewById(R.id.chronometer);
-        _data = findViewById(R.id.data);
+
+        initView();
 
         _starRunning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                _locationEngine.removeLocationUpdates(callback);
                 _chronometer.setBase(SystemClock.elapsedRealtime());
                 _chronometer.start();
                 sendCommandToService("START");
@@ -129,6 +145,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         subcribeToObserver();
     }
 
+
     private void getdata() {
         AppDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
@@ -141,6 +158,15 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         });
     }
 
+    private void initView(){
+        _mapView = findViewById(R.id.mapView);
+        _starRunning = findViewById(R.id.btn_startrunning);
+        _stopRunning = findViewById(R.id.btn_stoprunning);
+        _time = findViewById(R.id.time);
+        _dis = findViewById(R.id.distance);
+        _chronometer = findViewById(R.id.chronometer);
+        _data = findViewById(R.id.data);
+    }
 
     private void subcribeToObserver(){
         SimpleService.isTracking.observe(this, new Observer<Boolean>() {
@@ -158,14 +184,14 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             }
         });
 
-        SimpleService.points.observe(this, new Observer<List<Point>>() {
+        /*SimpleService.points.observe(this, new Observer<List<Point>>() {
             @Override
             public void onChanged(final List<Point> points) {
                 if(!is_tracking){
                     return;
                 }
 
-                Log.d("demo", "Points change");
+//                Log.d("demo", "Points change");
 //                Log.d("demo", "servicesize: " + points.size());
 //                Log.d("demo", "demmosize: " + _pointList.size());
 //                Log.d("demo", "points.get: " + pointListSize);
@@ -188,6 +214,24 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 //                            test.add (_pointList.get(pointListSize-1));
 //                            style.addSource(new GeoJsonSource(String.valueOf(pointListSize),Feature.fromGeometry(LineString.fromLngLats(test))));
 //                        }
+                    }
+                });
+            }
+        });*/
+
+        // version 1
+        SimpleService.locationlive.observe(this, new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                _pointList.add(Point.fromLngLat(location.getLongitude(), location.getLatitude()));
+                pointListSize ++;
+                _mapboxMap.getLocationComponent().forceLocationUpdate(location);
+                _mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
+                        geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(_pointList)));
+
                     }
                 });
             }
@@ -279,11 +323,13 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
                 //Tien hanh xu li location
                 enableLocationComponent(style);
+
+                initLocationEngine();
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void enableLocationComponent(Style loadedMapStyle) {
 
         // check co quyen vao location chua ?
@@ -323,8 +369,17 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             LocationComponent locationComponent = _mapboxMap.getLocationComponent();
 
             // thiet lap cho location
+            LocationComponentOptions option = LocationComponentOptions.builder(this)
+                    .compassAnimationEnabled(false)
+                    .enableStaleState(false)
+                    .staleStateTimeout(10)
+                    .trackingAnimationDurationMultiplier(0)
+                    .build();
+
+
             LocationComponentActivationOptions locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(this, loadedMapStyle)
+                            .locationComponentOptions(option)
                             .useDefaultLocationEngine(false)
                             .build();
 
@@ -345,7 +400,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             locationComponent.setLocationComponentEnabled(true);
 
             // camera theo di theo vi tri
-            locationComponent.setCameraMode(CameraMode.TRACKING);
+            locationComponent.setCameraMode(CameraMode.NONE);
 
             // hien thi cai mui ten chi huong cua dien thoai
             locationComponent.setRenderMode(RenderMode.COMPASS);
@@ -364,6 +419,54 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         }
     }
 
+    private class LocationChangeListeningActivityLocationCallback
+            implements LocationEngineCallback<LocationEngineResult> {
+        // result khi lay location thanh cong o trong ham nay
+        @Override
+        public void onSuccess(LocationEngineResult result) {
+            Location currentLoca = result.getLastLocation();
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(new LatLng(currentLoca.getLatitude(), currentLoca.getLongitude())) // Sets the new camera position
+//                    .zoom(17) // Sets the zoom
+//                    .bearing(180) // Rotate the camera
+//                    .tilt(30) // Set the camera tilt
+                    .build(); // Creates a CameraPosition from the builder
+
+            _mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 1000);
+        }
+        @Override
+        public void onFailure(@NonNull Exception exception) {
+            Log.e("demo", "getting location failure");
+        }
+    }
+
+    private void initLocationEngine() {
+        // lay cong cu dinh vi tot nhat hien tai, co the la gps, wwiffi , ko can biet
+        _locationEngine = LocationEngineProvider.getBestLocationEngine(this);
+
+        // thiet lap de update location
+        LocationEngineRequest request = new LocationEngineRequest
+                .Builder(1000)
+                .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+                .setMaxWaitTime(1000)
+                .build();
+
+        // studio tu sinh ra
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        _locationEngine.requestLocationUpdates(request, callback, getMainLooper());
+        _locationEngine.getLastLocation(callback);
+    }
+    
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
         Toast.makeText(this, "cc",
@@ -387,14 +490,14 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     protected void onStart() {
-        Log.d("demo","Onstart");
+        Log.d("demo","OnStart");
         super.onStart();
         _mapView.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.d("demo", "Onresume");
+        Log.d("demo", "OnResume");
         if(invisible){
             sendCommandToService("ACTIVITY_RESUME");
             invisible = false;
@@ -405,14 +508,18 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     protected void onPause() {
-        sendCommandToService("ACTIVITY_ON_PAUSE");
-        invisible = true;
+        Log.d("demo", "onPaused");
+        if(is_tracking){
+            sendCommandToService("ACTIVITY_ON_PAUSE");
+            invisible = true;
+        }
         super.onPause();
         _mapView.onPause();
     }
 
     @Override
     protected void onStop() {
+        Log.d("demo", "onStop");
         super.onStop();
         _mapView.onStop();
     }

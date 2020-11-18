@@ -37,6 +37,7 @@ public class HabitListAdapter extends ListAdapter<Habit, HabitListAdapter.HabitV
             @Override
             public void onClick(View v) {
                 Intent intent;
+                // todo: can them action cho intent de fix loi crash
                 intent=new Intent(getApplicationContext(), demo.class);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 //                Mapbox.getInstance(getApplicationContext(), getApplicationContext().getString(R.string.mapbox_access_token));
