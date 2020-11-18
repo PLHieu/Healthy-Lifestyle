@@ -75,25 +75,15 @@ import java.util.List;
 public class demo extends AppCompatActivity implements OnMapReadyCallback, PermissionsListener {
 
     private static final String SOURCE_ID = "SOURCE_ID";
-
     private MapboxMap _mapboxMap;
     private MapView _mapView;
-    private Button _starRunning;
-    private Button _stopRunning;
-    private Button _data;
+    private Button _starRunning,  _stopRunning , _data;
     private TextView _dis;
-    private TextView _time;
-    //    private Stopwatch _stopWatch;
-//    private StopwatchBuilder _stopWatch;
-    Chronometer _chronometer;
-
     private PermissionsManager _permissionsManager;
-    private List<com.mapbox.geojson.Point> _pointList;
     private Double _distance = 0.;
-    int pointListSize = 0;
     private Boolean is_tracking = false;
-    private Boolean invisible = false;
-    private  DecimalFormat df = new DecimalFormat("0.00E0");
+    private TextView tv;
+//    private long savetime = 0;
 
     // lay vi tri khi khong chay
     private LocationEngine _locationEngine;
@@ -104,6 +94,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     // todo: check rotation https://docs.mapbox.com/android/maps/examples/location-component-camera-options/
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
+        // todo: loi camera animation
         Log.d("demo", "OnCreate");
         super.onCreate(savedInstanceState);
 
@@ -112,20 +103,26 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
         initView();
 
-        _starRunning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _locationEngine.removeLocationUpdates(callback);
-                _chronometer.setBase(SystemClock.elapsedRealtime());
-                _chronometer.start();
-                sendCommandToService("START");
-            }
+        if(savedInstanceState!=null){
+            is_tracking = true;
+        }
+
+        _starRunning.setOnClickListener(v -> {
+            _locationEngine.removeLocationUpdates(callback);
+            sendCommandToService("START");
         });
         _stopRunning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendCommandToService("STOP");
-                stopAndSaveData();
+
+                new AlertDialog.Builder(demo.this)
+                        .setMessage("Do you really want to stop ??")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            is_tracking = false;
+                            saveRoute();
+                        } )
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
 
@@ -136,15 +133,21 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             }
         });
 
-        // khoi tao list point
-        _pointList = new  ArrayList<>();
-
-        // khoi tao mapView
         _mapView.onCreate(savedInstanceState);
         _mapView.getMapAsync(this);
-        subcribeToObserver();
     }
 
+     private void saveRoute(){
+        new AlertDialog.Builder(demo.this)
+                .setMessage("Wanna Save Your Route ?")
+                .setPositiveButton("Of Course", (dialog, which) -> {
+                    sendCommandToService("STOP_SAVE");
+                })
+                .setNegativeButton("Don't save route", (dialog, which) -> {
+                    sendCommandToService("STOP_NOT_SAVE");
+                })
+                .show();
+    }
 
     private void getdata() {
         AppDatabase.databaseWriteExecutor.execute(new Runnable() {
@@ -153,7 +156,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                 List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
                 List<Point> po = runs.get(4).getRoute(getApplicationContext());
                 List<Double> speed = runs.get(4).getSpeeds(getApplicationContext());
-                Log.d("demo", "Got database");
             }
         });
     }
@@ -162,10 +164,9 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         _mapView = findViewById(R.id.mapView);
         _starRunning = findViewById(R.id.btn_startrunning);
         _stopRunning = findViewById(R.id.btn_stoprunning);
-        _time = findViewById(R.id.time);
         _dis = findViewById(R.id.distance);
-        _chronometer = findViewById(R.id.chronometer);
         _data = findViewById(R.id.data);
+        tv = findViewById(R.id.time);
     }
 
     private void subcribeToObserver(){
@@ -184,7 +185,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             }
         });
 
-        /*SimpleService.points.observe(this, new Observer<List<Point>>() {
+        SimpleService.points.observe(this, new Observer<List<Point>>() {
             @Override
             public void onChanged(final List<Point> points) {
                 if(!is_tracking){
@@ -193,112 +194,52 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
 //                Log.d("demo", "Points change");
 //                Log.d("demo", "servicesize: " + points.size());
-//                Log.d("demo", "demmosize: " + _pointList.size());
-//                Log.d("demo", "points.get: " + pointListSize);
-                _pointList.add(points.get(pointListSize));
-                pointListSize++;
 
+                int size = points.size();
                 Location location = new Location("");
-                location.setLatitude(_pointList.get(pointListSize-1).latitude());
-                location.setLongitude(_pointList.get(pointListSize-1).longitude());
+                location.setLatitude(points.get(size-1).latitude());
+                location.setLongitude(points.get(size-1).longitude());
                 _mapboxMap.getLocationComponent().forceLocationUpdate(location);
-                _mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
-                        geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(_pointList)));
-                        // todo: cai thien toc do ngay cho nay
-//                        if(pointListSize >=2){
-//                            List<Point> test = new ArrayList<>();
-//                            test.add (_pointList.get(pointListSize-2));
-//                            test.add (_pointList.get(pointListSize-1));
-//                            style.addSource(new GeoJsonSource(String.valueOf(pointListSize),Feature.fromGeometry(LineString.fromLngLats(test))));
-//                        }
-                    }
-                });
-            }
-        });*/
-
-        // version 1
-        SimpleService.locationlive.observe(this, new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                _pointList.add(Point.fromLngLat(location.getLongitude(), location.getLatitude()));
-                pointListSize ++;
-                _mapboxMap.getLocationComponent().forceLocationUpdate(location);
-                _mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
-                        geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(_pointList)));
-
-                    }
+                _mapboxMap.getStyle(style -> {
+                    GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
+                    geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(points)));
                 });
             }
         });
+
+        SimpleService.seconds.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer aLong) {
+                int minute  = (int) (aLong/60);
+                int second = (int) (aLong%60);
+                tv.setText(String.valueOf(minute) + ":" + String.valueOf(second) );
+
+            }
+        });
+
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.d("demo", "onNewIntent");
         super.onNewIntent(intent);
         if(intent.getAction() == "SHOW_ACTIVITY"){
             Log.d("demo", "sho activity");
-            startActivity(intent);
+//            startActivity(intent);
         }else if(intent.getAction() == "SAVE_DATABASE"){
             is_tracking = false;
-        }
+        }/*else if(intent.getAction() == "SEND_TIME"){
+            savetime = intent.getLongExtra("current_chrono", 0);
+        }*/
     }
 
     private void sendCommandToService(String action){
         Intent intent  = new Intent(this, SimpleService.class);
         intent.setAction(action);
+        if(action ==  "STOP_SAVE" || action == "STOP_NOT_SAVE"){
+            intent.putExtra("distance", _distance );
+        }
         startService(intent);
-    }
-
-    private void stopAndSaveData() {
-        // truy cap data base
-        AppDatabase.databaseWriteExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                // stop bo dem thoi gian
-                long elapsedMillis = SystemClock.elapsedRealtime() - _chronometer.getBase();
-                _chronometer.stop();
-
-                Date date = new Date();
-                Run run = new Run(Utils.doubleKmTointMetter(_distance),date.toString(),elapsedMillis, String.valueOf(date.getTime()));
-                // chen row vao data base
-                AppDatabase.getDatabase(getApplicationContext()).runDao().insertRun(run);
-                // them file geojson
-                String route = getStringfromListPoints(_pointList);
-                writeToFile(route, getApplicationContext(),run.routeID);
-            }
-        });
-    }
-
-    private void writeToFile(String data,Context context, String filename) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("demo", "File write failed: " + e.toString());
-        }
-    }
-
-    private String getStringfromListPoints(List<Point> pointList) {
-        String result = "";
-        for (Point point:pointList){
-            result += String.valueOf(point.latitude()) + "@" + String.valueOf(point.longitude()) + " " ;
-        }
-        return result;
-    }
-
-    public String getDateString(long timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
-
-        return sdf.format(new Date(timestamp));
     }
 
     @Override
@@ -318,13 +259,15 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                         .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
                                 PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
                                 PropertyFactory.lineOpacity(.7f),
-                                PropertyFactory.lineWidth(7f),
+                                PropertyFactory.lineWidth(3f),
                                 PropertyFactory.lineColor(Color.parseColor("#F44336"))));
 
                 //Tien hanh xu li location
                 enableLocationComponent(style);
 
-                initLocationEngine();
+                if(!is_tracking){
+                    initLocationEngine();
+                }
             }
         });
     }
@@ -405,14 +348,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             // hien thi cai mui ten chi huong cua dien thoai
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
-            // dieu huong den vi tri hien tai
-            // todo: fix
-//            Location a = locationComponent.getLastKnownLocation();
-//            _mapboxMap.moveCamera(CameraUpdateFactory.newLatLng(
-//                    new LatLng(a.getLatitude(), a.getLongitude())));
-            // bat dau bam gio
-            _chronometer.start();
-
         } else {
             _permissionsManager = new PermissionsManager( this);
             _permissionsManager.requestLocationPermissions(this);
@@ -427,7 +362,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             Location currentLoca = result.getLastLocation();
             CameraPosition position = new CameraPosition.Builder()
                     .target(new LatLng(currentLoca.getLatitude(), currentLoca.getLongitude())) // Sets the new camera position
-//                    .zoom(17) // Sets the zoom
+                    .zoom(15) // Sets the zoom
 //                    .bearing(180) // Rotate the camera
 //                    .tilt(30) // Set the camera tilt
                     .build(); // Creates a CameraPosition from the builder
@@ -463,6 +398,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        subcribeToObserver();
         _locationEngine.requestLocationUpdates(request, callback, getMainLooper());
         _locationEngine.getLastLocation(callback);
     }
@@ -498,10 +434,10 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @Override
     protected void onResume() {
         Log.d("demo", "OnResume");
-        if(invisible){
-            sendCommandToService("ACTIVITY_RESUME");
-            invisible = false;
-        }
+//        if(invisible){
+//             sendCommandToService("ACTIVITY_RESUME");
+//            invisible = false;
+//        }
         super.onResume();
         _mapView.onResume();
     }
@@ -509,10 +445,10 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @Override
     protected void onPause() {
         Log.d("demo", "onPaused");
-        if(is_tracking){
-            sendCommandToService("ACTIVITY_ON_PAUSE");
-            invisible = true;
-        }
+//        if(is_tracking){
+//            sendCommandToService("ACTIVITY_ON_PAUSE");
+//            invisible = true;
+//        }
         super.onPause();
         _mapView.onPause();
     }
@@ -532,6 +468,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     protected void onDestroy() {
+        Log.d("demo", "onDestroy");
         super.onDestroy();
         _mapView.onDestroy();
     }
