@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.HabitListAdapter;
@@ -34,17 +35,19 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
 
         //Create new running Habit
         rvHabit=findViewById(R.id.rvHabits);
-        final HabitListAdapter habitListAdapter=new HabitListAdapter(new HabitListAdapter.HabitDiff());
+        final HabitListAdapter habitListAdapter=new HabitListAdapter(getApplicationContext());
         rvHabit.setAdapter(habitListAdapter);
         rvHabit.setLayoutManager(new LinearLayoutManager(this));
 
-        //HabitViewModel mHabitViewModel = new ViewModelProvider(this).get(HabitViewModel.class);
+        //View Model and update
         HabitViewModel mHabitViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(HabitViewModel.class);
         mHabitViewModel.allHabits.observe(this, new Observer<List<Habit>>() {
             @Override
             public void onChanged(List<Habit> words) {
                 // Update the cached copy of the words in the adapter.
-                habitListAdapter.submitList(words);
+                //habitListAdapter.submitList(words);
+                habitListAdapter.setData(words);
+                Log.d("Observer","Word size:"+ String.valueOf(words.size()));
             }
         });
 

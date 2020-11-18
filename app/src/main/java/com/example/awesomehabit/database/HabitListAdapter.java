@@ -1,89 +1,155 @@
 package com.example.awesomehabit.database;
 
+import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HabitListAdapter extends ListAdapter<Habit, HabitListAdapter.HabitViewHolder> {
+public class HabitListAdapter extends RecyclerView.Adapter {
 
-    public HabitListAdapter(@NonNull DiffUtil.ItemCallback<Habit> diffCallback) {
-        super(diffCallback);
+    List<Habit> data;
+    Context context;
+    public void setData(List<Habit> data){
+        this.data=data;
+        notifyDataSetChanged();
+    }
 
+    public HabitListAdapter(Context context) {
+       data = new ArrayList<>();
+       this.context=context;
     }
 
     @NonNull
     @Override
-    public HabitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.running_habit, parent, false);
-        Button btn=view.findViewById(R.id.startRunning);
-        Button btn2=view.findViewById(R.id.startTiming);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent;
-                intent=new Intent(getApplicationContext(), demo.class);
-                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//                Mapbox.getInstance(getApplicationContext(), getApplicationContext().getString(R.string.mapbox_access_token));
-                getApplicationContext().startActivity(intent);
-            }
-        });
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent;
-                intent=new Intent(getApplicationContext(), SleepTracker.class);
-                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//                Mapbox.getInstance(getApplicationContext(), getApplicationContext().getString(R.string.mapbox_access_token));
-                getApplicationContext().startActivity(intent);
-            }
-        });
-        return new HabitViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        switch (viewType){
+            case Habit.TYPE_RUN:
+                view=LayoutInflater.from(parent.getContext()).inflate(R.layout.running_card,parent,false);
+                return new RunHabitViewHolder(view);
+            case Habit.TYPE_SLEEP:
+                view=LayoutInflater.from(parent.getContext()).inflate(R.layout.sleeping_card,parent,false);
+                return new SleepHabitViewHolder(view);
+            case Habit.TYPE_COUNT:
+                view=LayoutInflater.from(parent.getContext()).inflate(R.layout.counting_card,parent,false);
+                return new CountingHabitViewHolder(view);
+        }
+        return null;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        switch (data.get(position).type){
+            case Habit.TYPE_RUN:
+                return Habit.TYPE_RUN;
+            case Habit.TYPE_SLEEP:
+                return Habit.TYPE_SLEEP;
+            case Habit.TYPE_COUNT:
+                return Habit.TYPE_COUNT;
+        }
+        return 0;
+        //return super.getItemViewType(position);
+    }
+
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
+    @Override
+    public int getItemCount() {
+        return data.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HabitViewHolder holder, int position) {
-        Habit current=getItem(position);
-        holder.bind(current.habitName);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Habit current=data.get(position);
+        if(current!=null){
+            switch (current.type){
+                case Habit.TYPE_RUN:
+                    ((RunHabitViewHolder)holder).habitName.setText(current.habitName);
+                    break;
+                case Habit.TYPE_SLEEP:
+                    ((SleepHabitViewHolder)holder).sleepHabitName.setText(current.habitName);
+                    break;
+                    case Habit.TYPE_COUNT:
+                        ((CountingHabitViewHolder)holder).countingHabitName.setText(current.habitName);
+                        break;
+            }
+        }
     }
 
-    public class HabitViewHolder extends RecyclerView.ViewHolder
-    {
-        private final TextView habitItemView;
-        public HabitViewHolder(@NonNull View itemView) {
+    public class RunHabitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public final TextView habitName;
+        public final Button btn;
+        public RunHabitViewHolder(@NonNull View itemView) {
             super(itemView);
-            habitItemView=itemView.findViewById(R.id.habitName);
+            habitName=itemView.findViewById(R.id.runHabitName);
+            btn=itemView.findViewById(R.id.startRunning);
+
+            btn.setOnClickListener(this);
         }
-        public void bind(String text){
-            habitItemView.setText(text);
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent(context,demo.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
+    public class SleepHabitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private final TextView sleepHabitName;
+        private final Button btn;
+        public SleepHabitViewHolder(@NonNull View itemView) {
+            super(itemView);
+            sleepHabitName =itemView.findViewById(R.id.sleepHabitName);
+            btn=itemView.findViewById(R.id.startSleeping);
 
-    public static class HabitDiff extends DiffUtil.ItemCallback<Habit> {
-
-        @Override
-        public boolean areItemsTheSame(@NonNull Habit oldItem, @NonNull Habit newItem) {
-            return oldItem == newItem;
+            btn.setOnClickListener(this);
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Habit oldItem, @NonNull Habit newItem) {
-            return oldItem.habitName.equals(newItem.habitName);
+        public void onClick(View v) {
+            Intent intent=new Intent(context, SleepTracker.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+    public class CountingHabitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private final TextView countingHabitName;
+        private final Button btnMinus;
+        private final Button btnAdd;
+        public CountingHabitViewHolder(@NonNull View itemView) {
+            super(itemView);
+            countingHabitName=itemView.findViewById(R.id.countingHabitName);
+            btnAdd=itemView.findViewById(R.id.add);
+            btnMinus=itemView.findViewById(R.id.minus);
+            btnAdd.setOnClickListener(this);
+            btnMinus.setOnClickListener(this);
+        }
+
+        /**
+         * Called when a view has been clicked.
+         *
+         * @param v The view that was clicked.
+         */
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }
