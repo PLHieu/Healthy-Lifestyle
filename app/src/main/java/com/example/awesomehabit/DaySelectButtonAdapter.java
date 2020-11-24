@@ -12,18 +12,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButtonAdapter.ViewHolder>{
     private static final String TAG ="RecyclerViewAdapter";
-    private ArrayList<DaySelectButton> mDaySelectButtons;
+    //private ArrayList<DaySelectButton> mDaySelectButtons;
     private Context mContext;
     private OnDaySelectListener onDaySelectListener;
+
+    public void setCheckedPosition(int checkedPosition) {
+        //this.checkedPosition = checkedPosition;
+        int oldCheckedPos=this.checkedPosition;
+        this.checkedPosition=checkedPosition;
+
+        notifyItemChanged(oldCheckedPos);
+        notifyItemChanged(this.checkedPosition);
+    }
+
     private int checkedPosition =0;
 
-    public DaySelectButtonAdapter(ArrayList<DaySelectButton> daySelectButtons, Context mContex,OnDaySelectListener onDaySelectListener) {
-        this.mDaySelectButtons=daySelectButtons;
+    private Calendar calendar;
+    public DaySelectButtonAdapter(Context mContex,OnDaySelectListener onDaySelectListener) {
+        //this.mDaySelectButtons=daySelectButtons;
         this.mContext = mContext;
         this.onDaySelectListener=onDaySelectListener;
+        calendar=Calendar.getInstance();
     }
 
     @NonNull
@@ -36,16 +50,17 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tvDay.setText(mDaySelectButtons.get(position).getmDay());
-        holder.tvDayOfWeek.setText(mDaySelectButtons.get(position).getmDayOfWeek());
-        holder.tvMonth.setText(mDaySelectButtons.get(position).getmMonth());
-
+        Calendar c= (Calendar) calendar.clone();
+        c.add(Calendar.DATE,position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
+        holder.tvMonth.setText(c.getDisplayName(Calendar.MONTH,Calendar.SHORT, Locale.getDefault()));
+        holder.tvDay.setText(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        holder.tvDayOfWeek.setText(c.getDisplayName(Calendar.DAY_OF_WEEK,Calendar.SHORT,Locale.getDefault()));
         holder.bind();
     }
 
     @Override
     public int getItemCount() {
-        return mDaySelectButtons.size();
+        return CustomCalendarView.NUMBER_OF_DAY_BUTTONS;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

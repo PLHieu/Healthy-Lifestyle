@@ -2,25 +2,18 @@ package com.example.awesomehabit;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.TextView;
 
-import com.example.awesomehabit.database.Habit;
-import com.example.awesomehabit.database.HabitListAdapter;
-import com.example.awesomehabit.database.HabitViewModel;
 import com.mapbox.mapboxsdk.Mapbox;
 
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity implements CustomCalendarView.SomeInterface{
+public class MainActivity extends AppCompatActivity implements CustomCalendarView.CustomCalendarViewInterface {
     CustomCalendarView customCalendarView;
     ActionBar actionBar;
-    RecyclerView rvHabit;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +26,28 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
         customCalendarView=(CustomCalendarView) findViewById(R.id.customCalendar);
         customCalendarView.setResponder(this);//For onclick
 
+        viewPager=(ViewPager)findViewById(R.id.pager);
+        viewPager.setAdapter(new CustomPageAdapter(this));
+        viewPager.setCurrentItem(500);
+        viewPager.setPageTransformer(true,new DepthPageTransformer());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+               customCalendarView.smoothScrollTo(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         //Create new running Habit
-        rvHabit=findViewById(R.id.rvHabits);
+        /*rvHabit=findViewById(R.id.rvHabits);
         final HabitListAdapter habitListAdapter=new HabitListAdapter(getApplicationContext());
         rvHabit.setAdapter(habitListAdapter);
         rvHabit.setLayoutManager(new LinearLayoutManager(this));
@@ -49,12 +62,12 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
                 habitListAdapter.setData(words);
                 Log.d("Observer","Word size:"+ String.valueOf(words.size()));
             }
-        });
+        });*/
 
     }
 
     @Override
-    public void foo(String day) {
-        //scrollView.fullScroll(ScrollView.FOCUS_UP);
+    public void onDaySelected(int position) {
+        viewPager.setCurrentItem(position,true);
     }
 }
