@@ -16,7 +16,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +81,8 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     private Double _distance = 0.;
     private Boolean is_tracking = false;
     private TextView tv;
+    private Animation rotate;
+    private ImageView imv;
 //    private long savetime = 0;
 
     // lay vi tri khi khong chay
@@ -102,20 +107,41 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         }
 
         _starRunning.setOnClickListener(v -> {
-            _locationEngine.removeLocationUpdates(callback);
-            sendCommandToService("START");
+
+            String a = _starRunning.getText().toString();
+            if(a.equals("start")){
+                imv.startAnimation(rotate);
+                _starRunning.setText("finish");
+                _locationEngine.removeLocationUpdates(callback);
+                sendCommandToService("START");
+            }else if(_starRunning.getText().toString() == "finish"){
+
+                new AlertDialog.Builder(demo.this)
+                        .setMessage("Do you really want to stop ??")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            rotate.cancel();
+                            imv.setAnimation(rotate);
+                            _starRunning.setText("start");
+                            is_tracking = false;
+                            saveRoute();
+                        } )
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+
+
         });
 
-        _stopRunning.setOnClickListener(v -> new AlertDialog.Builder(demo.this)
-                .setMessage("Do you really want to stop ??")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    is_tracking = false;
-                    saveRoute();
-                } )
-                .setNegativeButton("Cancel", null)
-                .show());
-
-        _data.setOnClickListener(v -> getdata());
+//        _stopRunning.setOnClickListener(v -> new AlertDialog.Builder(demo.this)
+//                .setMessage("Do you really want to stop ??")
+//                .setPositiveButton("Yes", (dialog, which) -> {
+//                    is_tracking = false;
+//                    saveRoute();
+//                } )
+//                .setNegativeButton("Cancel", null)
+//                .show());
+//
+//        _data.setOnClickListener(v -> getdata());
 
         _mapView.onCreate(savedInstanceState);
         _mapView.getMapAsync(this);
@@ -247,11 +273,13 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     private void initView(){
         _mapView = findViewById(R.id.mapView);
         _starRunning = findViewById(R.id.btn_startrunning);
-        _stopRunning = findViewById(R.id.btn_stoprunning);
+//        _stopRunning = findViewById(R.id.btn_stoprunning);
         _dis = findViewById(R.id.distance);
-        _data = findViewById(R.id.data);
+//        _data = findViewById(R.id.data);
         tv = findViewById(R.id.time);
         _starRunning.setEnabled(false);
+        imv = findViewById(R.id.imgView);
+        rotate = AnimationUtils.loadAnimation(this,R.anim.rotation);
     }
 
     private void subcribeToObserver(){
