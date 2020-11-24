@@ -28,5 +28,7 @@
         <activity android:name="com.example.awesomehabit.sleeping.SleepTracker">
 
         </activity>
+        <activity android:name=".statistic.StatisticActivity"></activity>
+        <activity android:name=".statistic.MainActivity2"></activity>
     </application>
 </manifest>

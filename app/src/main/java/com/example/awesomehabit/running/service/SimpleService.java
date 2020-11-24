@@ -4,11 +4,15 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.Chronometer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -18,8 +22,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.R;
+import com.example.awesomehabit.running.utils.Utils;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -28,8 +35,14 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.geojson.Point;
 import com.mapbox.turf.TurfMeasurement;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SimpleService extends LifecycleService {
 
@@ -37,19 +50,21 @@ public class SimpleService extends LifecycleService {
     private final String NOTIFICATION_CHANNEL_NAME = "Tracking";
     private final int NOTIFICATION_ID = 1;
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 3000L;
-    private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS;
+    private static final long DEFAULT_MAX_WAIT_TIME = 100;
 
     private boolean first_run = true;
     public static MutableLiveData<Boolean> isTracking  = new MutableLiveData<Boolean>() ;
-    public static MutableLiveData<List<Point>> points = new MutableLiveData<List<Point>>();
-    private static List<Point> data = new ArrayList<>();
     private LocationEngine _locationEngine;
     private LocationChangeListeningActivityLocationCallback callback =
             new LocationChangeListeningActivityLocationCallback();
+
     public static MutableLiveData<Double> totalDistance = new MutableLiveData<Double>();
-    private static double newdistance = 0.;
+    public static MutableLiveData<List<Point>> points = new MutableLiveData<List<Point>>();
+    private static List<Point> data = new ArrayList<>();
     public static int listSize = 0;
     public static Boolean activityonpause = false;
+//    private Chronometer chronometer = new Chronometer(this);
+    public static MutableLiveData<Integer>  seconds =  new MutableLiveData<Integer>();
 
     @Override
     public void onCreate() {
@@ -65,44 +80,113 @@ public class SimpleService extends LifecycleService {
     }
 
     private void postInitValues(){
-        isTracking.postValue(Boolean.FALSE);
+        isTracking.postValue(false);
         points.postValue(new ArrayList<Point>());
+        // version 1
+//        locationlive.postValue(new Location(""));
         totalDistance.postValue(0.);
+        seconds.postValue(0);
+        Log.d("service",String.valueOf(totalDistance.getValue()));
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent!=null){
+
             if(intent.getAction() == "START"){
+
                 if(first_run){
                     Log.d("service", "Start");
                     startForeGroundService();
+//                    startStopWatch();
+                    Log.d("service", "startwatch");
+                    Log.d("service",String.valueOf(seconds.getValue()));
                     first_run = false;
-                }else {
-                Log.d("service", "Resumming service");
                 }
 
-            }else if(intent.getAction() == "PAUSE"){
+            }/*else if(intent.getAction() == "HANDLE_CHRONO") {
 
-            }else if(intent.getAction() == "STOP"){
+                long elapsedMillis = intent.getLongExtra("chrono", 0);
+                chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
+                chronometer.start();
+
+            }else if(intent.getAction() == "HANDLE_CHRONO_START"){
+
+                Intent intent1 = new Intent(this, demo.class);
+                intent1.setAction("SEND_TIME");
+                intent1.putExtra("current_chrono",SystemClock.elapsedRealtime() - chronometer.getBase() );
+                chronometer.stop();
+                startActivity(intent1);
+
+
+            }*/else if(intent.getAction() == "STOP_SAVE"){ // todo: loi stopwat khoong stop
+
+                stopAndSaveData(intent.getDoubleExtra("distance",0.),seconds.getValue()*1000, true);
                 killservice();
-            } else if (intent.getAction() == "ACTIVITY_ON_PAUSE"){ // neu nhu activity khong con visible nua
+
+            }else if(intent.getAction() == "STOP_NOT_SAVE"){
+
+                stopAndSaveData(intent.getDoubleExtra("distance",0.),intent.getLongExtra("time", 0), false);
+                killservice();
+
+            }else if (intent.getAction() == "ACTIVITY_ON_PAUSE"){ // neu nhu activity khong con visible nua
+
                 activityonpause = true;
-                Log.d("service", "activity on pause");
+
             } else if(intent.getAction() == "ACTIVITY_RESUME"){
+
                 activityonpause = false;
+
             }
 
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void killservice() {
 
-        // tao intent gui ve cho demo
-        Intent intent = new Intent(this, demo.class);
-        intent.setAction("SAVE_DATABASE");
+    private void startStopWatch() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                if(seconds.getValue()!= null && totalDistance.getValue()!=null){
+                    seconds.postValue(seconds.getValue() + 1);
+                    updatenotification(seconds.getValue(), totalDistance.getValue());
+                }
+            }
+        }, 0,1000);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updatenotification(Integer value, Double value1) {
+        try {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            Intent intent = new Intent(this, demo.class);
+            intent.setAction("SHOW_ACTIVITY");
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+            Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
+                    .setContentTitle("Running Tracking")
+                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(Utils.round(value1,2)) + " km")
+                    .setContentIntent(pendingIntent)
+                    .build();
+            notificationManager.notify(NOTIFICATION_ID, notification);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void killservice() {
+        Intent intent = new Intent();
+        intent.setAction("STOP_TRACKING");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
         _locationEngine.removeLocationUpdates(pendingIntent);
 
@@ -116,10 +200,33 @@ public class SimpleService extends LifecycleService {
         stopSelf();
     }
 
+    private void stopAndSaveData(double distance, long elapsedMillis, boolean saveRoute) {
+        // truy cap data base
+        AppDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Date date = new Date();
+                Run run;
+                if(saveRoute){
+                    run = new Run(Utils.doubleKmTointMetter(distance),date.toString(),elapsedMillis, String.valueOf(date.getTime()));
+                }else{
+                    run = new Run(Utils.doubleKmTointMetter(distance),date.toString(),elapsedMillis, "none");
+                }
+                // chen row vao data base
+                AppDatabase.getDatabase(getApplicationContext()).runDao().insertRun(run);
+                // them file geojson
+                if(saveRoute){
+                    String route = getStringfromListPoints(points.getValue());
+                    writeToFile(route, getApplicationContext(),run.routeID);
+                }
+            }
+        });
+    }
+
     private void updateLocationTracking(Boolean istracking){
         if(istracking){
             //
-            Log.d("service", "updateLocationTracking");
+//            Log.d("service", "updateLocationTracking");
             // trong nay co loop de update lai location
             initLocationEngine();
         }else{
@@ -156,6 +263,7 @@ public class SimpleService extends LifecycleService {
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);
+        startStopWatch();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -207,9 +315,6 @@ public class SimpleService extends LifecycleService {
             if(listSize>=2){
                 totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
             }
-//            Log.d("service", String.valueOf(location.getLatitude()) + ":" + String.valueOf(location.getLongitude()));
-            Log.d("service", String.valueOf(activityonpause));
-
         }
 
         @Override
@@ -217,4 +322,31 @@ public class SimpleService extends LifecycleService {
             Log.e("service", "failure");
         }
     }
+
+    private void writeToFile(String data, Context context, String filename) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("demo", "File write failed: " + e.toString());
+        }
+    }
+
+    private String getStringfromListPoints(List<Point> pointList) {
+        String result = "";
+        for (Point point:pointList){
+            result += String.valueOf(point.latitude()) + "@" + String.valueOf(point.longitude()) + " " ;
+        }
+        return result;
+    }
+
+    public String getDateString(long timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
+
+        return sdf.format(new Date(timestamp));
+    }
+
 }
