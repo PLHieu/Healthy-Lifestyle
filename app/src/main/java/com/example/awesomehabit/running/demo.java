@@ -1,7 +1,6 @@
 package com.example.awesomehabit.running;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,17 +8,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -61,15 +62,9 @@ import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.turf.TurfMeasurement;
 //import com.yashovardhan99.timeit.Stopwatch;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.net.InetAddress;
 import java.util.List;
 
 public class demo extends AppCompatActivity implements OnMapReadyCallback, PermissionsListener {
@@ -92,12 +87,11 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     // todo: check rotation https://docs.mapbox.com/android/maps/examples/location-component-camera-options/
+    // todo: loi camera animation
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
-        // todo: loi camera animation
-        Log.d("demo", "OnCreate");
         super.onCreate(savedInstanceState);
 
+//        checkInternetAndLocation();
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.running_activity);
 
@@ -111,33 +105,123 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             _locationEngine.removeLocationUpdates(callback);
             sendCommandToService("START");
         });
-        _stopRunning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                new AlertDialog.Builder(demo.this)
-                        .setMessage("Do you really want to stop ??")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            is_tracking = false;
-                            saveRoute();
-                        } )
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            }
-        });
+        _stopRunning.setOnClickListener(v -> new AlertDialog.Builder(demo.this)
+                .setMessage("Do you really want to stop ??")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    is_tracking = false;
+                    saveRoute();
+                } )
+                .setNegativeButton("Cancel", null)
+                .show());
 
-        _data.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getdata();
-            }
-        });
+        _data.setOnClickListener(v -> getdata());
 
         _mapView.onCreate(savedInstanceState);
         _mapView.getMapAsync(this);
     }
 
-     private void saveRoute(){
+    private void checkInternetAndLocation() {
+
+        // kiem tra internet
+        int connectionType = getConnectionType(this);
+        if(connectionType == 0){
+            new AlertDialog.Builder(this)
+                    .setMessage("You need to connect to Internet for loading map")
+                    .setPositiveButton("I have already connected", (dialog, which) -> {
+                        dialog.cancel();
+                        checkLocationAccess();
+
+                    })
+                    .setNegativeButton("Cancel", ((dialog, which) -> {
+                        dialog.cancel();
+                        checkLocationAccess();
+
+                    }))
+                    .show();
+        }else{
+            checkLocationAccess();
+        }
+
+    }
+
+    private void checkLocationAccess() {
+        // kiem tra truy cap vao vi tri
+        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
+
+            // hien thi popup xin cap quyen truy cap vao vitri, co override xu li call back
+            // neu allow thi goi ham enableLocationComponent
+            _permissionsManager = new PermissionsManager(this);
+            _permissionsManager.requestLocationPermissions(this);
+
+        }else{
+            _starRunning.setEnabled(true);
+            _mapboxMap.getStyle(this::enableLocationComponent);
+            checkLocationTurnOn();
+        }
+    }
+
+    private void checkLocationTurnOn(){
+        // check da bat gps hay chua
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsturnon = false;
+//        boolean network_enabled = false;
+        try {
+            gpsturnon = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        /*try {
+            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER ) ;
+        } catch (Exception e) {
+            e.printStackTrace() ;
+        }*/
+
+        if(!gpsturnon/* && !network_enabled*/){
+            new AlertDialog.Builder(this)
+                    .setMessage("Need to enable GPS for using !!")
+                    .setPositiveButton("Settings", (dialog, which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton("Cancel", (dialog, which) -> {_starRunning.setEnabled(false);})
+                    .show();
+        }
+    }
+
+    @IntRange(from = 0, to = 3)
+    private int getConnectionType(Context context) {
+        int result = 0;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        result = 2;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        result = 1;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                        result = 3;
+                    }
+                }
+            }
+        } else {
+            if (cm != null) {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    // connected to the internet
+                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                        result = 2;
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        result = 1;
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_VPN) {
+                        result = 3;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private void saveRoute(){
         new AlertDialog.Builder(demo.this)
                 .setMessage("Wanna Save Your Route ?")
                 .setPositiveButton("Of Course", (dialog, which) -> {
@@ -167,6 +251,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         _dis = findViewById(R.id.distance);
         _data = findViewById(R.id.data);
         tv = findViewById(R.id.time);
+        _starRunning.setEnabled(false);
     }
 
     private void subcribeToObserver(){
@@ -192,7 +277,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                     return;
                 }
 
-//                Log.d("demo", "Points change");
+                Log.d("demo", "Points change");
 //                Log.d("demo", "servicesize: " + points.size());
 
                 int size = points.size();
@@ -248,7 +333,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
         // load mapView xong thi load style cho mapView thong qua mapboxMap
         mapboxMap.setStyle(Style.TRAFFIC_DAY, new Style.OnStyleLoaded() {
-            @RequiresApi(api = Build.VERSION_CODES.P)
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 // them mot source co dinh cho style
@@ -262,12 +347,9 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                                 PropertyFactory.lineWidth(3f),
                                 PropertyFactory.lineColor(Color.parseColor("#F44336"))));
 
-                //Tien hanh xu li location
-                enableLocationComponent(style);
+                //check cac permission, neu thoa thi goi ham enableLocationComponent
+                checkInternetAndLocation();
 
-                if(!is_tracking){
-                    initLocationEngine();
-                }
             }
         });
     }
@@ -275,7 +357,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void enableLocationComponent(Style loadedMapStyle) {
 
-        // check co quyen vao location chua ?
+       /* // check co quyen vao location chua ?
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
 
             // check da bat gps hay chua
@@ -349,9 +431,59 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
         } else {
+            // hien thi popup xin cap quyen truy cap vao vitri
             _permissionsManager = new PermissionsManager( this);
             _permissionsManager.requestLocationPermissions(this);
+        }*/
+
+
+        // kieu nhu cai nay de cho viec hien thi cai cham toa do cua minh
+        // tham khao them: https://docs.mapbox.com/android/maps/overview/location-component/#activating
+        // https://docs.mapbox.com/archive/android/maps/api/8.1.0/com/mapbox/mapboxsdk/location/LocationComponent.html
+        Log.d("demo", "enablelocationcomponent");
+        LocationComponent locationComponent = _mapboxMap.getLocationComponent();
+
+        // thiet lap cho location
+        LocationComponentOptions option = LocationComponentOptions.builder(this)
+                .compassAnimationEnabled(false)
+                .enableStaleState(false)
+                .staleStateTimeout(10)
+                .trackingAnimationDurationMultiplier(0)
+                .build();
+
+
+        LocationComponentActivationOptions locationComponentActivationOptions =
+                LocationComponentActivationOptions.builder(this, loadedMapStyle)
+                        .locationComponentOptions(option)
+                        .useDefaultLocationEngine(false)
+                        .build();
+
+        //
+        locationComponent.activateLocationComponent(locationComponentActivationOptions);
+
+        // studio tu sinh ra
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        locationComponent.setLocationComponentEnabled(true);
+
+        // camera theo di theo vi tri
+        locationComponent.setCameraMode(CameraMode.NONE);
+
+        // hien thi cai mui ten chi huong cua dien thoai
+        locationComponent.setRenderMode(RenderMode.COMPASS);
+
+        if(!is_tracking){
+            initLocationEngine();
+        }
+
     }
 
     private class LocationChangeListeningActivityLocationCallback
@@ -377,6 +509,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     }
 
     private void initLocationEngine() {
+        Log.d("demo", "init");
         // lay cong cu dinh vi tot nhat hien tai, co the la gps, wwiffi , ko can biet
         _locationEngine = LocationEngineProvider.getBestLocationEngine(this);
 
@@ -405,22 +538,25 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(this, "cc",
-                Toast.LENGTH_LONG).show();
+
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        _permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            _mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @RequiresApi(api = Build.VERSION_CODES.P)
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
+            _starRunning.setEnabled(true);
+           _mapboxMap.getStyle(this::enableLocationComponent);
+            checkLocationTurnOn();
+
         } else {
-            Toast.makeText(this, "thieu permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Cannot using running tracker without accessing location", Toast.LENGTH_SHORT).show();
         }
     }
 
