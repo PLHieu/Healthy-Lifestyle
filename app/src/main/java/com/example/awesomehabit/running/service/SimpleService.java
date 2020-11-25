@@ -64,16 +64,18 @@ public class SimpleService extends LifecycleService {
     public static int listSize = 0;
     public static Boolean activityonpause = false;
 //    private Chronometer chronometer = new Chronometer(this);
+    // thong bao cho ben demo biet de updadte data
     public static MutableLiveData<Integer>  seconds =  new MutableLiveData<Integer>();
+
+    private Timer _timer;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("service", "OnCreate");
         postInitValues();
-        isTracking.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
+        isTracking.observe(this, aBoolean -> {
+            if(aBoolean){
                 updateLocationTracking(aBoolean);
             }
         });
@@ -106,22 +108,7 @@ public class SimpleService extends LifecycleService {
                     first_run = false;
                 }
 
-            }/*else if(intent.getAction() == "HANDLE_CHRONO") {
-
-                long elapsedMillis = intent.getLongExtra("chrono", 0);
-                chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
-                chronometer.start();
-
-            }else if(intent.getAction() == "HANDLE_CHRONO_START"){
-
-                Intent intent1 = new Intent(this, demo.class);
-                intent1.setAction("SEND_TIME");
-                intent1.putExtra("current_chrono",SystemClock.elapsedRealtime() - chronometer.getBase() );
-                chronometer.stop();
-                startActivity(intent1);
-
-
-            }*/else if(intent.getAction() == "STOP_SAVE"){ // todo: loi stopwat khoong stop
+            }else if(intent.getAction() == "STOP_SAVE"){ // todo: loi stopwat khoong stop
 
                 stopAndSaveData(intent.getDoubleExtra("distance",0.),seconds.getValue()*1000, true);
                 killservice();
@@ -140,15 +127,14 @@ public class SimpleService extends LifecycleService {
                 activityonpause = false;
 
             }
-
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
 
     private void startStopWatch() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        _timer = new Timer();
+        _timer.scheduleAtFixedRate(new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
@@ -190,6 +176,9 @@ public class SimpleService extends LifecycleService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
         _locationEngine.removeLocationUpdates(pendingIntent);
 
+        // dung dong ho
+        _timer.cancel();
+
         // reset lai cac gia tri
         first_run = true;
         activityonpause = false;
@@ -201,6 +190,7 @@ public class SimpleService extends LifecycleService {
     }
 
     private void stopAndSaveData(double distance, long elapsedMillis, boolean saveRoute) {
+
         // truy cap data base
         AppDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
@@ -225,7 +215,6 @@ public class SimpleService extends LifecycleService {
 
     private void updateLocationTracking(Boolean istracking){
         if(istracking){
-            //
 //            Log.d("service", "updateLocationTracking");
             // trong nay co loop de update lai location
             initLocationEngine();
@@ -315,6 +304,7 @@ public class SimpleService extends LifecycleService {
             if(listSize>=2){
                 totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
             }
+            Log.d("service", "gia tri cua istracking" + isTracking.getValue().toString());
         }
 
         @Override

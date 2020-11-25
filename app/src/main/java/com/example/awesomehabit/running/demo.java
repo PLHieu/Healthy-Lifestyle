@@ -96,6 +96,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d("demo", "onCreate");
 //        checkInternetAndLocation();
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.running_activity);
@@ -104,6 +105,11 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
         if(savedInstanceState!=null){
             is_tracking = true;
+        }
+
+        if(SimpleService.isTracking.getValue()!= null){
+            is_tracking = SimpleService.isTracking.getValue();
+            _starRunning.setText("finish");
         }
 
         _starRunning.setOnClickListener(v -> {
@@ -508,9 +514,25 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         // hien thi cai mui ten chi huong cua dien thoai
         locationComponent.setRenderMode(RenderMode.COMPASS);
 
-        if(!is_tracking){
+
+        // todo: fix 2 bug
+        /*// neu la dang theo doi thi dieu huong camera den vi tri hien tai
+        // neu khong theo doi thi phai init
+        if(is_tracking){
+            Location currentLoca = new Location() SimpleService.points.getValue().get(SimpleService.listSize);
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(new LatLng(currentLoca.getLatitude(), currentLoca.getLongitude())) // Sets the new camera position
+                    .zoom(15) // Sets the zoom
+//                    .bearing(180) // Rotate the camera
+//                    .tilt(30) // Set the camera tilt
+                    .build(); // Creates a CameraPosition from the builder
+
+            _mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 1000);
+        }else{
             initLocationEngine();
-        }
+        }*/
+        initLocationEngine();
 
     }
 
