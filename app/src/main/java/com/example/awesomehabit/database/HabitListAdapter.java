@@ -78,7 +78,7 @@ public class HabitListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Habit current=data.get(position);
+        /*Habit current=data.get(position);
         if(current!=null){
             switch (current.type){
                 case Habit.TYPE_RUN:
@@ -91,7 +91,7 @@ public class HabitListAdapter extends RecyclerView.Adapter {
                         ((CountingHabitViewHolder)holder).countingHabitName.setText(current.habitName);
                         break;
             }
-        }
+        }*/
     }
 
     public class RunHabitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

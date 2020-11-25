@@ -18,4 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/pager"/>
+    <include
+        layout="@layout/calendar_item_layout"/>
 </LinearLayout>
