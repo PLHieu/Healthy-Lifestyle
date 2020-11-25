@@ -215,7 +215,6 @@ public class SimpleService extends LifecycleService {
 
     private void updateLocationTracking(Boolean istracking){
         if(istracking){
-            //
 //            Log.d("service", "updateLocationTracking");
             // trong nay co loop de update lai location
             initLocationEngine();
@@ -305,6 +304,7 @@ public class SimpleService extends LifecycleService {
             if(listSize>=2){
                 totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
             }
+            Log.d("service", "gia tri cua istracking" + isTracking.getValue().toString());
         }
 
         @Override
