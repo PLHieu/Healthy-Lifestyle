@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
         notifyItemChanged(this.checkedPosition);
     }
 
-    private int checkedPosition =0;
+    private int checkedPosition =CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2;
 
     private Calendar calendar;
     public DaySelectButtonAdapter(Context mContex,OnDaySelectListener onDaySelectListener) {

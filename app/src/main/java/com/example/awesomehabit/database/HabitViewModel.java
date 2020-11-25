@@ -17,5 +17,5 @@ public class HabitViewModel extends AndroidViewModel {
         allHabits=habitRepository.getAllHabits();
     }
     LiveData<List<Habit>> getAllHabits(){return allHabits;}
-    public void insert(Habit habit){habitRepository.insert(habit);}
+    //public void insert(Habit habit){habitRepository.insert(habit);}
 }

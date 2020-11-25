@@ -2,7 +2,9 @@ package com.example.awesomehabit;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import java.util.Calendar;
+import java.util.zip.Inflater;
 
 public class CustomCalendarView extends RecyclerView implements DaySelectButtonAdapter.OnDaySelectListener{
     public final static int NUMBER_OF_DAY_BUTTONS=1000;//Doesn't affect performance!
@@ -34,7 +37,8 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
         //LayoutManager
         mLayoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         setLayoutManager(mLayoutManager);
-        mLayoutManager.scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
+        //smoothScrollTo(NUMBER_OF_DAY_BUTTONS/2);
+        scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
         snapHelper.attachToRecyclerView(this);
     }
 
@@ -45,7 +49,8 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
     }
     public void smoothScrollTo(int position){
         adapter.setCheckedPosition(position);
-        onDaySelectCLick(position);
+        LinearLayout t=findViewById(R.id.calendar_parent);
+        mLayoutManager.scrollToPositionWithOffset(position,this.getWidth()/2-t.getWidth()/2);
     }
     public interface CustomCalendarViewInterface
     {

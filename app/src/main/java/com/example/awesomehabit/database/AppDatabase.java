@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.awesomehabit.Converters;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.running.RunDao;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
@@ -17,8 +19,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(entities = {Habit.class, Run.class, SleepNight.class},version = 1)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract HabitDao habitDao();
+    //public abstract HabitDao habitDao();
     public abstract RunDao runDao();
     public abstract SleepDatabaseDao sleepDao();
     private static volatile AppDatabase INSTANCE;
@@ -53,13 +56,13 @@ public abstract class AppDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    HabitDao dao=INSTANCE.habitDao();
+/*                    HabitDao dao=INSTANCE.habitDao();
                     Habit habit=new Habit(1,"Running",Habit.TYPE_RUN);
                     dao.insert(habit);
                     habit=new Habit(2,"Sleeping",Habit.TYPE_SLEEP);
                     dao.insert(habit);
                     habit=new Habit(3,"Water drank",Habit.TYPE_COUNT);
-                    dao.insert(habit);
+                    dao.insert(habit);*/
                 }
             });
         }
