@@ -40,6 +40,10 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
 
     private Context context;
 
+    BarChart barChart;
+    ListView listView;
+    TextView textView;
+
     public MyStatisticViewAdapter(Context context, ArrayList<ArrayList<Float>> arrayListData, ArrayList<ArrayList<String>> arrayListShortDay, ArrayList<ArrayList<Calendar>> arrayListLongDay, float mode, int statisticType) {
         this.arrayListData = arrayListData;
         this.arrayListShortDay = arrayListShortDay;
@@ -63,12 +67,12 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         listLongDay = arrayListLongDay.get(position);
         listShortDay = arrayListShortDay.get(position);
 
-        createBarChart(holder.barChart, holder.listView);
-        initListView(holder.listView);
-        setNameForBarChart(holder.textView);
+        createBarChart();
+        initListView();
+        setNameForBarChart();
     }
 
-    private void setNameForBarChart(TextView textView) {
+    private void setNameForBarChart() {
             if (mode == StatisticActivity.YEAR_MODE)
                 textView.setText("Năm " + String.valueOf(listLongDay.get(0).get(Calendar.YEAR)));
             else
@@ -81,9 +85,6 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        BarChart barChart;
-        ListView listView;
-        TextView textView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,7 +94,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         }
     }
 
-    private void initListView(ListView listView) {
+    private void initListView() {
         ArrayList<MyDataView> items = new ArrayList<>();
         for (int i = 0; i < listLongDay.size(); i++) {
             items.add(new MyDataView(listLongDay.get(i), listData.get(i), mode, statisticType));
@@ -103,7 +104,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     }
 
 
-    private void createBarChart(BarChart barChart, final ListView listView) {
+    private void createBarChart() {
         setContextForBarChart(barChart);
         barChart.getDescription().setText("");
         barChart.animateY(2000);
