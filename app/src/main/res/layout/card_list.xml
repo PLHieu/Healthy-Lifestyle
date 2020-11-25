@@ -22,11 +22,7 @@
         <include
             layout="@layout/counting_card"/>
         <include
-            layout="@layout/running_card"/>
-        <include
-            layout="@layout/sleeping_card"/>
-        <include
-            layout="@layout/counting_card"/>
+            layout="@layout/food_card"/>
     </LinearLayout>
 
 </ScrollView>
