@@ -90,6 +90,8 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     private LocationChangeListeningActivityLocationCallback callback =
             new LocationChangeListeningActivityLocationCallback();
 
+
+    private Button test;
     @Override
     // todo: check rotation https://docs.mapbox.com/android/maps/examples/location-component-camera-options/
     // todo: loi camera animation
@@ -269,9 +271,23 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         AppDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
-                List<Point> po = runs.get(4).getRoute(getApplicationContext());
-                List<Double> speed = runs.get(4).getSpeeds(getApplicationContext());
+//                List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
+//                List<Point> po = runs.get(4).getRoute(getApplicationContext());
+//                List<Double> speed = runs.get(4).getSpeeds(getApplicationContext());
+
+                List<Run> runListDay = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
+
+                // all distance
+                List<Integer> integers = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllDistance();
+
+                // all Start time
+                List<String>  longs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllTimeStart();
+
+                // all running time (in seconds)
+                List<Long> longs1 = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRunningtime();
+
+                Log.d("demo", "testdata");
+
             }
         });
     }
@@ -286,6 +302,14 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         _starRunning.setEnabled(false);
         imv = findViewById(R.id.imgView);
         rotate = AnimationUtils.loadAnimation(this,R.anim.rotation);
+
+        test = findViewById(R.id.testdata);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getdata();
+            }
+        });
     }
 
     private void subcribeToObserver(){
