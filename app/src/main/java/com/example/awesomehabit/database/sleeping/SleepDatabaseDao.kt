@@ -1,10 +1,10 @@
 package com.example.awesomehabit.database.sleeping
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.awesomehabit.database.Converters
 import com.example.awesomehabit.database.Habit
 import com.example.awesomehabit.database.HabitDao
 import java.util.*
-import com.example.awesomehabit.Converters as Converters
 
 @Dao
 interface SleepDatabaseDao : HabitDao {

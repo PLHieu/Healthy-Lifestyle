@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
-import com.example.awesomehabit.Converters;
+import com.example.awesomehabit.database.Converters;
 import com.example.awesomehabit.database.HabitDao;
 
 import java.util.Calendar;

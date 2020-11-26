@@ -2,6 +2,7 @@ package com.example.awesomehabit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.Room;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
+
+import java.util.Calendar;
+import java.util.List;
 
 public class CustomPageAdapter extends PagerAdapter implements View.OnClickListener {
     private Context mContext;
@@ -52,6 +59,28 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         Button btnRun=(Button)layout.findViewById(R.id.startRunning);
         Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
         Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
+
+        AppDatabase db = Room.databaseBuilder(mContext,
+                AppDatabase.class, "database-name").allowMainThreadQueries().build();
+        Calendar today=Calendar.getInstance();
+        today.set(Calendar.HOUR,0);
+        today.set(Calendar.MINUTE,0);
+        today.set(Calendar.SECOND,0);
+        today.set(Calendar.MILLISECOND,0);
+        List<Run> r=db.runDao().getHabitFrom(today);
+        TextView distance=layout.findViewById(R.id.runDistance);
+        if (r.size()>0){
+            Log.d("@@@@",String.valueOf(r.get(0).distance));
+
+            distance.setText(String.valueOf(r.get(0).distance));
+        }
+        else
+        {
+            distance.setText("Chua chay");
+            Log.d("@@@@","Not found");
+        }
+
+
         btnRun.setOnClickListener(this);
         btnSleep.setOnClickListener(this);
         btnMeal.setOnClickListener(this);
