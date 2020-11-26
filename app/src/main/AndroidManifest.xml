@@ -30,6 +30,7 @@
 
         <activity android:name=".sleeping.SleepTracker" >
         </activity>
+        <activity android:name=".meal.MealActivity"></activity>
         <activity android:name=".statistic.StatisticActivity" />
         <activity android:name=".statistic.WeekSummaryActivity" />
     </application>

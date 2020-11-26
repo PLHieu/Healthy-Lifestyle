@@ -16,7 +16,6 @@ import java.util.Locale;
 
 public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButtonAdapter.ViewHolder>{
     private static final String TAG ="RecyclerViewAdapter";
-    //private ArrayList<DaySelectButton> mDaySelectButtons;
     private Context mContext;
     private OnDaySelectListener onDaySelectListener;
 
@@ -66,7 +65,6 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
         TextView tvDay;
         TextView tvDayOfWeek;
         TextView tvMonth;
-        LinearLayout parentLayout;
 
         OnDaySelectListener onDaySelectListener;
         public ViewHolder(@NonNull View itemView,OnDaySelectListener onDaySelectListener) {
@@ -75,7 +73,6 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
             tvDay=itemView.findViewById(R.id.calendar_day);
             tvDayOfWeek=itemView.findViewById(R.id.calendar_dayOfWeek);
             tvMonth=itemView.findViewById(R.id.calendar_month);
-            parentLayout=itemView.findViewById(R.id.calendar_parent);
             this.onDaySelectListener=onDaySelectListener;
             itemView.setOnClickListener(this);
         }

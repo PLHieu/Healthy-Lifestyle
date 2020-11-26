@@ -9,12 +9,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvPos"
-            android:text="Current pos : 3"/>
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp">
         <include
             layout="@layout/running_card"/>
         <include
