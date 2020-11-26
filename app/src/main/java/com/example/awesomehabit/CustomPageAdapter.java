@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.room.Room;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.awesomehabit.database.AppDatabase;
@@ -60,25 +59,28 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
         Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
 
-       /* AppDatabase db = Room.databaseBuilder(mContext,
-                AppDatabase.class, "database-name").allowMainThreadQueries().build();
+        AppDatabase db = AppDatabase.getDatabase(mContext);
         Calendar today=Calendar.getInstance();
+        //position 500 is today
+        today.add(Calendar.DATE,position);
         today.set(Calendar.HOUR,0);
         today.set(Calendar.MINUTE,0);
         today.set(Calendar.SECOND,0);
         today.set(Calendar.MILLISECOND,0);
         List<Run> r=db.runDao().getHabitFrom(today);
         TextView distance=layout.findViewById(R.id.runDistance);
-        if (r.size()>0){
-            Log.d("@@@@",String.valueOf(r.get(0).distance));
 
+
+        if (r!=null && r.size()>0){
+            //Log.d("@@@@",String.valueOf(r.get(0).distance));
+            //Log.d("@@@@","Stuff in db");
             distance.setText(String.valueOf(r.get(0).distance));
         }
         else
         {
             distance.setText("Chua chay");
             Log.d("@@@@","Not found");
-        }*/
+        }
 
 
         btnRun.setOnClickListener(this);
