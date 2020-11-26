@@ -24,6 +24,9 @@ interface SleepDatabaseDao : HabitDao {
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC")
     fun getAllNights(): LiveData<List<SleepNight>>
 
+    @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC")
+    fun getAllNightsNonLive(): List<SleepNight>
+
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC LIMIT 1")
     fun getTonight(): SleepNight?
 

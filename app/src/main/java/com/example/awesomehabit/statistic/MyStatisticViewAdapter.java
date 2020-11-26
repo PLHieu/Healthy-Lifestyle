@@ -27,14 +27,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticViewAdapter.MyViewHolder> {
-
+    private final ArrayList<ArrayList<Integer>> arrayListSleepQuality;
     private ArrayList<ArrayList<Float>> arrayListData;
     private ArrayList<ArrayList<String>> arrayListShortDay;
     private ArrayList<ArrayList<Calendar>> arrayListLongDay;
+    private ArrayList<ArrayList<Long>> arrayListTimeLength;
 
     private ArrayList<Float> listData;
     private ArrayList<String> listShortDay;
     private ArrayList<Calendar> listLongDay;
+    private ArrayList<Integer> listSleepQuality;
+    private ArrayList<Long> listTimeLength;
+
     private float mode = 7f;
     private int statisticType = 0;
 
@@ -44,13 +48,15 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     ListView listView;
     TextView textView;
 
-    public MyStatisticViewAdapter(Context context, ArrayList<ArrayList<Float>> arrayListData, ArrayList<ArrayList<String>> arrayListShortDay, ArrayList<ArrayList<Calendar>> arrayListLongDay, float mode, int statisticType) {
+    public MyStatisticViewAdapter(Context context, ArrayList<ArrayList<Float>> arrayListData, ArrayList<ArrayList<Long>> arrayListTimeLength, ArrayList<ArrayList<Integer>> arrayListSleepQuality, ArrayList<ArrayList<String>> arrayListShortDay, ArrayList<ArrayList<Calendar>> arrayListLongDay, float mode, int statisticType) {
         this.arrayListData = arrayListData;
         this.arrayListShortDay = arrayListShortDay;
         this.arrayListLongDay = arrayListLongDay;
         this.mode = mode;
         this.context = context;
         this.statisticType = statisticType;
+        this.arrayListTimeLength = arrayListTimeLength;
+        this.arrayListSleepQuality = arrayListSleepQuality;
     }
 
     @NonNull
@@ -66,6 +72,8 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         listData = arrayListData.get(position);
         listLongDay = arrayListLongDay.get(position);
         listShortDay = arrayListShortDay.get(position);
+        listSleepQuality = arrayListSleepQuality.get(position);
+        listTimeLength = arrayListTimeLength.get(position);
 
         createBarChart();
         initListView();
@@ -97,7 +105,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     private void initListView() {
         ArrayList<MyDataView> items = new ArrayList<>();
         for (int i = 0; i < listLongDay.size(); i++) {
-            items.add(new MyDataView(listLongDay.get(i), listData.get(i), mode, statisticType));
+            items.add(new MyDataView(listLongDay.get(i),listData.get(i), mode, statisticType, listTimeLength.get(i), listSleepQuality.get(i)));
         }
         MyDataViewAdapter adapter = new MyDataViewAdapter(context, items);
         listView.setAdapter(adapter);
@@ -162,6 +170,8 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     private String getLabel() {
         if(statisticType == 1)
             return StatisticActivity.WATER_LABEL;
+        else if (statisticType == 2)
+            return StatisticActivity.SLEEP_LABEL;
         return StatisticActivity.RUN_LABEL;
     }
 }
