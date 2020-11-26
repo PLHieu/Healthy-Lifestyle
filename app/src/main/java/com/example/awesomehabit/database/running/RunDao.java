@@ -25,6 +25,15 @@ public interface RunDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertRun(Run run);
 
+    @Query("SELECT Distance FROM running_table")
+    List<Integer> getAllDistance();
+
+    @Query("SELECT timeStart FROM running_table")
+    List<String> getAllTimeStart();
+
+    @Query("SELECT time FROM running_table")
+    List<Long> getAllRunningtime();
+
     @Delete
     void delete(Run run);
 }
