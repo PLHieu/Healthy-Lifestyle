@@ -1,8 +1,9 @@
-package com.example.awesomehabit;
+package com.example.awesomehabit.database;
 
 import androidx.room.TypeConverter;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class Converters {
     @TypeConverter
@@ -16,4 +17,5 @@ public class Converters {
     public static Long fromCalendar(Calendar calendar) {
         return calendar.getTimeInMillis();
     }
+
 }

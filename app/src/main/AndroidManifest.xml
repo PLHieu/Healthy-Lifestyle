@@ -30,5 +30,6 @@
         </activity>
         <activity android:name=".statistic.StatisticActivity"></activity>
         <activity android:name=".statistic.MainActivity2"></activity>
+        <activity android:name=".meal.MealActivity"></activity>
     </application>
 </manifest>
