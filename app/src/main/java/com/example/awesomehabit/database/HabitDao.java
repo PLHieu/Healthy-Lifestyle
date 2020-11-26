@@ -1,7 +1,11 @@
 package com.example.awesomehabit.database;
+import androidx.lifecycle.LiveData;
+
 import java.util.Calendar;
+import java.util.List;
+
 public interface HabitDao {
     //LiveData<List<Habit>> getAll();
     int getType();
-    Habit getHabitFrom(Calendar calendar);
+    List<?> getHabitFrom(Calendar calendar);
 }

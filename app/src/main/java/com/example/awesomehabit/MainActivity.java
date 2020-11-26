@@ -3,21 +3,14 @@ package com.example.awesomehabit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 
-import com.example.awesomehabit.database.Habit;
-import com.example.awesomehabit.database.HabitListAdapter;
-import com.example.awesomehabit.database.HabitViewModel;
-import com.example.awesomehabit.statistic.MainActivity2;
+import com.example.awesomehabit.statistic.WeekSummaryActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 
 public class MainActivity extends AppCompatActivity implements CustomCalendarView.CustomCalendarViewInterface {
@@ -92,8 +85,9 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
         switch (item.getItemId()){
             case R.id.action_statistic:
                 //startActivity(new Intent(this, MainActivity2.class));
-                customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
+                //customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
+                //viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
+                startActivity(new Intent(this, WeekSummaryActivity.class));
                 return true;
         }
 

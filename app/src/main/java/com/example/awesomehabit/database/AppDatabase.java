@@ -17,7 +17,7 @@ import com.example.awesomehabit.database.sleeping.SleepNight;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Habit.class, Run.class, SleepNight.class},version = 1)
+@Database(entities = {Habit.class, Run.class, SleepNight.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
