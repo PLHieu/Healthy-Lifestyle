@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.running.Run;
-import com.example.awesomehabit.database.sleeping.SleepDatabase;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 
@@ -143,7 +142,7 @@ public class StatisticActivity extends AppCompatActivity {
 
     private void getSleepData() {
         AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
-        List<SleepNight> nights = database.sleepDao().getAllNights().getValue();
+        List<SleepNight> nights = database.sleepDao().getAllNightsNonLive();
 
         for (int i = 0; i < nights.size(); i++) {
             listData.add((float) nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli());
