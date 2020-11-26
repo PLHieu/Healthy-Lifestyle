@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/purple_200</item>
     </style>
     <style name="SleepButtons" parent="Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@android:color/white</item>
