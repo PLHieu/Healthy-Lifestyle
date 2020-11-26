@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 public class StatisticActivity extends AppCompatActivity {
     private static final String TAG = "StatisticActivity";
@@ -116,6 +117,9 @@ public class StatisticActivity extends AppCompatActivity {
             if (!checkExisted(calendar, listData.get(i), listTimeLength.get(i), listSleepQuality.get(i), mode))
                 generateIfNotExisted(calendar, listData.get(i), listTimeLength.get(i), listSleepQuality.get(i), mode);
         }
+        Calendar calendar = Calendar.getInstance();
+        if (!checkExisted(calendar, 0f, 0l, 0, mode))
+            generateIfNotExisted(calendar, 0f, 0l, 0, mode);
     }
 
     private void handleIntent() {
@@ -134,6 +138,22 @@ public class StatisticActivity extends AppCompatActivity {
         else if (statisticType == WATER_TYPE)
             getWaterData();
 
+    }
+
+    private void generateRunData() {
+        listTime.add(Calendar.getInstance().getTimeInMillis());
+        listData.add(10f);
+        listTimeLength.add((long)new Random().nextInt(360) *10000);
+        listSleepQuality.add(0);
+
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 7; i++) {
+            calendar.add(Calendar.DAY_OF_YEAR, new Random().nextInt(7));
+            listTime.add(calendar.getTimeInMillis());
+            listData.add((float) (new Random().nextInt(10) + 5));
+            listTimeLength.add((long)new Random().nextInt(360) *10000);
+            listSleepQuality.add(0);
+        }
     }
 
     private void getWaterData() {
@@ -180,6 +200,8 @@ public class StatisticActivity extends AppCompatActivity {
         arrayListData.add(aListdata);
         arrayListLongDay.add(aListLongDay);
         arrayListShortDay.add(aListShortDay);
+        arrayListTimeLength.add(aListTimeLength);
+        arrayListSleepQuality.add(aListSleepQuality);
     }
 
     private void generateYear(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay, ArrayList<Long> aListTimeLength, ArrayList<Integer> aListSleepQuality, int statisticType) {
@@ -190,18 +212,24 @@ public class StatisticActivity extends AppCompatActivity {
             temp.set(Calendar.MONTH, j);
             listShortDay.add(String.valueOf(j + 1));
             listLongDay.add(temp);
-            if (temp.getTime().getMonth() == calendar.getTime().getMonth())
+            if (temp.get(Calendar.MONTH) == calendar.get(Calendar.MONTH))
+            {
                 listData.add(data);
-            else listData.add(0f);
-            aListSleepQuality.add(sleepQuality);
-            aListTimeLength.add(timeLength);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void generateMonth(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay, ArrayList<Long> aListTimeLength, ArrayList<Integer> aListSleepQuality, int statisticType) {
         long milli = calendar.getTimeInMillis();
-        for (int j = 0; j < YearMonth.of(calendar.getTime().getYear(), calendar.getTime().getMonth() + 1).lengthOfMonth(); j++) {
+        for (int j = 0; j < YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1).lengthOfMonth(); j++) {
             Calendar temp = Calendar.getInstance();
             temp.setTimeInMillis(milli);
             temp.set(Calendar.DAY_OF_MONTH, temp.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -210,10 +238,16 @@ public class StatisticActivity extends AppCompatActivity {
             listShortDay.add(simpleDateFormat.format(temp.getTime()));
             listLongDay.add(temp);
             if (temp.getTimeInMillis() == milli)
+            {
                 listData.add(data);
-            else listData.add(0f);
-            aListSleepQuality.add(sleepQuality);
-            aListTimeLength.add(timeLength);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
@@ -228,19 +262,25 @@ public class StatisticActivity extends AppCompatActivity {
             listShortDay.add(simpleDateFormat.format(temp.getTime()));
             listLongDay.add(temp);
             if (temp.getTimeInMillis() == milli)
+            {
                 listData.add(data);
-            else listData.add(0f);
-            aListSleepQuality.add(sleepQuality);
-            aListTimeLength.add(timeLength);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
     boolean compareTime(Calendar calendar1, Calendar calendar2, int mode) {
-        if (calendar1.getTime().getDate() == calendar2.getTime().getDate() && calendar1.getTime().getMonth() == calendar2.getTime().getMonth() && calendar1.getTime().getYear() == calendar2.getTime().getYear())
+        if (calendar1.get(Calendar.DATE) == calendar2.get(Calendar.DATE) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH) && calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR))
             return true;
 
         if (mode == 2) {
-            if (calendar1.getTime().getYear() == calendar2.getTime().getYear() && calendar1.getTime().getMonth() == calendar2.getTime().getMonth()) {
+            if (calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH)) {
                 return true;
             }
         }
@@ -274,5 +314,17 @@ public class StatisticActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(myStatisticViewAdapter);
         snapHelper.attachToRecyclerView(recyclerView);
+        getToToday(recyclerView, mode);
+    }
+
+    private void getToToday(RecyclerView recyclerView, int mode) {
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < arrayListLongDay.size(); i++) {
+            for (int j = 0; j < arrayListLongDay.get(i).size(); j++)
+                if (compareTime(arrayListLongDay.get(i).get(j), calendar, mode)) {
+                    recyclerView.scrollToPosition(i);
+                    return;
+                }
+        }
     }
 }

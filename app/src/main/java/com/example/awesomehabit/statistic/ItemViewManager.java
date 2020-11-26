@@ -3,6 +3,7 @@ package com.example.awesomehabit.statistic;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,17 +45,19 @@ public class ItemViewManager {
     }
 
     private static void setSleepIconAndQuality(Context context, MyDataView item, View convertView) {
-        ImageView imageView = (ImageView)convertView.findViewById(R.id.imgViewSleepQualityIcon);
-        imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), item.icon_id));
+        if (item.timeLength > 0) {
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imgViewSleepQualityIcon);
+            imageView.setImageResource(item.icon_id);
+        }
     }
 
     private static void setTextViewDate(MyDataView item, View convertView) {
         TextView textView = (TextView) convertView.findViewById(R.id.textViewDay);
         String date ="";
         if (item.mode != StatisticActivity.YEAR_MODE)
-            date = "Ngày " + String.valueOf(item.date.get(Calendar.DATE) + " ");
-        String month = "Tháng " + String.valueOf(item.date.get(Calendar.MONTH) + 1);
-        String year = " Năm " + String.valueOf(item.date.get(Calendar.YEAR));
+            date = "Ngày " + item.date.get(Calendar.DATE) + " ";
+        String month = "Tháng " + (item.date.get(Calendar.MONTH) + 1);
+        String year = " Năm " + item.date.get(Calendar.YEAR);
         textView.setText(date + month + year);
     }
 
@@ -62,15 +65,15 @@ public class ItemViewManager {
         long timeInMilli = item.timeLength;
         TextView textView = convertView.findViewById(R.id.textViewTime);
         long hour = timeInMilli / 1000 / 60 / 60;
-        long minute = timeInMilli / 1000 / 60;
-        long second = timeInMilli / 1000;
+        long minute = timeInMilli / 1000 / 60 % 60;
+        long second = timeInMilli / 1000 % 60;
         String temp = "";
         if (hour < 10)
             temp += "0";
-        temp += String.valueOf(hour) + ":";
+        temp += hour + ":";
         if (minute < 10)
             temp += "0";
-        temp += String.valueOf(minute) + ":";
+        temp += minute + ":";
         if (second < 10)
             temp += "0";
         temp += String.valueOf(second);
@@ -79,10 +82,10 @@ public class ItemViewManager {
 
     private static String getText(MyDataView item) {
         if (item.type == 0)
-            return String.valueOf(item.data) + " " + StatisticActivity.RUN_UNIT;
+            return item.data + " " + StatisticActivity.RUN_UNIT;
         else if (item.type == 2)
-            return String.valueOf((int) (float) item.data) + " " + StatisticActivity.SLEEP_UNIT;
+            return (int) (float) item.data + " " + StatisticActivity.SLEEP_UNIT;
         else
-            return String.valueOf((int) (float) item.data) + " " + StatisticActivity.WATER_UNIT;
+            return (int) (float) item.data + " " + StatisticActivity.WATER_UNIT;
     }
 }

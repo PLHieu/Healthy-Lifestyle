@@ -19,8 +19,8 @@ public class MyDataViewAdapter extends ArrayAdapter<MyDataView> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        convertView = createView();
         MyDataView item = getItem(position);
+        convertView = createView(item);
         bindData(item, convertView);
 
         return convertView;
@@ -30,8 +30,7 @@ public class MyDataViewAdapter extends ArrayAdapter<MyDataView> {
         ItemViewManager.bindPlease(getContext(), item, convertView);
     }
 
-    private View createView() {
-        View res = ItemViewManager.createItemView(this.getContext());
-        return res;
+    private View createView(MyDataView item) {
+        return ItemViewManager.createItemView(this.getContext(), item);
     }
 }

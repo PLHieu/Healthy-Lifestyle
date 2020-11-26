@@ -18,6 +18,7 @@ import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
+import com.example.awesomehabit.statistic.StatisticActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -55,40 +56,41 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         //TextView tv=layout.findViewById(R.id.tvPos);
         //tv.setText(String.valueOf(position));
 
-        Button btnRun=(Button)layout.findViewById(R.id.startRunning);
-        Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
-        Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
+        Button btnRun = (Button) layout.findViewById(R.id.startRunning);
+        Button btnSleep = (Button) layout.findViewById(R.id.startSleeping);
+        Button btnMeal = (Button) layout.findViewById(R.id.btnMeal);
 
         AppDatabase db = AppDatabase.getDatabase(mContext);
-        Calendar today=Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
         //position 500 is today
-        today.add(Calendar.DATE,position);
-        today.set(Calendar.HOUR,0);
-        today.set(Calendar.MINUTE,0);
-        today.set(Calendar.SECOND,0);
-        today.set(Calendar.MILLISECOND,0);
-        List<Run> r=db.runDao().getHabitFrom(today);
-        TextView distance=layout.findViewById(R.id.runDistance);
+        today.add(Calendar.DATE, position);
+        today.set(Calendar.HOUR, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        List<Run> r = db.runDao().getHabitFrom(today);
+        TextView distance = layout.findViewById(R.id.runDistance);
 
 
-        if (r!=null && r.size()>0){
+        if (r != null && r.size() > 0) {
             //Log.d("@@@@",String.valueOf(r.get(0).distance));
             //Log.d("@@@@","Stuff in db");
             distance.setText(String.valueOf(r.get(0).distance));
-        }
-        else
-        {
+        } else {
             distance.setText("Chua chay");
-            Log.d("@@@@","Not found");
+            Log.d("@@@@", "Not found");
         }
 
 
         btnRun.setOnClickListener(this);
         btnSleep.setOnClickListener(this);
         btnMeal.setOnClickListener(this);
+        ((Button)layout.findViewById(R.id.btnRunStatistic)).setOnClickListener(this);
+        ((Button)layout.findViewById(R.id.btnSleepStatistic)).setOnClickListener(this);
         collection.addView(layout);
         return layout;
     }
+
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view==object;
@@ -116,6 +118,16 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         }
         else if(v.getId()==R.id.btnMeal){
             Intent intent=new Intent(mContext, MealActivity.class);
+            mContext.startActivity(intent);
+        }
+        else if (v.getId()==R.id.btnRunStatistic){
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.RUN_TYPE);
+            mContext.startActivity(intent);
+        }
+        else if (v.getId()==R.id.btnSleepStatistic){
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.SLEEP_TYPE);
             mContext.startActivity(intent);
         }
     }

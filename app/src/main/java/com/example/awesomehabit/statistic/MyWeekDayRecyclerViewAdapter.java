@@ -15,22 +15,11 @@ public class MyWeekDayRecyclerViewAdapter extends RecyclerView.Adapter<MyWeekDay
     private ArrayList<String> listTxtViewWeekDay = new ArrayList<>();
     private ArrayList<View.OnClickListener> listTxtViewOnClick = new ArrayList<>();
 
-    public MyWeekDayRecyclerViewAdapter(ArrayList<String> listTxtViewWeekDay) {
-        this.listTxtViewWeekDay = listTxtViewWeekDay;
-        listTxtViewOnClick = null;
-    }
-
-    public MyWeekDayRecyclerViewAdapter(ArrayList<String> listTxtViewWeekDay, ArrayList<View.OnClickListener> listTxtViewOnClick) {
-        this.listTxtViewWeekDay = listTxtViewWeekDay;
-        this.listTxtViewOnClick = listTxtViewOnClick;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.week_day, parent, false);
-        ViewHolder holder = new ViewHolder(new View(parent.getContext()));
-        return holder;
+        return new ViewHolder(new View(parent.getContext()));
     }
 
     @Override
