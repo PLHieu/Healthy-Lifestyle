@@ -25,7 +25,7 @@ fun convertNumericQualityToString(quality: Int, resources: Resources): String {
 
 @SuppressLint("SimpleDateFormat")
 fun convertLongToDateString(systemTime: Long): String {
-    return SimpleDateFormat("EEEE MMM-dd-yyyy' Time: 'HH:mm")
+    return SimpleDateFormat("EEEE dd/MM/yyyy', 'HH:mm")
             .format(systemTime).toString()
 }
 
@@ -44,11 +44,14 @@ fun formatNights(nights: List<SleepNight>, resources: Resources): Spanned {
                 append("\t${convertNumericQualityToString(it.sleepQuality, resources)}<br>")
                 append(resources.getString(R.string.hours_slept))
                 // Hours
-                append("\t ${it.endTimeMilli.minus(it.startTimeMilli) / 1000 / 60 / 60}:")
+                append("\t${it.endTimeMilli.minus(it.startTimeMilli) / 1000 / 60 / 60}:")
                 // Minutes
                 append("${it.endTimeMilli.minus(it.startTimeMilli) / 1000 / 60}:")
                 // Seconds
                 append("${it.endTimeMilli.minus(it.startTimeMilli) / 1000}<br><br>")
+            } else {
+                append(resources.getString(R.string.sleep_tracking))
+                append("<br><br>")
             }
         }
     }
