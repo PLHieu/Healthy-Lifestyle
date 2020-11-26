@@ -5,11 +5,16 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 
+import com.example.awesomehabit.Converters;
+import com.example.awesomehabit.database.HabitDao;
+
+import java.util.Calendar;
 import java.util.List;
 
 @Dao
-public interface RunDao {
+public interface RunDao extends HabitDao {
     @Query("SELECT * FROM running_table")
     List<Run> getAllRun();
 
@@ -31,9 +36,18 @@ public interface RunDao {
     @Query("SELECT timeStart FROM running_table")
     List<String> getAllTimeStart();
 
-    @Query("SELECT time FROM running_table")
+    @Query("SELECT runningTime FROM running_table")
     List<Long> getAllRunningtime();
 
     @Delete
     void delete(Run run);
+
+    @Query("SELECT type from running_table limit 1")
+    int getType();
+
+    @TypeConverters(Converters.class)
+    @Query("SELECT * from running_table where time = :calendar")
+    List<Run> getHabitFrom(Calendar calendar);
+
+
 }

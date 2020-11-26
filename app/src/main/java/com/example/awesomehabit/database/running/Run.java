@@ -7,6 +7,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.awesomehabit.database.Habit;
 import com.mapbox.geojson.Point;
 import com.mapbox.turf.TurfMeasurement;
 
@@ -16,16 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "running_table")
-public class Run  {
-
-    @PrimaryKey(autoGenerate = true)
-    public int uid;
+public class Run  extends Habit {
 
     // distance theo met
     @ColumnInfo(name = "Distance")
@@ -45,7 +44,7 @@ public class Run  {
 
     // thoi gian chay
     // tinh theo giay
-    @ColumnInfo(name = "Time")
+    @ColumnInfo(name = "runningTime")
     public long runningTime;
 
 //    public Run(int distance, long timeStampStart, long runningTime) {
@@ -55,11 +54,13 @@ public class Run  {
 //        this.runningTime = runningTime;
 //    }
     public Run(int distance, String timeStart, long runningTime, String routeID) {
+        super(Habit.TYPE_RUN);
         this.distance = distance;
         this.timeStart = timeStart;
         this.routeID = routeID;
         this.runningTime = runningTime;
     }
+
 
     //Tra ve speed voi toc do la km/h
     public List<Double> getSpeeds(Context context){
