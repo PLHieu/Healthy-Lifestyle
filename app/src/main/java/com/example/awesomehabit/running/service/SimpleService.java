@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -197,12 +198,24 @@ public class SimpleService extends LifecycleService {
             public void run() {
                 Date date = new Date();
                 Long currenttime = System.currentTimeMillis();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(currenttime);
+                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
                 Run run;
                 if(saveRoute){
-                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, String.valueOf(date.getTime()));
+                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime), calendar,elapsedMillis, String.valueOf(date.getTime()));
                 }else{
-                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, "none");
+                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),calendar,elapsedMillis, "none");
                 }
+
+//                if(saveRoute){
+//                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, String.valueOf(date.getTime()));
+//                }else{
+//                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, "none");
+//                }
                 // chen row vao data base
                 AppDatabase.getDatabase(getApplicationContext()).runDao().insertRun(run);
                 // them file geojson

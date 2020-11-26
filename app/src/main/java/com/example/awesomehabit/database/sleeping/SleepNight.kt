@@ -18,4 +18,6 @@ class SleepNight : Habit(TYPE_SLEEP) {
 
     @ColumnInfo(name = "quality_rating")
     var sleepQuality = -1
+
+    fun getSleepDuration(): Long { return endTimeMilli.minus(startTimeMilli) }
 }

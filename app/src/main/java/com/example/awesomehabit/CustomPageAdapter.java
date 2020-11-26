@@ -60,7 +60,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
         Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
 
-        AppDatabase db = Room.databaseBuilder(mContext,
+       /* AppDatabase db = Room.databaseBuilder(mContext,
                 AppDatabase.class, "database-name").allowMainThreadQueries().build();
         Calendar today=Calendar.getInstance();
         today.set(Calendar.HOUR,0);
@@ -78,7 +78,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         {
             distance.setText("Chua chay");
             Log.d("@@@@","Not found");
-        }
+        }*/
 
 
         btnRun.setOnClickListener(this);
