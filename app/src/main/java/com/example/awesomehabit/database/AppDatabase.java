@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.awesomehabit.Converters;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.running.RunDao;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
