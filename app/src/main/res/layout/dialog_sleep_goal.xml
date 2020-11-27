@@ -23,6 +23,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/hour"
+        android:maxLength="2"
         android:importantForAutofill="no"/>
     <EditText
         android:id="@+id/edtMinute"
@@ -35,5 +36,6 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
         android:hint="@string/minute"
+        android:maxLength="2"
         android:importantForAutofill="no" />
 </LinearLayout>

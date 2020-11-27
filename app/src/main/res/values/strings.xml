@@ -16,13 +16,13 @@
     <string name="clear">Clear</string>
     <string name="cancel">Cancel</string>
     <string name="set_goal">Set goal</string>
+    <string name="set">Set</string>
 
     <!-- Dialog -->
     <string name="dialog_clear_all_title">Do you really want to clear all your data?</string>
     <string name="dialog_sleep_goal_title">Set your sleep goal</string>
-    <string name="hour">Hours</string>
-    <string name="minute">Minutes</string>
-    <string name="set">Set</string>
+    <string name="hour">Hours (0–23)</string>
+    <string name="minute">Minutes (0–59)</string>
     <string name="current_goal">Current Goal:</string>
 
     <!-- contentDescription strings for quality icons -->
@@ -52,5 +52,6 @@
 
     <!-- Snackbar -->
     <string name="cleared_message">All your data is gone forever.</string>
-    <string name="set_goal_snackbar">Your goal is set to</string>
+    <string name="set_goal_snackbar_success">Your goal is set to</string>
+    <string name="set_goal_snackbar_fail">Your input is invalid!</string>
 </resources>

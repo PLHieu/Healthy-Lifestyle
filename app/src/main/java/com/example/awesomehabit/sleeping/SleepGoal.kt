@@ -3,10 +3,11 @@ package com.example.awesomehabit.sleeping
 class SleepGoal private constructor() {
     private var sleepGoalInMinutes: Int = 8*60 // In minutes
 
-    fun setSleepGoal(hour: Int, minute: Int) {
-        if (hour < 0 || minute < 0)
-            return
-        sleepGoalInMinutes = (hour % 24) * 60 + (minute % 60)
+    fun setSleepGoal(hour: Int, minute: Int) : Boolean {
+        if (hour < 0 || minute < 0 || hour >= 24 || minute >= 60 || (hour == 0 && minute == 0))
+            return false
+        sleepGoalInMinutes = hour * 60 + minute
+        return true
     }
 
     fun getSleepGoalInMillis(): Long {

@@ -15,7 +15,8 @@ class SleepGoalDialogFragment : DialogFragment() {
     private var listener: SleepGoalDialogListener? = null
 
     interface SleepGoalDialogListener {
-        fun showSnackBar()
+        fun showSnackBar_Success()
+        fun showSnackBar_Fail()
     }
 
     fun setSleepGoalDialogListener(listener: SleepGoalDialogListener) {
@@ -33,9 +34,14 @@ class SleepGoalDialogFragment : DialogFragment() {
             builder.setView(inflatedView)
             builder.setPositiveButton(R.string.set_goal,
                     DialogInterface.OnClickListener { dialog, which ->
-                        sleepGoal.setSleepGoal(inflatedView.edtHour.text.toString().toInt(),
-                                inflatedView.edtMinute.text.toString().toInt())
-                        listener!!.showSnackBar()
+                        var setHour = inflatedView.edtHour.text.toString()
+                        if (setHour.isBlank()) setHour = "0"
+                        var setMinute = inflatedView.edtMinute.text.toString()
+                        if (setMinute.isBlank()) setMinute = "0"
+                        if (sleepGoal.setSleepGoal(setHour.toInt(), setMinute.toInt()))
+                            listener!!.showSnackBar_Success()
+                        else
+                            listener!!.showSnackBar_Fail()
                     })
             builder.setNegativeButton(R.string.cancel,
                     DialogInterface.OnClickListener { dialog, which ->  dialog.cancel()})

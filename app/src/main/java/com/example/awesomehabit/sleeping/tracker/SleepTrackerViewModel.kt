@@ -134,10 +134,16 @@ class SleepTrackerViewModel(
     fun onSetGoal() {
         val sleepGoalDialog = SleepGoalDialogFragment()
         sleepGoalDialog.setSleepGoalDialogListener(object :SleepGoalDialogFragment.SleepGoalDialogListener {
-            override fun showSnackBar() {
+            override fun showSnackBar_Success() {
                 snackbarString =
-                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar) +
+                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
                                 " " + SleepGoal.getInstance().toString() + "."
+                _showSnackbarEvent.value = true
+            }
+
+            override fun showSnackBar_Fail() {
+                snackbarString =
+                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_fail)
                 _showSnackbarEvent.value = true
             }
         })
