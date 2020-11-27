@@ -14,7 +14,16 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="clear">Clear</string>
-    <string name="choose_date">Choose date</string>
+    <string name="cancel">Cancel</string>
+    <string name="set_goal">Set goal</string>
+
+    <!-- Dialog -->
+    <string name="dialog_clear_all_title">Do you really want to clear all your data?</string>
+    <string name="dialog_sleep_goal_title">Set your sleep goal</string>
+    <string name="hour">Hours</string>
+    <string name="minute">Minutes</string>
+    <string name="set">Set</string>
+    <string name="current_goal">Current Goal:</string>
 
     <!-- contentDescription strings for quality icons -->
     <string name="quality_0">Sleep Quality 0</string>
@@ -29,7 +38,7 @@
     <string name="start_time"><![CDATA[<b>From:</b>]]></string>
     <string name="end_time"><![CDATA[<b>To:</b>]]></string>
     <string name="quality"><![CDATA[<b>Quality:</b>]]></string>
-    <string name="hours_slept"><![CDATA[<b>Slept duration: </b>]]></string>
+    <string name="hours_slept"><![CDATA[<b>Sleep duration: </b>]]></string>
     <string name="sleep_tracking"><![CDATA[<i>Tracking your sleep…</i>]]></string>
 
     <!-- Sleep quality strings -->
@@ -41,6 +50,7 @@
     <string name="four_pretty_good">Pretty good</string>
     <string name="five_excellent">Excellent!</string>
 
-    <!-- Toast to play after Clear button has been pressed -->
+    <!-- Snackbar -->
     <string name="cleared_message">All your data is gone forever.</string>
+    <string name="set_goal_snackbar">Your goal is set to</string>
 </resources>

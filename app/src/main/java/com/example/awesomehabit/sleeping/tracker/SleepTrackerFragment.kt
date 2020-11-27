@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.awesomehabit.sleeping.tracker
 
 import android.os.Bundle
@@ -26,7 +28,9 @@ class SleepTrackerFragment : Fragment() {
 
         val dataSource = AppDatabase.getDatabase(application).sleepDao();
 
-        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
+        val fragmentManager = requireNotNull(this.activity).fragmentManager
+
+        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application, fragmentManager)
 
         val sleepTrackerViewModel =
                 ViewModelProvider(
@@ -40,7 +44,7 @@ class SleepTrackerFragment : Fragment() {
             if (it == true) {
                 Snackbar.make(
                         requireActivity().findViewById(android.R.id.content),
-                        getString(R.string.cleared_message),
+                        sleepTrackerViewModel.snackbarString,
                         Snackbar.LENGTH_SHORT
                 ).show()
                 sleepTrackerViewModel.doneShowingSnackbar()
