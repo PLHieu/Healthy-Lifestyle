@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
-        application: Application) : AndroidViewModel(application) {
+        application: Application, private val fragmentManager: FragmentManager) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
     private val nights = database.get15RecentNights()
     var snackbarString: String = ""
@@ -96,32 +96,7 @@ class SleepTrackerViewModel(
             oldNight.endTimeMilli = System.currentTimeMillis()
             update(oldNight)
             _navigateToSleepQuality.value = oldNight
-//            Log.d("@@@@", database.type.toString())
-//            val today = Calendar.getInstance()
-//            today.set(Calendar.HOUR, 0)
-//            today.set(Calendar.MINUTE, 0)
-//            today.set(Calendar.SECOND, 0)
-//            today.set(Calendar.MILLISECOND, 0)
-//            val habits = database.getHabitFrom(today) as? List<SleepNight?>
-//            if (habits != null) {
-//                habits.forEach {
-//                    Log.d("@@@@", today.timeInMillis.toString())
-//                    Log.d("@@@@", it!!.sleepQuality.toString())
-//                }
-//            } else {
-//                Log.d("@@@@", "NULL")
-//            }
         }
-    }
-
-    var listener: FragmentManagerListener? = null
-
-    interface FragmentManagerListener {
-        fun getFragmentManager(): FragmentManager
-    }
-
-    fun setFragmentListener(listener: FragmentManagerListener) {
-        this.listener = listener
     }
 
     fun onClear() {
@@ -136,7 +111,7 @@ class SleepTrackerViewModel(
                 _showSnackbarEvent.value = true
             }
         })
-        clearAllDialog.show(listener!!.getFragmentManager(), "clearAllDialog")
+        clearAllDialog.show(fragmentManager, "clearAllDialog")
     }
 
     fun onSetGoal() {
@@ -155,6 +130,6 @@ class SleepTrackerViewModel(
                 _showSnackbarEvent.value = true
             }
         })
-        sleepGoalDialog.show(listener!!.getFragmentManager(), "sleepGoalDialog")
+        sleepGoalDialog.show(fragmentManager, "sleepGoalDialog")
     }
 }

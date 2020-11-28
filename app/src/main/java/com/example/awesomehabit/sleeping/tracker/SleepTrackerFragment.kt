@@ -18,8 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 class SleepTrackerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-
-
         val binding: FragmentSleepTrackerBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_sleep_tracker, container, false)
 
@@ -29,7 +27,7 @@ class SleepTrackerFragment : Fragment() {
 
         val fragmentManager = requireNotNull(this.activity).supportFragmentManager
 
-        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
+        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application, fragmentManager)
 
         val sleepTrackerViewModel =
                 ViewModelProvider(
@@ -56,12 +54,6 @@ class SleepTrackerFragment : Fragment() {
                         SleepTrackerFragmentDirections
                                 .actionSleepTrackerFragmentToSleepQualityFragment(night.id))
                 sleepTrackerViewModel.doneNavigating()
-            }
-        })
-
-        sleepTrackerViewModel.setFragmentListener(object:SleepTrackerViewModel.FragmentManagerListener {
-            override fun getFragmentManager(): FragmentManager {
-                return fragmentManager
             }
         })
 
