@@ -6,7 +6,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.awesomehabit.R
-import com.example.awesomehabit.sleeping.SleepGoal
+import com.example.awesomehabit.database.sleeping.SleepGoal
 import kotlinx.android.synthetic.main.dialog_sleep_goal.view.*
 
 class SleepGoalDialogFragment : DialogFragment() {
@@ -24,7 +24,7 @@ class SleepGoalDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            val sleepGoal = SleepGoal.getInstance()
+            val sleepGoal = SleepGoal.getInstance(requireActivity().applicationContext)
             val inflater = it.layoutInflater;
             val inflatedView = inflater.inflate(R.layout.dialog_sleep_goal, null)
             val currentGoal = inflatedView.txtSleepGoal.text.toString() + " " + sleepGoal.toString()

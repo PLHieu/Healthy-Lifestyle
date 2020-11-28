@@ -17,12 +17,15 @@ import com.example.awesomehabit.database.sleeping.SleepNight;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Habit.class, Run.class, SleepNight.class}, version = 1, exportSchema = false)
+import static androidx.room.RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING;
+
+@Database(entities = {Habit.class, Run.class, SleepNight.class, HabitGoal.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
     public abstract RunDao runDao();
     public abstract SleepDatabaseDao sleepDao();
+    public abstract HabitGoalDao habitGoalDao();
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
@@ -34,7 +37,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "habit_database").addCallback(sRoomDatabaseCallback)
-                            .allowMainThreadQueries().build();
+                            .allowMainThreadQueries().setJournalMode(WRITE_AHEAD_LOGGING).build();
                 }
             }
         }

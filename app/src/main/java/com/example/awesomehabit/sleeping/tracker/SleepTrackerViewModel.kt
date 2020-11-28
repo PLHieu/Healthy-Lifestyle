@@ -7,7 +7,7 @@ import androidx.lifecycle.*
 import com.example.awesomehabit.R
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao
 import com.example.awesomehabit.database.sleeping.SleepNight
-import com.example.awesomehabit.sleeping.SleepGoal
+import com.example.awesomehabit.database.sleeping.SleepGoal
 import com.example.awesomehabit.sleeping.formatNights
 import kotlinx.coroutines.launch
 
@@ -145,7 +145,7 @@ class SleepTrackerViewModel(
             override fun showSnackBarSuccess() {
                 snackbarString =
                         getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
-                                " " + SleepGoal.getInstance().toString() + "."
+                                " " + SleepGoal.getInstance(getApplication<Application>().applicationContext).toString() + "."
                 _showSnackbarEvent.value = true
             }
 
