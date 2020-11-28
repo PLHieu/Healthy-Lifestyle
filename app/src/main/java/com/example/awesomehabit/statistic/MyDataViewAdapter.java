@@ -19,8 +19,10 @@ public class MyDataViewAdapter extends ArrayAdapter<MyDataView> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
+
         MyDataView item = getItem(position);
         convertView = createView(item);
+
         bindData(item, convertView);
 
         return convertView;

@@ -35,9 +35,13 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
         customCalendarView.setResponder(this);//For onclick
 
         viewPager=(ViewPager)findViewById(R.id.pager);
-        viewPager.setAdapter(new CustomPageAdapter(this));
-        viewPager.setCurrentItem(500);
+        CustomPageAdapter customPageAdapter=new CustomPageAdapter(this);
+        viewPager.setAdapter(customPageAdapter);
+        viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
         viewPager.setPageTransformer(true,new DepthPageTransformer());
+
+
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
