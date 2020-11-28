@@ -70,6 +70,7 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import java.net.InetAddress;
 import java.util.List;
 
+//todo: check lai api
 public class demo extends AppCompatActivity implements OnMapReadyCallback, PermissionsListener {
 
     private static final String SOURCE_ID = "SOURCE_ID";
@@ -83,15 +84,12 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     private TextView tv;
     private Animation rotate;
     private ImageView imv;
-//    private long savetime = 0;
 
     // lay vi tri khi khong chay
     private LocationEngine _locationEngine;
     private LocationChangeListeningActivityLocationCallback callback =
             new LocationChangeListeningActivityLocationCallback();
 
-
-    private Button test;
     @Override
     // todo: check rotation https://docs.mapbox.com/android/maps/examples/location-component-camera-options/
     // todo: loi camera animation
@@ -111,7 +109,11 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
         if(SimpleService.isTracking.getValue()!= null){
             is_tracking = SimpleService.isTracking.getValue();
-            _starRunning.setText("finish");
+            if(is_tracking){
+                _starRunning.setText("finish");
+            }else{
+                _starRunning.setText("start");
+            }
         }
 
         _starRunning.setOnClickListener(v -> {
@@ -268,27 +270,19 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     }
 
     private void getdata() {
-        AppDatabase.databaseWriteExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-//                List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
-//                List<Point> po = runs.get(4).getRoute(getApplicationContext());
-//                List<Double> speed = runs.get(4).getSpeeds(getApplicationContext());
+        AppDatabase.databaseWriteExecutor.execute(() -> {
 
-                List<Run> runListDay = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
+            List<Run> runListDay = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
 
-                // all distance
-                List<Integer> integers = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllDistance();
+            // all distance
+            List<Integer> integers = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllDistance();
 
-                // all Start time
-                List<String>  longs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllTimeStart();
+            // all Start time
+            List<String>  longs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllTimeStart();
 
-                // all running time (in seconds)
-                List<Long> longs1 = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRunningtime();
+            // all running time (in seconds)
+            List<Long> longs1 = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRunningtime();
 
-                Log.d("demo", "testdata");
-
-            }
         });
     }
 
@@ -303,42 +297,27 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         imv = findViewById(R.id.imgView);
         rotate = AnimationUtils.loadAnimation(this,R.anim.rotation);
 
-        test = findViewById(R.id.testdata);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getdata();
-            }
-        });
+
     }
 
     private void subcribeToObserver(){
-        SimpleService.isTracking.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                is_tracking = aBoolean;
-            }
+        SimpleService.isTracking.observe(this, aBoolean -> is_tracking = aBoolean);
+
+        SimpleService.totalDistance.observe(this, aDouble -> {
+            _distance = aDouble;
+            _dis.setText(String.valueOf(Utils.round(_distance,2)));
         });
 
-        SimpleService.totalDistance.observe(this, new Observer<Double>() {
-            @Override
-            public void onChanged(Double aDouble) {
-                _distance = aDouble;
-                _dis.setText(String.valueOf(Utils.round(_distance,2)));
+        SimpleService.points.observe(this, points -> {
+            if(!is_tracking){
+                return;
             }
-        });
 
-        SimpleService.points.observe(this, new Observer<List<Point>>() {
-            @Override
-            public void onChanged(final List<Point> points) {
-                if(!is_tracking){
-                    return;
-                }
-
-                Log.d("demo", "Points change");
+            Log.d("demo", "Points change");
 //                Log.d("demo", "servicesize: " + points.size());
 
-                int size = points.size();
+            int size = points.size();
+            if(size >=1 ){
                 Location location = new Location("");
                 location.setLatitude(points.get(size-1).latitude());
                 location.setLongitude(points.get(size-1).longitude());
@@ -348,6 +327,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                     geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(points)));
                 });
             }
+
         });
 
         SimpleService.seconds.observe(this, new Observer<Integer>() {
@@ -364,16 +344,11 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("demo", "onNewIntent");
         super.onNewIntent(intent);
         if(intent.getAction() == "SHOW_ACTIVITY"){
-            Log.d("demo", "sho activity");
-//            startActivity(intent);
         }else if(intent.getAction() == "SAVE_DATABASE"){
             is_tracking = false;
-        }/*else if(intent.getAction() == "SEND_TIME"){
-            savetime = intent.getLongExtra("current_chrono", 0);
-        }*/
+        }
     }
 
     private void sendCommandToService(String action){
@@ -415,86 +390,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void enableLocationComponent(Style loadedMapStyle) {
 
-       /* // check co quyen vao location chua ?
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
-
-            // check da bat gps hay chua
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            boolean gpsturnon = false;
-            boolean network_enabled = false;
-            try {
-                gpsturnon = locationManager.isLocationEnabled();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            try {
-                network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER ) ;
-            } catch (Exception e) {
-                e.printStackTrace() ;
-            }
-
-            if(!gpsturnon && !network_enabled){
-                new AlertDialog.Builder(this)
-                        .setMessage("GPS Enable")
-                        .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            }
-
-            // kieu nhu cai nay de cho viec hien thi cai cham toa do cua minh
-            // tham khao them: https://docs.mapbox.com/android/maps/overview/location-component/#activating
-            // https://docs.mapbox.com/archive/android/maps/api/8.1.0/com/mapbox/mapboxsdk/location/LocationComponent.html
-            LocationComponent locationComponent = _mapboxMap.getLocationComponent();
-
-            // thiet lap cho location
-            LocationComponentOptions option = LocationComponentOptions.builder(this)
-                    .compassAnimationEnabled(false)
-                    .enableStaleState(false)
-                    .staleStateTimeout(10)
-                    .trackingAnimationDurationMultiplier(0)
-                    .build();
-
-
-            LocationComponentActivationOptions locationComponentActivationOptions =
-                    LocationComponentActivationOptions.builder(this, loadedMapStyle)
-                            .locationComponentOptions(option)
-                            .useDefaultLocationEngine(false)
-                            .build();
-
-            //
-            locationComponent.activateLocationComponent(locationComponentActivationOptions);
-
-            // studio tu sinh ra
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            locationComponent.setLocationComponentEnabled(true);
-
-            // camera theo di theo vi tri
-            locationComponent.setCameraMode(CameraMode.NONE);
-
-            // hien thi cai mui ten chi huong cua dien thoai
-            locationComponent.setRenderMode(RenderMode.COMPASS);
-
-        } else {
-            // hien thi popup xin cap quyen truy cap vao vitri
-            _permissionsManager = new PermissionsManager( this);
-            _permissionsManager.requestLocationPermissions(this);
-        }*/
-
-
         // kieu nhu cai nay de cho viec hien thi cai cham toa do cua minh
         // tham khao them: https://docs.mapbox.com/android/maps/overview/location-component/#activating
         // https://docs.mapbox.com/archive/android/maps/api/8.1.0/com/mapbox/mapboxsdk/location/LocationComponent.html
@@ -516,7 +411,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
                         .useDefaultLocationEngine(false)
                         .build();
 
-        //
         locationComponent.activateLocationComponent(locationComponentActivationOptions);
 
         // studio tu sinh ra
@@ -578,12 +472,10 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
         }
         @Override
         public void onFailure(@NonNull Exception exception) {
-            Log.e("demo", "getting location failure");
         }
     }
 
     private void initLocationEngine() {
-        Log.d("demo", "init");
         // lay cong cu dinh vi tot nhat hien tai, co the la gps, wwiffi , ko can biet
         _locationEngine = LocationEngineProvider.getBestLocationEngine(this);
 
@@ -644,10 +536,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @Override
     protected void onResume() {
         Log.d("demo", "OnResume");
-//        if(invisible){
-//             sendCommandToService("ACTIVITY_RESUME");
-//            invisible = false;
-//        }
         super.onResume();
         _mapView.onResume();
     }
@@ -655,10 +543,6 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
     @Override
     protected void onPause() {
         Log.d("demo", "onPaused");
-//        if(is_tracking){
-//            sendCommandToService("ACTIVITY_ON_PAUSE");
-//            invisible = true;
-//        }
         super.onPause();
         _mapView.onPause();
     }
