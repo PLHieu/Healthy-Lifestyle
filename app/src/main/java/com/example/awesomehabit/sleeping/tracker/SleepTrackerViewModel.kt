@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
-        application: Application, val fragmentManager: FragmentManager) : AndroidViewModel(application) {
+        application: Application) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
     private val nights = database.get15RecentNights()
     var snackbarString: String = ""
@@ -116,6 +116,16 @@ class SleepTrackerViewModel(
         }
     }
 
+    var listener: FragmentManagerListener? = null
+
+    interface FragmentManagerListener {
+        fun getFragment(): FragmentManager
+    }
+
+    fun setFragmentListener(listener: FragmentManagerListener) {
+        this.listener = listener
+    }
+
     fun onClear() {
         val clearAllDialog = ClearAllDialogFragment()
         clearAllDialog.setClearAllDialogLister(object:ClearAllDialogFragment.ClearAllDialogListener {
@@ -128,7 +138,7 @@ class SleepTrackerViewModel(
                 _showSnackbarEvent.value = true
             }
         })
-        clearAllDialog.show(fragmentManager, "clearAllDialog")
+        clearAllDialog.show(listener!!.getFragment(), "clearAllDialog")
     }
 
     fun onSetGoal() {
@@ -147,6 +157,6 @@ class SleepTrackerViewModel(
                 _showSnackbarEvent.value = true
             }
         })
-        sleepGoalDialog.show(fragmentManager, "sleepGoalDialog")
+        sleepGoalDialog.show(listener!!.getFragment(), "sleepGoalDialog")
     }
 }

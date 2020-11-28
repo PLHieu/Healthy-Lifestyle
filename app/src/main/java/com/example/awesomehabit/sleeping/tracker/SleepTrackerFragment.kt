@@ -2,6 +2,7 @@
 
 package com.example.awesomehabit.sleeping.tracker
 
+import android.app.FragmentManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,7 @@ class SleepTrackerFragment : Fragment() {
 
         val fragmentManager = requireNotNull(this.activity).fragmentManager
 
-        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application, fragmentManager)
+        val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
         val sleepTrackerViewModel =
                 ViewModelProvider(
@@ -57,6 +58,12 @@ class SleepTrackerFragment : Fragment() {
                         SleepTrackerFragmentDirections
                                 .actionSleepTrackerFragmentToSleepQualityFragment(night.id))
                 sleepTrackerViewModel.doneNavigating()
+            }
+        })
+
+        sleepTrackerViewModel.setFragmentListener(object:SleepTrackerViewModel.FragmentManagerListener {
+            override fun getFragment(): FragmentManager {
+                return fragmentManager
             }
         })
 
