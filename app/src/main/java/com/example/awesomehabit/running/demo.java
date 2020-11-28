@@ -339,14 +339,17 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 //                Log.d("demo", "servicesize: " + points.size());
 
                 int size = points.size();
-                Location location = new Location("");
-                location.setLatitude(points.get(size-1).latitude());
-                location.setLongitude(points.get(size-1).longitude());
-                _mapboxMap.getLocationComponent().forceLocationUpdate(location);
-                _mapboxMap.getStyle(style -> {
-                    GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
-                    geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(points)));
-                });
+                if(size >=1 ){
+                    Location location = new Location("");
+                    location.setLatitude(points.get(size-1).latitude());
+                    location.setLongitude(points.get(size-1).longitude());
+                    _mapboxMap.getLocationComponent().forceLocationUpdate(location);
+                    _mapboxMap.getStyle(style -> {
+                        GeoJsonSource geoJsonSource = style.getSourceAs(SOURCE_ID);
+                        geoJsonSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(points)));
+                    });
+                }
+
             }
         });
 
