@@ -1,12 +1,10 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.awesomehabit.sleeping.tracker
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import com.example.awesomehabit.R
 import com.example.awesomehabit.sleeping.SleepGoal
 import kotlinx.android.synthetic.main.dialog_sleep_goal.view.*
@@ -15,8 +13,8 @@ class SleepGoalDialogFragment : DialogFragment() {
     private var listener: SleepGoalDialogListener? = null
 
     interface SleepGoalDialogListener {
-        fun showSnackBar_Success()
-        fun showSnackBar_Fail()
+        fun showSnackBarSuccess()
+        fun showSnackBarFail()
     }
 
     fun setSleepGoalDialogListener(listener: SleepGoalDialogListener) {
@@ -33,18 +31,18 @@ class SleepGoalDialogFragment : DialogFragment() {
             inflatedView.txtSleepGoal.text = currentGoal
             builder.setView(inflatedView)
             builder.setPositiveButton(R.string.set_goal,
-                    DialogInterface.OnClickListener { dialog, which ->
+                    DialogInterface.OnClickListener { dialog, id ->
                         var setHour = inflatedView.edtHour.text.toString()
                         if (setHour.isBlank()) setHour = "0"
                         var setMinute = inflatedView.edtMinute.text.toString()
                         if (setMinute.isBlank()) setMinute = "0"
                         if (sleepGoal.setSleepGoal(setHour.toInt(), setMinute.toInt()))
-                            listener!!.showSnackBar_Success()
+                            listener!!.showSnackBarSuccess()
                         else
-                            listener!!.showSnackBar_Fail()
+                            listener!!.showSnackBarFail()
                     })
             builder.setNegativeButton(R.string.cancel,
-                    DialogInterface.OnClickListener { dialog, which ->  dialog.cancel()})
+                    DialogInterface.OnClickListener { dialog, id ->  dialog.cancel()})
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
 

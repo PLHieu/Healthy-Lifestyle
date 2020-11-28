@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.awesomehabit.sleeping.tracker
 
 import android.app.Application

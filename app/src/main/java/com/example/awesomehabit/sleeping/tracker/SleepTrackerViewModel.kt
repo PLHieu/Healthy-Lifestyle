@@ -1,10 +1,8 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.awesomehabit.sleeping.tracker
 
 import android.app.Application
-import android.app.DialogFragment
-import android.app.FragmentManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
 import com.example.awesomehabit.R
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao
@@ -119,7 +117,7 @@ class SleepTrackerViewModel(
     var listener: FragmentManagerListener? = null
 
     interface FragmentManagerListener {
-        fun getFragment(): FragmentManager
+        fun getFragmentManager(): FragmentManager
     }
 
     fun setFragmentListener(listener: FragmentManagerListener) {
@@ -138,25 +136,25 @@ class SleepTrackerViewModel(
                 _showSnackbarEvent.value = true
             }
         })
-        clearAllDialog.show(listener!!.getFragment(), "clearAllDialog")
+        clearAllDialog.show(listener!!.getFragmentManager(), "clearAllDialog")
     }
 
     fun onSetGoal() {
         val sleepGoalDialog = SleepGoalDialogFragment()
-        sleepGoalDialog.setSleepGoalDialogListener(object :SleepGoalDialogFragment.SleepGoalDialogListener {
-            override fun showSnackBar_Success() {
+        sleepGoalDialog.setSleepGoalDialogListener(object:SleepGoalDialogFragment.SleepGoalDialogListener {
+            override fun showSnackBarSuccess() {
                 snackbarString =
                         getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
                                 " " + SleepGoal.getInstance().toString() + "."
                 _showSnackbarEvent.value = true
             }
 
-            override fun showSnackBar_Fail() {
+            override fun showSnackBarFail() {
                 snackbarString =
                         getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_fail)
                 _showSnackbarEvent.value = true
             }
         })
-        sleepGoalDialog.show(listener!!.getFragment(), "sleepGoalDialog")
+        sleepGoalDialog.show(listener!!.getFragmentManager(), "sleepGoalDialog")
     }
 }

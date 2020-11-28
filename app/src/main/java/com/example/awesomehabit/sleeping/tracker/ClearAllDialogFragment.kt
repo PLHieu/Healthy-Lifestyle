@@ -1,12 +1,10 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.awesomehabit.sleeping.tracker
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import com.example.awesomehabit.R
 
 class ClearAllDialogFragment : DialogFragment() {
