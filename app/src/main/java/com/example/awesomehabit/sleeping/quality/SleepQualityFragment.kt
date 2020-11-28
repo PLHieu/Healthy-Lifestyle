@@ -12,12 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.awesomehabit.R
 import com.example.awesomehabit.database.AppDatabase
-//import com.example.tutorial.database.sleepinghabit.SleepDatabase
 import com.example.awesomehabit.databinding.FragmentSleepQualityBinding
 
 class SleepQualityFragment : Fragment() {
     @SuppressLint("UseRequireInsteadOfGet")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding: FragmentSleepQualityBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_sleep_quality, container, false)
         val application = requireNotNull(this.activity).application

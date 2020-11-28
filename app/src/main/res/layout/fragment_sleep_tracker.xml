@@ -74,8 +74,22 @@
             android:enabled="@{sleepTrackerViewModel.clearButtonVisible}"
             android:onClick="@{() -> sleepTrackerViewModel.onClear()}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/set_sleep_goal_button"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/set_sleep_goal_button"
+            style="@style/SleepButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:text="@string/set_goal"
+            android:onClick="@{() -> sleepTrackerViewModel.onSetGoal()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/clear_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

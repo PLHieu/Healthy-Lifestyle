@@ -109,9 +109,9 @@ public class SimpleService extends LifecycleService {
                     first_run = false;
                 }
 
-            }else if(intent.getAction() == "STOP_SAVE"){ // todo: loi stopwat khoong stop
+            }else if(intent.getAction() == "STOP_SAVE"){
 
-                stopAndSaveData(intent.getDoubleExtra("distance",0.),seconds.getValue()*1000, true);
+                stopAndSaveData(intent.getDoubleExtra("distance",0.),seconds.getValue(), true);
                 killservice();
 
             }else if(intent.getAction() == "STOP_NOT_SAVE"){

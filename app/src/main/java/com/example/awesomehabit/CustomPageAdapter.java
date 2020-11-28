@@ -23,6 +23,7 @@ import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
+import com.example.awesomehabit.statistic.StatisticActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -107,9 +108,12 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         btnRun.setOnClickListener(this);
         btnSleep.setOnClickListener(this);
         btnMeal.setOnClickListener(this);
+        ((Button)layout.findViewById(R.id.btnRunStatistic)).setOnClickListener(this);
+        ((Button)layout.findViewById(R.id.btnSleepStatistic)).setOnClickListener(this);
         collection.addView(layout);
         return layout;
     }
+
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view==object;
@@ -128,16 +132,26 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
      */
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.startRunning){
-            Intent intent=new Intent(mContext, demo.class);
+        if (v.getId() == R.id.startRunning) {
+            Intent intent = new Intent(mContext, demo.class);
             mContext.startActivity(intent);
-        }
-        else if(v.getId()==R.id.startSleeping){
-            Intent intent=new Intent(mContext, SleepTracker.class);
+        } else if (v.getId() == R.id.startSleeping) {
+            Intent intent = new Intent(mContext, SleepTracker.class);
             mContext.startActivity(intent);
-        }
-        else if(v.getId()==R.id.btnMeal){
-            Intent intent=new Intent(mContext, MealActivity.class);
+        } else if (v.getId() == R.id.btnMeal) {
+            Intent intent = new Intent(mContext, MealActivity.class);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.btnRunStatistic) {
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.RUN_TYPE);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.btnSleepStatistic) {
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.SLEEP_TYPE);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.btnWaterStatistic) {
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.WATER_TYPE);
             mContext.startActivity(intent);
         }
     }

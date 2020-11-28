@@ -33,7 +33,6 @@ public class MyDataViewAdapter extends ArrayAdapter<MyDataView> {
     }
 
     private View createView(MyDataView item) {
-        View res = ItemViewManager.createItemView(this.getContext(),item);
-        return res;
+        return ItemViewManager.createItemView(this.getContext(), item);
     }
 }

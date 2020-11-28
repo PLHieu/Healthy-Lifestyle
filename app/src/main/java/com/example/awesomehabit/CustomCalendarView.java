@@ -43,7 +43,8 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
 
     @Override
     public void onDaySelectCLick(int position) {
-        mLayoutManager.scrollToPositionWithOffset(position,getWidth()/2-mLayoutManager.findViewByPosition(position).getWidth()/2);
+        //mLayoutManager.scrollToPositionWithOffset(position,getWidth()/2-mLayoutManager.findViewByPosition(position).getWidth()/2);
+        smoothScrollTo(position);
         responder.onDaySelected(position);
     }
     public void smoothScrollTo(int position){
