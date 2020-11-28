@@ -66,7 +66,7 @@ public class WeekSummaryActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.btnWaterDetail)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendWaterIntent();
+                //sendWaterIntent();
             }
         });
     }

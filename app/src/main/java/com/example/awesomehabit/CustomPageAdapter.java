@@ -108,26 +108,26 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
      */
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.startRunning){
-            Intent intent=new Intent(mContext, demo.class);
+        if (v.getId() == R.id.startRunning) {
+            Intent intent = new Intent(mContext, demo.class);
             mContext.startActivity(intent);
-        }
-        else if(v.getId()==R.id.startSleeping){
-            Intent intent=new Intent(mContext, SleepTracker.class);
+        } else if (v.getId() == R.id.startSleeping) {
+            Intent intent = new Intent(mContext, SleepTracker.class);
             mContext.startActivity(intent);
-        }
-        else if(v.getId()==R.id.btnMeal){
-            Intent intent=new Intent(mContext, MealActivity.class);
+        } else if (v.getId() == R.id.btnMeal) {
+            Intent intent = new Intent(mContext, MealActivity.class);
             mContext.startActivity(intent);
-        }
-        else if (v.getId()==R.id.btnRunStatistic){
+        } else if (v.getId() == R.id.btnRunStatistic) {
             Intent intent = new Intent(mContext, StatisticActivity.class);
             intent.putExtra("statisticType", StatisticActivity.RUN_TYPE);
             mContext.startActivity(intent);
-        }
-        else if (v.getId()==R.id.btnSleepStatistic){
+        } else if (v.getId() == R.id.btnSleepStatistic) {
             Intent intent = new Intent(mContext, StatisticActivity.class);
             intent.putExtra("statisticType", StatisticActivity.SLEEP_TYPE);
+            mContext.startActivity(intent);
+        } else if (v.getId() == R.id.btnWaterStatistic) {
+            Intent intent = new Intent(mContext, StatisticActivity.class);
+            intent.putExtra("statisticType", StatisticActivity.WATER_TYPE);
             mContext.startActivity(intent);
         }
     }
