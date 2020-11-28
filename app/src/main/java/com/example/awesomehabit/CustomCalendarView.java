@@ -37,7 +37,6 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
         //LayoutManager
         mLayoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         setLayoutManager(mLayoutManager);
-        //smoothScrollTo(NUMBER_OF_DAY_BUTTONS/2);
         scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
         snapHelper.attachToRecyclerView(this);
     }
@@ -50,7 +49,8 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
     public void smoothScrollTo(int position){
         adapter.setCheckedPosition(position);
         LinearLayout t=findViewById(R.id.calendar_parent);
-        mLayoutManager.scrollToPositionWithOffset(position,this.getWidth()/2-t.getWidth()/2);
+        //mLayoutManager.scrollToPositionWithOffset(position,this.getWidth()/2-t.getWidth()/2);
+        mLayoutManager.scrollToPositionWithOffset(position,0);
     }
     public interface CustomCalendarViewInterface
     {

@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.running.Run;
-import com.example.awesomehabit.database.sleeping.SleepDatabase;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 
