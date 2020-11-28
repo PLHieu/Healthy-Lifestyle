@@ -55,8 +55,6 @@ public class WeekSummaryActivity extends AppCompatActivity {
 
         generateBarChart();
         setContextForRunDetail();
-
-        getData();
     }
 
     private void setContextForRunDetail() {
@@ -77,8 +75,6 @@ public class WeekSummaryActivity extends AppCompatActivity {
 
     private void sendWaterIntent() {
         Intent intent = new Intent(this, StatisticActivity.class);
-        intent.putExtra("listTime", listWaterDateInMilli);
-        intent.putExtra("listData", listWaterAmount);
         intent.putExtra("statisticType", 1);
         startActivity(intent);
     }
@@ -185,31 +181,7 @@ public class WeekSummaryActivity extends AppCompatActivity {
 
     private void sendRunIntent() {
         Intent intent = new Intent(this, StatisticActivity.class);
-        intent.putExtra("listTime", listRunDateInMilli);
-        intent.putExtra("listData", listRunDistance);
         startActivity(intent);
-    }
-
-    private void getData() {
-        generateRunData();
-        generateWaterData();
-    }
-
-    private void generateWaterData() {
-
-    }
-
-    private void generateRunData() {
-        listRunDateInMilli.add(Calendar.getInstance().getTimeInMillis());
-        listRunDistance.add(10f);
-
-        Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 7; i++) {
-            calendar.add(Calendar.DAY_OF_YEAR, new Random().nextInt(7));
-            listRunDateInMilli.add(calendar.getTimeInMillis());
-
-            listRunDistance.add((float) (new Random().nextInt(10) + 5));
-        }
     }
 
     private void getRunData() {
@@ -217,7 +189,7 @@ public class WeekSummaryActivity extends AppCompatActivity {
 
         for (int i = 0; i < temp.size(); i++) {
             listRunDateInMilli.add(Long.parseLong(temp.get(i).timeStart));
-            listRunDistance.add((float) temp.get(i).distance);
+            listRunDistance.add((float) temp.get(i).distance / 1000);
             listRunTimeLength.add(temp.get(i).runningTime);
         }
     }

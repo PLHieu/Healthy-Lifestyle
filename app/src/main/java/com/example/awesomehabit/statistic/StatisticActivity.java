@@ -178,7 +178,7 @@ public class StatisticActivity extends AppCompatActivity {
         for (int i = 0; i < temp.size(); i++) {
             listTime.add(Long.parseLong(temp.get(i).timeStart));
             listTimeLength.add(temp.get(i).runningTime);
-            listData.add((float) temp.get(i).distance);
+            listData.add((float) temp.get(i).distance / 1000);
             listSleepQuality.add(0);
         }
     }
