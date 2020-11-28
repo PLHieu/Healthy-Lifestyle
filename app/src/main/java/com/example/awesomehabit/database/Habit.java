@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class Habit {
     public Habit(int type) {
 //        this.id = id;
-        this.type=type;
+        this.type = type;
         this.time = Calendar.getInstance();
         time.set(Calendar.HOUR, 0);
         time.set(Calendar.MINUTE, 0);
@@ -18,17 +18,17 @@ public class Habit {
         time.set(Calendar.MILLISECOND, 0);
     }
 
-    public static final int TYPE_RUN=0;
-    public static final int TYPE_SLEEP=1;
-    public static final int TYPE_COUNT=2;
+    public static final int TYPE_RUN = 0;
+    public static final int TYPE_SLEEP = 1;
+    public static final int TYPE_COUNT = 2;
 
     @PrimaryKey(autoGenerate = true)
     public Long id;
 
-    @ColumnInfo(name="type")
+    @ColumnInfo(name = "type")
     public int type;
 
-    @ColumnInfo(name="time")
+    @ColumnInfo(name = "time")
     @TypeConverters(Converters.class)
     public Calendar time;
 }

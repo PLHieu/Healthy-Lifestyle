@@ -11,27 +11,42 @@ import android.widget.Spinner;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.example.awesomehabit.R;
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.running.Run;
+import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
+import com.example.awesomehabit.database.sleeping.SleepNight;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
 
 public class StatisticActivity extends AppCompatActivity {
     private static final String TAG = "StatisticActivity";
     private ArrayList<ArrayList<Float>> arrayListData;
     private ArrayList<ArrayList<String>> arrayListShortDay;
     private ArrayList<ArrayList<Calendar>> arrayListLongDay;
+    private ArrayList<ArrayList<Long>> arrayListTimeLength;
+    private ArrayList<ArrayList<Integer>> arrayListSleepQuality;
 
     private ArrayList<Long> listTime = new ArrayList<>();
     private ArrayList<Float> listData = new ArrayList<>();
+    private ArrayList<Integer> listSleepQuality = new ArrayList<>();
+    private ArrayList<Long> listTimeLength = new ArrayList<>();
 
     private int statisticType = 0;
 
@@ -40,10 +55,18 @@ public class StatisticActivity extends AppCompatActivity {
     public static float WEEK_MODE = 7f;
     public static float MONTH_MODE = 31f;
     public static float YEAR_MODE = 12f;
+
     public static String RUN_LABEL = "Quãng đường chạy";
     public static String WATER_LABEL = "Lượng nước uống";
+    public static final String SLEEP_LABEL = "Số tiếng ngủ";
+
     public static String RUN_UNIT = "km";
     public static String WATER_UNIT = "ly";
+    public static String SLEEP_UNIT = "tiếng";
+
+    public static int RUN_TYPE = 0;
+    public static int SLEEP_TYPE = 1;
+    public static int WATER_TYPE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +81,8 @@ public class StatisticActivity extends AppCompatActivity {
         arrayListData = new ArrayList<>();
         arrayListShortDay = new ArrayList<>();
         arrayListLongDay = new ArrayList<>();
+        arrayListSleepQuality = new ArrayList<>();
+        arrayListTimeLength = new ArrayList<>();
     }
 
     private void initSpinner() {
@@ -89,36 +114,97 @@ public class StatisticActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(listTime.get(i));
 
-            if (!checkExisted(calendar, listData.get(i), mode))
-                generateIfNotExisted(calendar, listData.get(i), mode);
+            if (!checkExisted(calendar, listData.get(i), listTimeLength.get(i), listSleepQuality.get(i), mode))
+                generateIfNotExisted(calendar, listData.get(i), listTimeLength.get(i), listSleepQuality.get(i), mode);
         }
+        Calendar calendar = Calendar.getInstance();
+        if (!checkExisted(calendar, 0f, 0l, 0, mode))
+            generateIfNotExisted(calendar, 0f, 0l, 0, mode);
     }
 
     private void handleIntent() {
         Intent intent = getIntent();
-        listTime = (ArrayList<Long>) intent.getSerializableExtra("listTime");
-        listData = (ArrayList<Float>) intent.getSerializableExtra("listData");
+        listTime = new ArrayList<>();
+        listData = new ArrayList<>();
+        listTimeLength = new ArrayList<>();
+        listSleepQuality = new ArrayList<>();
+
         statisticType = intent.getIntExtra("statisticType", 0);
+
+        if (statisticType == RUN_TYPE)
+            getRunData();
+        else if (statisticType == SLEEP_TYPE)
+            getSleepData();
+        else if (statisticType == WATER_TYPE)
+            getWaterData();
+
+    }
+
+    private void generateRunData() {
+        listTime.add(Calendar.getInstance().getTimeInMillis());
+        listData.add(10f);
+        listTimeLength.add((long)new Random().nextInt(360) *10000);
+        listSleepQuality.add(0);
+
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 7; i++) {
+            calendar.add(Calendar.DAY_OF_YEAR, new Random().nextInt(7));
+            listTime.add(calendar.getTimeInMillis());
+            listData.add((float) (new Random().nextInt(10) + 5));
+            listTimeLength.add((long)new Random().nextInt(360) *10000);
+            listSleepQuality.add(0);
+        }
+    }
+
+    private void getWaterData() {
+        //to be continued
+    }
+
+    private void getSleepData() {
+        AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
+        List<SleepNight> nights = database.sleepDao().getAllNightsNonLive();
+
+        for (int i = 0; i < nights.size(); i++) {
+            listData.add((float) nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli());
+            listTime.add(nights.get(i).getStartTimeMilli());
+            listSleepQuality.add(nights.get(i).getSleepQuality());
+            listTimeLength.add(nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli());
+        }
+    }
+
+    private void getRunData() {
+        List<Run> temp = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
+
+        for (int i = 0; i < temp.size(); i++) {
+            listTime.add(Long.parseLong(temp.get(i).timeStart));
+            listTimeLength.add(temp.get(i).runningTime);
+            listData.add((float) temp.get(i).distance);
+            listSleepQuality.add(0);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void generateIfNotExisted(Calendar calendar, Float data, int position) {
+    private void generateIfNotExisted(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, int position) {
         ArrayList<Float> aListdata = new ArrayList<>();
         ArrayList<String> aListShortDay = new ArrayList<>();
         ArrayList<Calendar> aListLongDay = new ArrayList<>();
+        ArrayList<Long> aListTimeLength = new ArrayList<>();
+        ArrayList<Integer> aListSleepQuality = new ArrayList<>();
 
         if (position == 0)
-            generateWeek(calendar, data, aListdata, aListShortDay, aListLongDay);
+            generateWeek(calendar, data, timeLength, sleepQuality, aListdata, aListShortDay, aListLongDay, aListTimeLength, aListSleepQuality, statisticType);
         else if(position == 1)
-            generateMonth(calendar, data, aListdata, aListShortDay, aListLongDay);
-        else generateYear(calendar, data, aListdata, aListShortDay, aListLongDay);
+            generateMonth(calendar, data, timeLength, sleepQuality, aListdata, aListShortDay, aListLongDay, aListTimeLength, aListSleepQuality, statisticType);
+        else generateYear(calendar, data, timeLength, sleepQuality, aListdata, aListShortDay, aListLongDay, aListTimeLength, aListSleepQuality, statisticType);
 
         arrayListData.add(aListdata);
         arrayListLongDay.add(aListLongDay);
         arrayListShortDay.add(aListShortDay);
+        arrayListTimeLength.add(aListTimeLength);
+        arrayListSleepQuality.add(aListSleepQuality);
     }
 
-    private void generateYear(Calendar calendar, Float data, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay) {
+    private void generateYear(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay, ArrayList<Long> aListTimeLength, ArrayList<Integer> aListSleepQuality, int statisticType) {
         long milli = calendar.getTimeInMillis();
         for (int j = 0; j < YEAR_MODE; j++) {
             Calendar temp = Calendar.getInstance();
@@ -126,16 +212,24 @@ public class StatisticActivity extends AppCompatActivity {
             temp.set(Calendar.MONTH, j);
             listShortDay.add(String.valueOf(j + 1));
             listLongDay.add(temp);
-            if (temp.getTime().getMonth() == calendar.getTime().getMonth())
+            if (temp.get(Calendar.MONTH) == calendar.get(Calendar.MONTH))
+            {
                 listData.add(data);
-            else listData.add(0f);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void generateMonth(Calendar calendar, Float data, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay) {
+    private void generateMonth(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay, ArrayList<Long> aListTimeLength, ArrayList<Integer> aListSleepQuality, int statisticType) {
         long milli = calendar.getTimeInMillis();
-        for (int j = 0; j < YearMonth.of(calendar.getTime().getYear(), calendar.getTime().getMonth() + 1).lengthOfMonth(); j++) {
+        for (int j = 0; j < YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1).lengthOfMonth(); j++) {
             Calendar temp = Calendar.getInstance();
             temp.setTimeInMillis(milli);
             temp.set(Calendar.DAY_OF_MONTH, temp.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -144,12 +238,20 @@ public class StatisticActivity extends AppCompatActivity {
             listShortDay.add(simpleDateFormat.format(temp.getTime()));
             listLongDay.add(temp);
             if (temp.getTimeInMillis() == milli)
+            {
                 listData.add(data);
-            else listData.add(0f);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
-    private void generateWeek(Calendar calendar, float data, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay) {
+    private void generateWeek(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, ArrayList<Float> listData, ArrayList<String> listShortDay, ArrayList<Calendar> listLongDay, ArrayList<Long> aListTimeLength, ArrayList<Integer> aListSleepQuality, int statisticType) {
         long milli = calendar.getTimeInMillis();
         for (int j = 0; j < WEEK_MODE; j++) {
             Calendar temp = Calendar.getInstance();
@@ -160,36 +262,38 @@ public class StatisticActivity extends AppCompatActivity {
             listShortDay.add(simpleDateFormat.format(temp.getTime()));
             listLongDay.add(temp);
             if (temp.getTimeInMillis() == milli)
+            {
                 listData.add(data);
-            else listData.add(0f);
+                aListSleepQuality.add(sleepQuality);
+                aListTimeLength.add(timeLength);
+            }
+            else {
+                listData.add(0f);
+                aListSleepQuality.add(0);
+                aListTimeLength.add((long)0);
+            }
         }
     }
 
     boolean compareTime(Calendar calendar1, Calendar calendar2, int mode) {
-        if (calendar1.getTime().getDate() == calendar2.getTime().getDate() && calendar1.getTime().getMonth() == calendar2.getTime().getMonth() && calendar1.getTime().getYear() == calendar2.getTime().getYear())
+        if (calendar1.get(Calendar.DATE) == calendar2.get(Calendar.DATE) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH) && calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR))
             return true;
 
         if (mode == 2) {
-            Log.d(TAG, "compareTime1: " + String.valueOf(calendar1.getTime().getMonth()) + String.valueOf(calendar1.getTime().getYear()));
-            Log.d(TAG, "compareTime2: " + String.valueOf(calendar2.getTime().getMonth()) + String.valueOf(calendar1.getTime().getYear()));
-            if (calendar1.getTime().getYear() == calendar2.getTime().getYear() && calendar1.getTime().getMonth() == calendar2.getTime().getMonth()) {
+            if (calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkExisted(Calendar calendar, float data, int mode) {
+    private boolean checkExisted(Calendar calendar, Float data, Long timeLength, Integer sleepQuality, int mode) {
         for (int i = 0; i < arrayListLongDay.size(); i++) {
             for (int j = 0; j < arrayListLongDay.get(i).size(); j++)
                 if (compareTime(arrayListLongDay.get(i).get(j), calendar, mode)) {
-                    Calendar calendar1 = arrayListLongDay.get(i).get(j);
-                    Calendar calendar2 = calendar;
-
-                    if (mode != 2)
-                        arrayListData.get(i).set(j, data);
-                    else
-                        arrayListData.get(i).set(j, arrayListData.get(i).get(j) + data);
+                    arrayListData.get(i).set(j, arrayListData.get(i).get(j) + data);
+                    arrayListTimeLength.get(i).set(j, arrayListTimeLength.get(i).get(j) + timeLength);
+                    arrayListSleepQuality.get(i).set(j, (arrayListSleepQuality.get(i).get(j) + sleepQuality) / 2);
                     return true;
                 }
         }
@@ -203,12 +307,24 @@ public class StatisticActivity extends AppCompatActivity {
 
         MyStatisticViewAdapter myStatisticViewAdapter;
         if (mode == 0)
-            myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListShortDay, arrayListLongDay, WEEK_MODE, statisticType);
+            myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListTimeLength, arrayListSleepQuality, arrayListShortDay, arrayListLongDay, WEEK_MODE, statisticType);
         else if (mode == 1)
-            myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListShortDay, arrayListLongDay, MONTH_MODE, statisticType);
-        else myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListShortDay, arrayListLongDay, YEAR_MODE, statisticType);
+            myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListTimeLength, arrayListSleepQuality, arrayListShortDay, arrayListLongDay, MONTH_MODE, statisticType);
+        else myStatisticViewAdapter = new MyStatisticViewAdapter(this, arrayListData, arrayListTimeLength, arrayListSleepQuality, arrayListShortDay, arrayListLongDay, YEAR_MODE, statisticType);
 
         recyclerView.setAdapter(myStatisticViewAdapter);
         snapHelper.attachToRecyclerView(recyclerView);
+        getToToday(recyclerView, mode);
+    }
+
+    private void getToToday(RecyclerView recyclerView, int mode) {
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < arrayListLongDay.size(); i++) {
+            for (int j = 0; j < arrayListLongDay.get(i).size(); j++)
+                if (compareTime(arrayListLongDay.get(i).get(j), calendar, mode)) {
+                    recyclerView.scrollToPosition(i);
+                    return;
+                }
+        }
     }
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.awesomehabit.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -27,30 +28,34 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticViewAdapter.MyViewHolder> {
-
+    private final ArrayList<ArrayList<Integer>> arrayListSleepQuality;
     private ArrayList<ArrayList<Float>> arrayListData;
     private ArrayList<ArrayList<String>> arrayListShortDay;
     private ArrayList<ArrayList<Calendar>> arrayListLongDay;
+    private ArrayList<ArrayList<Long>> arrayListTimeLength;
 
     private ArrayList<Float> listData;
     private ArrayList<String> listShortDay;
     private ArrayList<Calendar> listLongDay;
+    private ArrayList<Integer> listSleepQuality;
+    private ArrayList<Long> listTimeLength;
+
     private float mode = 7f;
     private int statisticType = 0;
 
     private Context context;
 
-    BarChart barChart;
-    ListView listView;
-    TextView textView;
 
-    public MyStatisticViewAdapter(Context context, ArrayList<ArrayList<Float>> arrayListData, ArrayList<ArrayList<String>> arrayListShortDay, ArrayList<ArrayList<Calendar>> arrayListLongDay, float mode, int statisticType) {
+
+    public MyStatisticViewAdapter(Context context, ArrayList<ArrayList<Float>> arrayListData, ArrayList<ArrayList<Long>> arrayListTimeLength, ArrayList<ArrayList<Integer>> arrayListSleepQuality, ArrayList<ArrayList<String>> arrayListShortDay, ArrayList<ArrayList<Calendar>> arrayListLongDay, float mode, int statisticType) {
         this.arrayListData = arrayListData;
         this.arrayListShortDay = arrayListShortDay;
         this.arrayListLongDay = arrayListLongDay;
         this.mode = mode;
         this.context = context;
         this.statisticType = statisticType;
+        this.arrayListTimeLength = arrayListTimeLength;
+        this.arrayListSleepQuality = arrayListSleepQuality;
     }
 
     @NonNull
@@ -66,17 +71,19 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         listData = arrayListData.get(position);
         listLongDay = arrayListLongDay.get(position);
         listShortDay = arrayListShortDay.get(position);
+        listSleepQuality = arrayListSleepQuality.get(position);
+        listTimeLength = arrayListTimeLength.get(position);
 
-        createBarChart();
-        initListView();
-        setNameForBarChart();
+        createBarChart(holder);
+        initListView(holder);
+        setNameForBarChart(holder);
     }
 
-    private void setNameForBarChart() {
+    private void setNameForBarChart(MyViewHolder holder) {
             if (mode == StatisticActivity.YEAR_MODE)
-                textView.setText("Năm " + String.valueOf(listLongDay.get(0).get(Calendar.YEAR)));
+                holder.textView.setText("Năm " + listLongDay.get(0).get(Calendar.YEAR));
             else
-                textView.setText("Tháng " + String.valueOf(listLongDay.get(0).get(Calendar.MONTH) + 1));
+                holder.textView.setText("Tháng " + (listLongDay.get(0).get(Calendar.MONTH) + 1));
     }
 
     @Override
@@ -85,6 +92,9 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        BarChart barChart;
+        ListView listView;
+        TextView textView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,30 +104,31 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         }
     }
 
-    private void initListView() {
+    private void initListView(MyViewHolder holder) {
         ArrayList<MyDataView> items = new ArrayList<>();
         for (int i = 0; i < listLongDay.size(); i++) {
-            items.add(new MyDataView(listLongDay.get(i), listData.get(i), mode, statisticType));
+            items.add(new MyDataView(listLongDay.get(i),listData.get(i), mode, statisticType, listTimeLength.get(i), listSleepQuality.get(i)));
         }
         MyDataViewAdapter adapter = new MyDataViewAdapter(context, items);
-        listView.setAdapter(adapter);
+        holder.listView.setAdapter(adapter);
     }
 
 
-    private void createBarChart() {
-        setContextForBarChart(barChart);
-        barChart.getDescription().setText("");
-        barChart.animateY(2000);
+    private void createBarChart(MyViewHolder holder) {
+        setContextForBarChart(holder.barChart);
+        holder.barChart.getDescription().setText("");
+        holder.barChart.animateY(2000);
 
-        customizeXAxis(barChart);
+        customizeXAxis(holder.barChart);
+        customizeYAxis(holder.barChart);
 
-        barChart.setScaleEnabled(false);
-        barChart.setScaleMinima(listShortDay.size() / mode, 0.75f);
-        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+        holder.barChart.setScaleEnabled(false);
+        holder.barChart.setScaleMinima(listShortDay.size() / mode, 0.75f);
+        holder.barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 int pos = (int)e.getX();
-                listView.setSelection(pos);
+                holder.listView.setSelection(pos);
             }
 
             @Override
@@ -125,6 +136,14 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
 
             }
         });
+    }
+
+    private void customizeYAxis(BarChart barChart) {
+        YAxis y = barChart.getAxisLeft();
+        y.setStartAtZero(true);
+
+        y =barChart.getAxisRight();
+        y.setStartAtZero(true);
     }
 
     private void customizeXAxis(BarChart barChart) {
@@ -160,8 +179,10 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     }
 
     private String getLabel() {
-        if(statisticType == 1)
+        if(statisticType == StatisticActivity.WATER_TYPE)
             return StatisticActivity.WATER_LABEL;
+        else if (statisticType == StatisticActivity.SLEEP_TYPE)
+            return StatisticActivity.SLEEP_LABEL;
         return StatisticActivity.RUN_LABEL;
     }
 }

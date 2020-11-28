@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class SleepTrackerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
 
         val binding: FragmentSleepTrackerBinding = DataBindingUtil.inflate(
@@ -25,6 +26,8 @@ class SleepTrackerFragment : Fragment() {
         val application = requireNotNull(this.activity).application
 
         val dataSource = AppDatabase.getDatabase(application).sleepDao();
+
+        val fragmentManager = requireNotNull(this.activity).supportFragmentManager
 
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
@@ -40,7 +43,7 @@ class SleepTrackerFragment : Fragment() {
             if (it == true) {
                 Snackbar.make(
                         requireActivity().findViewById(android.R.id.content),
-                        getString(R.string.cleared_message),
+                        sleepTrackerViewModel.snackbarString,
                         Snackbar.LENGTH_SHORT
                 ).show()
                 sleepTrackerViewModel.doneShowingSnackbar()
@@ -53,6 +56,12 @@ class SleepTrackerFragment : Fragment() {
                         SleepTrackerFragmentDirections
                                 .actionSleepTrackerFragmentToSleepQualityFragment(night.id))
                 sleepTrackerViewModel.doneNavigating()
+            }
+        })
+
+        sleepTrackerViewModel.setFragmentListener(object:SleepTrackerViewModel.FragmentManagerListener {
+            override fun getFragmentManager(): FragmentManager {
+                return fragmentManager
             }
         })
 

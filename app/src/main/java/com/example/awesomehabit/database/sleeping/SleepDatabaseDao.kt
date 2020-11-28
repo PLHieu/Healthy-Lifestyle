@@ -21,8 +21,14 @@ interface SleepDatabaseDao : HabitDao {
     @Query("DELETE FROM daily_sleep_quality_table")
     fun clear()
 
+    @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC LIMIT 15")
+    fun get15RecentNights(): LiveData<List<SleepNight>>
+
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC")
     fun getAllNights(): LiveData<List<SleepNight>>
+
+    @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC")
+    fun getAllNightsNonLive(): List<SleepNight>
 
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY id DESC LIMIT 1")
     fun getTonight(): SleepNight?

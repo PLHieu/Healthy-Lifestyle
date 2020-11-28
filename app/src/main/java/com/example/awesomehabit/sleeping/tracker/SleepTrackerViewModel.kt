@@ -1,19 +1,23 @@
 package com.example.awesomehabit.sleeping.tracker
 
 import android.app.Application
-import android.util.Log
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
+import com.example.awesomehabit.R
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao
 import com.example.awesomehabit.database.sleeping.SleepNight
+import com.example.awesomehabit.sleeping.SleepGoal
 import com.example.awesomehabit.sleeping.formatNights
 import kotlinx.coroutines.launch
-import java.util.*
 
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
-    private val nights = database.getAllNights()
+    private val nights = database.get15RecentNights()
+    var snackbarString: String = ""
+
     val nightsString = Transformations.map(nights) { nights ->
         formatNights(nights, application.resources)
     }
@@ -110,12 +114,47 @@ class SleepTrackerViewModel(
         }
     }
 
-    fun onClear() {
-        viewModelScope.launch {
-            clear()
-            tonight.value = null
-        }
-        _showSnackbarEvent.value = true
+    var listener: FragmentManagerListener? = null
+
+    interface FragmentManagerListener {
+        fun getFragmentManager(): FragmentManager
     }
 
+    fun setFragmentListener(listener: FragmentManagerListener) {
+        this.listener = listener
+    }
+
+    fun onClear() {
+        val clearAllDialog = ClearAllDialogFragment()
+        clearAllDialog.setClearAllDialogLister(object:ClearAllDialogFragment.ClearAllDialogListener {
+            override fun onDialogPositiveClick(dialog: DialogFragment) {
+                viewModelScope.launch {
+                    clear()
+                    tonight.value = null
+                }
+                snackbarString = getApplication<Application>().applicationContext.getString(R.string.cleared_message)
+                _showSnackbarEvent.value = true
+            }
+        })
+        clearAllDialog.show(listener!!.getFragmentManager(), "clearAllDialog")
+    }
+
+    fun onSetGoal() {
+        val sleepGoalDialog = SleepGoalDialogFragment()
+        sleepGoalDialog.setSleepGoalDialogListener(object:SleepGoalDialogFragment.SleepGoalDialogListener {
+            override fun showSnackBarSuccess() {
+                snackbarString =
+                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
+                                " " + SleepGoal.getInstance().toString() + "."
+                _showSnackbarEvent.value = true
+            }
+
+            override fun showSnackBarFail() {
+                snackbarString =
+                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_fail)
+                _showSnackbarEvent.value = true
+            }
+        })
+        sleepGoalDialog.show(listener!!.getFragmentManager(), "sleepGoalDialog")
+    }
 }
