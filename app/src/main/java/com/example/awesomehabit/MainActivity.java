@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.statistic.StatisticActivity;
 import com.example.awesomehabit.statistic.WeekSummaryActivity;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -34,13 +35,13 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
         customCalendarView=(CustomCalendarView) findViewById(R.id.customCalendar);
         customCalendarView.setResponder(this);//For onclick
 
+        AppDatabase db = AppDatabase.getDatabase(this);
         viewPager=(ViewPager)findViewById(R.id.pager);
-        CustomPageAdapter customPageAdapter=new CustomPageAdapter(this);
+        CustomPageAdapter customPageAdapter=new CustomPageAdapter(this,db);
         viewPager.setAdapter(customPageAdapter);
+
         viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
         viewPager.setPageTransformer(true,new DepthPageTransformer());
-
-
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -58,23 +59,6 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
 
             }
         });
-        //Create new running Habit
-        /*rvHabit=findViewById(R.id.rvHabits);
-        final HabitListAdapter habitListAdapter=new HabitListAdapter(getApplicationContext());
-        rvHabit.setAdapter(habitListAdapter);
-        rvHabit.setLayoutManager(new LinearLayoutManager(this));
-
-        //View Model and update
-        HabitViewModel mHabitViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(HabitViewModel.class);
-        mHabitViewModel.allHabits.observe(this, new Observer<List<Habit>>() {
-            @Override
-            public void onChanged(List<Habit> words) {
-                // Update the cached copy of the words in the adapter.
-                //habitListAdapter.submitList(words);
-                habitListAdapter.setData(words);
-                Log.d("Observer","Word size:"+ String.valueOf(words.size()));
-            }
-        });*/
     }
 
     @Override
