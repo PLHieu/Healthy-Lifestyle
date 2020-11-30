@@ -167,7 +167,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
             data.add(new BarEntry(i, listData.get(i)));
 
         BarDataSet barDataSet = new BarDataSet(data, getLabel());
-        barDataSet.setColors(R.color.teal_200);
+        barDataSet.setColors(ColorTemplate.rgb(String.valueOf(R.color.colorPrimary)));
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(8f);
         if (mode == StatisticActivity.MONTH_MODE)

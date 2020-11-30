@@ -48,7 +48,7 @@ public class StatisticActivity extends AppCompatActivity {
     public static float MONTH_MODE = 31f;
     public static float YEAR_MODE = 12f;
 
-    public static String RUN_LABEL = "Distance";
+    public static String RUN_LABEL = "Distance(km)";
     public static String WATER_LABEL = "Amount water";
     public static final String SLEEP_LABEL = "Sleep hour";
 
