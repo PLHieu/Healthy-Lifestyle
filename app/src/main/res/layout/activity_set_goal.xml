@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SetGoal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginLeft="5dp">
 
 
     <LinearLayout
@@ -24,7 +25,11 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:inputType="number"
+            android:id="@+id/distanceGoal"
+            android:hint="distance in meters"
+        />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +47,10 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:inputType="number"
+            android:hint="how many cups?"
+            android:id="@+id/waterGoal"/>
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +69,10 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:hint="How many hours?"
+            android:inputType="number"
+            android:id="@+id/sleepGoal"/>
     </LinearLayout>
 
     <Button
@@ -69,5 +80,6 @@
         android:layout_height="wrap_content"
         android:text="OK"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:id="@+id/setGoalOk"/>
 </LinearLayout>

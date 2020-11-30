@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
     CustomCalendarView customCalendarView;
     ActionBar actionBar;
     ViewPager viewPager;
-
+    AppDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
         customCalendarView=(CustomCalendarView) findViewById(R.id.customCalendar);
         customCalendarView.setResponder(this);//For onclick
 
-        AppDatabase db = AppDatabase.getDatabase(this);
+        db = AppDatabase.getDatabase(this);
         viewPager=(ViewPager)findViewById(R.id.pager);
         CustomPageAdapter customPageAdapter=new CustomPageAdapter(this,db);
         viewPager.setAdapter(customPageAdapter);

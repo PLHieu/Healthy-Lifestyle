@@ -14,5 +14,5 @@ public class Goal {
     }
 
     int type;
-    int target;
+    public int target;
 }

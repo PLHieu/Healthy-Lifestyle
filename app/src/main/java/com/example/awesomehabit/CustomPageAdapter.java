@@ -77,7 +77,12 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         pageDay.set(Calendar.MILLISECOND,0);
 
         goals=db.goalDao().getTargets().getValue();
-
+        if(goals==null){
+            goals=new ArrayList<>();
+            goals.add(99);
+            goals.add(69);
+            goals.add(12);
+        }
         db.sleepDao().getHabitFrom(pageDay).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
