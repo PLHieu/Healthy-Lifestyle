@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/countingHabitName"
         android:text="@string/water_intake"
-        android:textSize="25sp"/>
+        android:textSize="20sp"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
