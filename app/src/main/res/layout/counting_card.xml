@@ -40,13 +40,26 @@
             android:background="@drawable/round_button"
             android:textColor="@color/white"/>
     </LinearLayout>
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="0 / 10 cup"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:id="@+id/tvWater"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0 /"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:id="@+id/tvWater"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="10 cups"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:id="@+id/tvWaterGoal"/>
+    </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -14,7 +14,7 @@ public interface GoalDao {
     void update(Goal goal);
     @Insert
     void insert(Goal goal);
-    @Query("SELECT target from goal")
+    @Query("SELECT target from goal order by type")
     LiveData<List<Integer>> getTargets();
 
     @Query("SELECT target from goal where type=:t limit 1")

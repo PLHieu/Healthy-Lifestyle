@@ -22,12 +22,10 @@ public interface WaterDao extends HabitDao {
     int getType();
 
     @TypeConverters(Converters.class)
-    //@Query("SELECT * from daily_water_table where time = :calendar")
-    //LiveData <List<Water>> getHabitFrom(Calendar calendar);
-
     @Query("SELECT * from daily_water_table where time = :calendar")
     LiveData<Water> getHabitFrom(Calendar calendar);
-
+    @Query("SELECT * FROM DAILY_WATER_TABLE")
+    List<Water> getAllWater();
     @Insert
     void insert(Water water);
     @Delete

@@ -16,13 +16,26 @@
         android:layout_height="wrap_content"
         android:src="@drawable/sleep"
         android:id="@+id/sleepHabitIcon"/>
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="0:00 / 8:00 Hours"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:id="@+id/sleepTime"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0:00 /"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:id="@+id/sleepTime"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="8:00 Hours"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:id="@+id/sleepTimeGoal"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
