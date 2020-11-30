@@ -53,11 +53,11 @@ public class ItemViewManager {
 
     private static void setTextViewDate(MyDataView item, View convertView) {
         TextView textView = (TextView) convertView.findViewById(R.id.textViewDay);
-        String date ="";
+        String date = "";
         if (item.mode != StatisticActivity.YEAR_MODE)
-            date = "Ngày " + item.date.get(Calendar.DATE) + " ";
-        String month = "Tháng " + (item.date.get(Calendar.MONTH) + 1);
-        String year = " Năm " + item.date.get(Calendar.YEAR);
+            date = convertView.getResources().getString(R.string.dateLabel) + item.date.get(Calendar.DATE) + " ";
+        String month = convertView.getResources().getString(R.string.monthLabel) + (item.date.get(Calendar.MONTH) + 1);
+        String year = convertView.getResources().getString(R.string.yearLabel) + item.date.get(Calendar.YEAR);
         textView.setText(date + month + year);
     }
 

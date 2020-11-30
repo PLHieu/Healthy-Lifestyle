@@ -1,5 +1,6 @@
 package com.example.awesomehabit.statistic;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -79,11 +80,12 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         setNameForBarChart(holder);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setNameForBarChart(MyViewHolder holder) {
             if (mode == StatisticActivity.YEAR_MODE)
-                holder.textView.setText("Năm " + listLongDay.get(0).get(Calendar.YEAR));
+                holder.textView.setText(context.getResources().getString(R.string.yearLabel) + listLongDay.get(0).get(Calendar.YEAR));
             else
-                holder.textView.setText("Tháng " + (listLongDay.get(0).get(Calendar.MONTH) + 1));
+                holder.textView.setText(context.getResources().getString(R.string.monthLabel) + (listLongDay.get(0).get(Calendar.MONTH) + 1));
     }
 
     @Override
@@ -117,7 +119,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     private void createBarChart(MyViewHolder holder) {
         setContextForBarChart(holder.barChart);
         holder.barChart.getDescription().setText("");
-        holder.barChart.animateY(2000);
+        holder.barChart.animateY(1000);
 
         customizeXAxis(holder.barChart);
         customizeYAxis(holder.barChart);

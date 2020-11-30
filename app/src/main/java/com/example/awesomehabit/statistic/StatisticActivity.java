@@ -48,13 +48,13 @@ public class StatisticActivity extends AppCompatActivity {
     public static float MONTH_MODE = 31f;
     public static float YEAR_MODE = 12f;
 
-    public static String RUN_LABEL = "Quãng đường chạy";
-    public static String WATER_LABEL = "Lượng nước uống";
-    public static final String SLEEP_LABEL = "Số tiếng ngủ";
+    public static String RUN_LABEL = "Distance";
+    public static String WATER_LABEL = "Amount water";
+    public static final String SLEEP_LABEL = "Sleep hour";
 
     public static String RUN_UNIT = "km";
-    public static String WATER_UNIT = "ly";
-    public static String SLEEP_UNIT = "tiếng";
+    public static String WATER_UNIT = "l";
+    public static String SLEEP_UNIT = "hour";
 
     public static int RUN_TYPE = 0;
     public static int SLEEP_TYPE = 1;
@@ -79,7 +79,9 @@ public class StatisticActivity extends AppCompatActivity {
 
     private void initSpinner() {
         Spinner spinner = findViewById(R.id.dropdownList);
-        final ArrayList<String> temp = new ArrayList<>(Arrays.asList("Tuần", "Tháng", "Năm"));
+        final ArrayList<String> temp = new ArrayList<>(Arrays.asList(this.getResources().getString(R.string.weekLabel),
+                this.getResources().getString(R.string.monthLabel),
+                this.getResources().getString(R.string.yearLabel)));
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, temp);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
