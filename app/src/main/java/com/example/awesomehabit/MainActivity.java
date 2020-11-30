@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
                 break;
             case R.id.actionGoToToday:
                 //Nhảy tới ngày hôm nay
+                customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
         }
 
         return super.onOptionsItemSelected(item);

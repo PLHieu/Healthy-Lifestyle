@@ -10,12 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sleepHabitName"
-        android:text="Sleeping"/>
+        android:text="@string/sleeping"
+        android:textSize="25sp"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/sleep"
-        android:id="@+id/sleepHabitIcon"/>
+        android:id="@+id/sleepHabitIcon"
+        android:contentDescription="TODO" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,14 +26,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="0:00 /"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/sleepTime"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="8:00 Hours"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/sleepTimeGoal"/>
     </LinearLayout>
@@ -42,12 +44,16 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Sleeping"
-            android:id="@+id/startSleeping"/>
+            android:text="@string/start_sleeping"
+            android:id="@+id/startSleeping"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/colorPrimaryDark"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stats"
-            android:id="@+id/btnSleepStatistic"/>
+            android:text="@string/btnstats"
+            android:id="@+id/btnSleepStatistic"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/colorPrimaryDark"/>
     </LinearLayout>
 </LinearLayout>

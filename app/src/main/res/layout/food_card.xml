@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/eatHabitName"
-        android:text="Food intake"/>
+        android:text="@string/food_intake"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,11 +20,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="2000 / 25000 Calories"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textStyle="bold"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add a meal"
-        android:id="@+id/btnMeal"/>
+        android:text="@string/add_a_meal"
+        android:id="@+id/btnMeal"
+        style="?android:attr/buttonBarButtonStyle"
+        android:textColor="@color/colorPrimaryDark"/>
 </LinearLayout>

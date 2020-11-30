@@ -33,16 +33,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layout/card',
-                            'src/main/res/layout',
-                            'src/main/res'
-                    ]
-        }
-    }
 }
 
 dependencies {

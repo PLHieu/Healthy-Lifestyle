@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/countingHabitName"
-        android:text="Water drank"/>
+        android:text="@string/water_intake"
+        android:textSize="25sp"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:text="-"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:id="@+id/btn_waterMinus"
             android:background="@drawable/round_button"
             android:textColor="@color/white"/>
@@ -30,12 +31,13 @@
             android:layout_height="50dp"
             android:src="@drawable/water"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:contentDescription="TODO" />
         <Button
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:text="+"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:id="@+id/btn_waterAdd"
             android:background="@drawable/round_button"
             android:textColor="@color/white"/>
@@ -48,14 +50,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="0 /"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/tvWater"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="10 cups"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/tvWaterGoal"/>
     </LinearLayout>
@@ -63,6 +65,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stats"
-        android:id="@+id/btnWaterStatistic"/>
+        android:text="@string/btnstats"
+        android:id="@+id/btnWaterStatistic"
+        style="?android:attr/buttonBarButtonStyle"
+        android:textColor="@color/colorPrimaryDark"/>
 </LinearLayout>
