@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_statistic"
         android:title="Statistic"
-        android:icon="@drawable/ic_statistic"
-        app:showAsAction="always"/>
+        android:icon="@drawable/statistic_icon"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/actionSetGoal"
+        android:title="Set Goal"
+        app:showAsAction="never"/>
 </menu>
