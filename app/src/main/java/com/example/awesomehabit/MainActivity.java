@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
                 //startActivity(new Intent(this, MainActivity2.class));
                 //customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
                 //viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                startActivity(new Intent(this, WeekSummaryActivity.class));
+                //startActivity(new Intent(this, WeekSummaryActivity.class));
                 return true;
             case R.id.actionSetGoal:
                 startActivity(new Intent(this, SetGoal.class));
