@@ -132,13 +132,13 @@ public class WeekSummaryActivity extends AppCompatActivity {
         barDataSet.setValueTextSize(12f);
 
         BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.4f);
+        barData.setBarWidth(0.2f);
         barChart.setFitBars(true);
         barChart.setData(barData);
     }
 
     private void getQualifiedWaterDay() {
-        qualifiedWaterDay = 4;
+        qualifiedWaterDay = 0;
     }
 
     private void getQualifiedRunDay() {
