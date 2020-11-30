@@ -4,5 +4,9 @@
     <item android:id="@+id/action_statistic"
         android:title="Statistic"
         android:icon="@drawable/statistic_icon"
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/actionSetGoal"
+        android:title="Set Goal"
+        app:showAsAction="never"/>
 </menu>
