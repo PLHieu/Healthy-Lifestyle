@@ -115,21 +115,23 @@ class SleepTrackerViewModel(
     }
 
     fun onSetGoal() {
-        val sleepGoalDialog = SleepGoalDialogFragment()
-        sleepGoalDialog.setSleepGoalDialogListener(object:SleepGoalDialogFragment.SleepGoalDialogListener {
-            override fun showSnackBarSuccess() {
-                snackbarString =
-                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
-                                " " + SleepGoal.getInstance(getApplication<Application>().applicationContext).toString() + "."
-                _showSnackbarEvent.value = true
-            }
-
-            override fun showSnackBarFail() {
-                snackbarString =
-                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_fail)
-                _showSnackbarEvent.value = true
-            }
-        })
-        sleepGoalDialog.show(fragmentManager, "sleepGoalDialog")
+//        val sleepGoalDialog = SleepGoalDialogFragment()
+//        sleepGoalDialog.setSleepGoalDialogListener(object:SleepGoalDialogFragment.SleepGoalDialogListener {
+//            override fun showSnackBarSuccess() {
+//                snackbarString =
+//                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_success) +
+//                                " " + SleepGoal.getInstance(getApplication<Application>().applicationContext).toString() + "."
+//                _showSnackbarEvent.value = true
+//            }
+//
+//            override fun showSnackBarFail() {
+//                snackbarString =
+//                        getApplication<Application>().applicationContext.getString(R.string.set_goal_snackbar_fail)
+//                _showSnackbarEvent.value = true
+//            }
+//        })
+//        sleepGoalDialog.show(fragmentManager, "sleepGoalDialog")
+        snackbarString = getApplication<Application>().applicationContext.getString(R.string.implementing)
+        _showSnackbarEvent.value = true
     }
 }
