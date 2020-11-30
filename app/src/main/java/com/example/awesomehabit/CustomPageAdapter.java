@@ -132,8 +132,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         db.goalDao().getTargets().observe((AppCompatActivity) mContext, new Observer<List<Integer>>() {
             @Override
             public void onChanged(List<Integer> targets) {
-                if(targets!=null){
-                    distanceGoal.setText(String.valueOf((float)targets.get(Habit.TYPE_RUN)) +"km");
+                if(targets!=null) {
+                    distanceGoal.setText(String.valueOf((float) targets.get(Habit.TYPE_RUN) / 1000) + " KM");
                     sleepTimeGoal.setText(String.valueOf(targets.get(Habit.TYPE_SLEEP)));
                     tvWaterGoal.setText(String.valueOf(targets.get(Habit.TYPE_COUNT)));
                 }
