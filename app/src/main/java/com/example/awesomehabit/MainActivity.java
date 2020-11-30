@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
                 return true;
             case R.id.actionSetGoal:
                 startActivity(new Intent(this, SetGoal.class));
+                break;
+            case R.id.actionGoToToday:
+                //Nhảy tới ngày hôm nay
         }
 
         return super.onOptionsItemSelected(item);
