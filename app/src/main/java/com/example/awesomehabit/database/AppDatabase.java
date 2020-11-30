@@ -94,6 +94,21 @@ public abstract class AppDatabase extends RoomDatabase {
                         INSTANCE.runDao().insertRun(run);
                     }
 
+                    for (int i = 1; i <= 30; i++ ){
+                        int hour = rand.nextInt(3) + 20;
+                        int minute = rand.nextInt(59);
+                        int second = rand.nextInt(59);
+                        Calendar time = new GregorianCalendar(2020, 10, i, 0, 0, 0);
+                        Calendar startTime = new GregorianCalendar(2020, 10, i, hour, minute, second);
+                        hour = rand.nextInt(8);
+                        minute = rand.nextInt(59);
+                        second = rand.nextInt(59);
+                        Calendar endTime = new GregorianCalendar(2020, 10, i+1, hour, minute, second);
+                        int sleepQuality = rand.nextInt(5);
+                        SleepNight sleepNight = new SleepNight(time, startTime.getTimeInMillis(), endTime.getTimeInMillis(), sleepQuality);
+                        INSTANCE.sleepDao().insert(sleepNight);
+                    }
+
                 }
             });
         }
