@@ -1,5 +1,6 @@
 package com.example.awesomehabit.database.running;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -47,7 +48,5 @@ public interface RunDao extends HabitDao {
 
     @TypeConverters(Converters.class)
     @Query("SELECT * from running_table where time = :calendar")
-    List<Run> getHabitFrom(Calendar calendar);
-
-
+    LiveData<List<Run>> getHabitFrom(Calendar calendar);
 }

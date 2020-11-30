@@ -38,5 +38,5 @@ interface SleepDatabaseDao : HabitDao {
 
     @TypeConverters(Converters::class)
     @Query("SELECT * FROM daily_sleep_quality_table WHERE time = :calendar ORDER BY id DESC")
-    override fun getHabitFrom(calendar: Calendar?): List<SleepNight?>
+    override fun getHabitFrom(calendar: Calendar?): LiveData<List<SleepNight>>
 }

@@ -27,14 +27,14 @@ import java.util.concurrent.Executors;
 
 import static androidx.room.RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING;
 
-@Database(entities = {Habit.class, Run.class, SleepNight.class, HabitGoal.class, Water.class}, version = 1, exportSchema = false)
+@Database(entities = {Habit.class, Run.class, SleepNight.class, Water.class,Goal.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
     public abstract RunDao runDao();
     public abstract SleepDatabaseDao sleepDao();
-    public abstract HabitGoalDao habitGoalDao();
     public abstract WaterDao waterDao();
+    public abstract GoalDao goalDao();
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
@@ -67,13 +67,13 @@ public abstract class AppDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-/*                    HabitDao dao=INSTANCE.habitDao();
-                    Habit habit=new Habit(1,"Running",Habit.TYPE_RUN);
-                    dao.insert(habit);
-                    habit=new Habit(2,"Sleeping",Habit.TYPE_SLEEP);
-                    dao.insert(habit);
-                    habit=new Habit(3,"Water drank",Habit.TYPE_COUNT);
-                    dao.insert(habit);*/
+                    Goal runGoal=new Goal(Habit.TYPE_RUN,3000);
+                    Goal sleepGoal=new Goal(Habit.TYPE_SLEEP,60*8);
+                    Goal waterGoal=new Goal(Habit.TYPE_COUNT,15);
+                    INSTANCE.goalDao().insert(runGoal);
+                    INSTANCE.goalDao().insert(waterGoal);
+                    INSTANCE.goalDao().insert(sleepGoal);
+
 
                     // init dump data
                     // in tracking running for 1 month from 1/11 - 30/11/2020

@@ -9,5 +9,5 @@ import java.util.List;
 public interface HabitDao {
     //LiveData<List<Habit>> getAll();
     int getType();
-    List<?> getHabitFrom(Calendar calendar);
+    LiveData<?> getHabitFrom(Calendar calendar);
 }
