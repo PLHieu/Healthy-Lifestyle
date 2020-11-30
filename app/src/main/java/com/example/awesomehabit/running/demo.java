@@ -541,6 +541,7 @@ public class demo extends AppCompatActivity implements OnMapReadyCallback, Permi
 
     @Override
     protected void onResume() {
+        getdata();
         Log.d("demo", "OnResume");
         super.onResume();
         _mapView.onResume();

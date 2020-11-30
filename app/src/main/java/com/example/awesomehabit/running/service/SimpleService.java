@@ -17,6 +17,7 @@ import android.widget.Chronometer;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LifecycleService;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,7 +66,6 @@ public class SimpleService extends LifecycleService {
     private static List<Point> data = new ArrayList<>();
     public static int listSize = 0;
     public static Boolean activityonpause = false;
-//    private Chronometer chronometer = new Chronometer(this);
     // thong bao cho ben demo biet de updadte data
     public static MutableLiveData<Integer>  seconds =  new MutableLiveData<Integer>();
 
@@ -75,29 +76,24 @@ public class SimpleService extends LifecycleService {
         super.onCreate();
         Log.d("service", "OnCreate");
         postInitValues();
-        isTracking.observe(this, aBoolean -> {
-            if(aBoolean){
-                updateLocationTracking(aBoolean);
-            }
-        });
+        initLocationEngine();
     }
 
     private void postInitValues(){
         isTracking.postValue(false);
-        points.postValue(new ArrayList<Point>());
-        // version 1
-//        locationlive.postValue(new Location(""));
+        points.postValue(new ArrayList<>());
         totalDistance.postValue(0.);
         seconds.postValue(0);
-        Log.d("service",String.valueOf(totalDistance.getValue()));
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("service", "startcommand");
+
         if(intent!=null){
 
+            // trigged khi nhan tu button start running
             if(intent.getAction() == "START"){
 
                 if(first_run){
@@ -156,7 +152,44 @@ public class SimpleService extends LifecycleService {
             intent.setAction("SHOW_ACTIVITY");
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
-            Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+            // debug for api level 22
+            NotificationCompat.Builder notificationBuilder = null;
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+            }else{
+                notificationBuilder = new NotificationCompat.Builder(this, "");
+            }
+
+            notificationBuilder
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                   /* .setDefaults(Notification.DEFAULT_ALL)
+                    .setWhen(System.currentTimeMillis())*/
+//                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
+//                    .setTicker("Hearty365")
+//                    .setPriority(Notification.PRIORITY_MAX) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
+                    .setContentTitle("Running Tracking")
+                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(Utils.round(value1,2)) + " km")
+                    .setContentIntent(pendingIntent)
+                    .setContentInfo("Info");
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                notificationBuilder.setSmallIcon(R.drawable.ic_baseline_directions_run_24);
+                notificationBuilder.setContentIntent(pendingIntent);
+                Notification notification = notificationBuilder.build();
+                notificationManager.notify(NOTIFICATION_ID, notification);
+            }else{
+
+                notificationBuilder.setPriority(Notification.PRIORITY_MAX);
+                notificationBuilder.setContentIntent(pendingIntent);
+                Notification notification = notificationBuilder.build();
+                notificationManager.notify(0, notification);
+
+            }
+
+
+            /*Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setAutoCancel(false)
                     .setOngoing(true)
                     .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
@@ -164,7 +197,7 @@ public class SimpleService extends LifecycleService {
                     .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(Utils.round(value1,2)) + " km")
                     .setContentIntent(pendingIntent)
                     .build();
-            notificationManager.notify(NOTIFICATION_ID, notification);
+            notificationManager.notify(NOTIFICATION_ID, notification);*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,11 +212,11 @@ public class SimpleService extends LifecycleService {
 
         // dung dong ho
         _timer.cancel();
-
         // reset lai cac gia tri
         first_run = true;
         activityonpause = false;
         listSize = 0;
+        data.clear();
         postInitValues();
 
         stopForeground(true);
@@ -211,11 +244,6 @@ public class SimpleService extends LifecycleService {
                     run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),calendar,elapsedMillis, "none");
                 }
 
-//                if(saveRoute){
-//                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, String.valueOf(date.getTime()));
-//                }else{
-//                    run = new Run(Utils.doubleKmTointMetter(distance),String.valueOf(currenttime),elapsedMillis, "none");
-//                }
                 // chen row vao data base
                 AppDatabase.getDatabase(getApplicationContext()).runDao().insertRun(run);
                 // them file geojson
@@ -238,7 +266,7 @@ public class SimpleService extends LifecycleService {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private void startForeGroundService(){
         postInitValues();
 
@@ -255,24 +283,67 @@ public class SimpleService extends LifecycleService {
         intent.setAction("SHOW_ACTIVITY");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
+        // debug for api level 22
+        NotificationCompat.Builder notificationBuilder = null;
 
-        Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        }else{
+            notificationBuilder = new NotificationCompat.Builder(this, "");
+        }
+
+        notificationBuilder
+                .setAutoCancel(false)
+                .setOngoing(true)
+                /*.setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())*/
+
+               /* .setTicker("Hearty365")*/
+//                .setPriority(Notification.PRIORITY_MAX) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
+                .setContentTitle("Running Tracking")
+                .setContentText("00:00:00")
+                .setContentInfo("Info");
+
+        Notification notification = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            notificationBuilder
+                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
+                    .setContentIntent(pendingIntent);
+            notification = notificationBuilder.build();
+            notificationManager.notify(NOTIFICATION_ID, notification);
+        }else{
+
+            notificationBuilder
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setContentIntent(pendingIntent);
+
+            notification = notificationBuilder.build();
+            notificationManager.notify(0, notification);
+
+        }
+
+
+
+
+        /*Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
                 .setContentTitle("Running Tracking")
                 .setContentText("00:00:00")
                 .setContentIntent(pendingIntent)
-                .build();
+                .build();*/
 
         startForeground(NOTIFICATION_ID, notification);
         startStopWatch();
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNotificationChannel(NotificationManager notificationManager){
         NotificationChannel notificationChannel =
                 new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+
         notificationManager.createNotificationChannel(notificationChannel);
     }
 
@@ -304,7 +375,6 @@ public class SimpleService extends LifecycleService {
 
     private static class LocationChangeListeningActivityLocationCallback
             implements LocationEngineCallback<LocationEngineResult> {
-        // result khi lay location thanh cong o trong ham nay
         @Override
         public void onSuccess(LocationEngineResult result) {
             Location location = result.getLastLocation();
@@ -318,7 +388,9 @@ public class SimpleService extends LifecycleService {
             if(listSize>=2){
                 totalDistance.postValue(totalDistance.getValue() + TurfMeasurement.distance(data.get(listSize-2), data.get(listSize-1)));
             }
-            Log.d("service", "gia tri cua istracking" + isTracking.getValue().toString());
+
+
+//            Log.d("service", "gia tri cua istracking" + Objects.requireNonNull(isTracking.getValue()).toString());
         }
 
         @Override
