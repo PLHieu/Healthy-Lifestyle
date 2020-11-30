@@ -55,21 +55,19 @@ public class SimpleService extends LifecycleService {
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 3000L;
     private static final long DEFAULT_MAX_WAIT_TIME = 100;
 
-    private boolean first_run = true;
+    public static MutableLiveData<Integer>  seconds =  new MutableLiveData<Integer>();
     public static MutableLiveData<Boolean> isTracking  = new MutableLiveData<Boolean>() ;
-    private LocationEngine _locationEngine;
-    private LocationChangeListeningActivityLocationCallback callback =
-            new LocationChangeListeningActivityLocationCallback();
-
     public static MutableLiveData<Double> totalDistance = new MutableLiveData<Double>();
     public static MutableLiveData<List<Point>> points = new MutableLiveData<List<Point>>();
+
+    private boolean first_run = true;
     private static List<Point> data = new ArrayList<>();
     public static int listSize = 0;
     public static Boolean activityonpause = false;
-    // thong bao cho ben demo biet de updadte data
-    public static MutableLiveData<Integer>  seconds =  new MutableLiveData<Integer>();
-
     private Timer _timer;
+    private LocationEngine _locationEngine;
+    private LocationChangeListeningActivityLocationCallback callback =
+            new LocationChangeListeningActivityLocationCallback();
 
     @Override
     public void onCreate() {
@@ -92,18 +90,11 @@ public class SimpleService extends LifecycleService {
         Log.d("service", "startcommand");
 
         if(intent!=null){
-
             // trigged khi nhan tu button start running
-            if(intent.getAction() == "START"){
+            if(intent.getAction() == "START" && first_run){
 
-                if(first_run){
-                    Log.d("service", "Start");
-                    startForeGroundService();
-//                    startStopWatch();
-                    Log.d("service", "startwatch");
-                    Log.d("service",String.valueOf(seconds.getValue()));
-                    first_run = false;
-                }
+                startForeGroundService();
+                first_run = false;
 
             }else if(intent.getAction() == "STOP_SAVE"){
 
@@ -115,7 +106,7 @@ public class SimpleService extends LifecycleService {
                 stopAndSaveData(intent.getDoubleExtra("distance",0.),intent.getLongExtra("time", 0), false);
                 killservice();
 
-            }else if (intent.getAction() == "ACTIVITY_ON_PAUSE"){ // neu nhu activity khong con visible nua
+            }else if (intent.getAction() == "ACTIVITY_ON_PAUSE"){
 
                 activityonpause = true;
 
