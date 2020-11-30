@@ -2,13 +2,10 @@ package com.example.awesomehabit;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
@@ -38,7 +35,8 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
         //LayoutManager
         mLayoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         setLayoutManager(mLayoutManager);
-        scrollToPosition(NUMBER_OF_DAY_BUTTONS/2);
+
+        scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
         currentDay.set(Calendar.HOUR,0);
         currentDay.set(Calendar.MINUTE,0);
         currentDay.set(Calendar.SECOND,0);

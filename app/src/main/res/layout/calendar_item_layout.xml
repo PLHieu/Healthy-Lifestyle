@@ -7,7 +7,7 @@
     android:clickable="true"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    android:background="@drawable/bottom_border"
+    android:background="@drawable/calendar_button_background"
     android:foreground="?android:attr/selectableItemBackground"
     >
         <TextView

@@ -65,7 +65,7 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
         TextView tvDay;
         TextView tvDayOfWeek;
         TextView tvMonth;
-
+        LinearLayout linearLayoutBackground;
         OnDaySelectListener onDaySelectListener;
         public ViewHolder(@NonNull View itemView,OnDaySelectListener onDaySelectListener) {
             super(itemView);
@@ -73,6 +73,8 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
             tvDay=itemView.findViewById(R.id.calendar_day);
             tvDayOfWeek=itemView.findViewById(R.id.calendar_dayOfWeek);
             tvMonth=itemView.findViewById(R.id.calendar_month);
+            linearLayoutBackground=itemView.findViewById(R.id.calendar_parent);
+
             this.onDaySelectListener=onDaySelectListener;
             itemView.setOnClickListener(this);
         }
@@ -83,16 +85,19 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
                 tvMonth.setTextColor(Color.WHITE);
                 tvDay.setTextColor(Color.WHITE);
                 tvDayOfWeek.setTextColor(Color.WHITE);
+                linearLayoutBackground.setBackgroundResource(R.drawable.calendar_button_background);
             }
             else {
                 if (checkedPosition == getAdapterPosition()) {
                     tvMonth.setTextColor(Color.YELLOW);
                     tvDay.setTextColor(Color.YELLOW);
                     tvDayOfWeek.setTextColor(Color.YELLOW);
+                    linearLayoutBackground.setBackgroundResource(R.drawable.calendar_button_background_selected);
                 } else {
                     tvMonth.setTextColor(Color.WHITE);
                     tvDay.setTextColor(Color.WHITE);
                     tvDayOfWeek.setTextColor(Color.WHITE);
+                    linearLayoutBackground.setBackgroundResource(R.drawable.calendar_button_background);
                 }
             }
         }
@@ -103,6 +108,7 @@ public class DaySelectButtonAdapter extends RecyclerView.Adapter<DaySelectButton
             tvMonth.setTextColor(Color.YELLOW);
             tvDay.setTextColor(Color.YELLOW);
             tvDayOfWeek.setTextColor(Color.YELLOW);
+            linearLayoutBackground.setBackgroundResource(R.drawable.calendar_button_background_selected);
             if(checkedPosition !=getAdapterPosition())
             {
                 notifyItemChanged(checkedPosition);
