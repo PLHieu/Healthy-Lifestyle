@@ -152,7 +152,7 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
         x.setValueFormatter(new IndexAxisValueFormatter(listShortDay));
         x.setLabelCount(listShortDay.size());
-        x.setTextSize(20);
+        x.setTextSize(10);
 
         if (mode == StatisticActivity.MONTH_MODE)
             x.setDrawLabels(false);
@@ -167,13 +167,14 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
         BarDataSet barDataSet = new BarDataSet(data, getLabel());
         barDataSet.setColors(ColorTemplate.rgb("#039dfc"));
         barDataSet.setValueTextColor(Color.BLACK);
-        barDataSet.setValueTextSize(12f);
+        barDataSet.setValueTextSize(8f);
         if (mode == StatisticActivity.MONTH_MODE)
             barDataSet.setDrawValues(false);
         else
             barDataSet.setDrawValues(true);
 
         BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.5f);
         barChart.setFitBars(true);
         barChart.setData(barData);
     }

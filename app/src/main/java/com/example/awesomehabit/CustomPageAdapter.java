@@ -25,6 +25,7 @@ import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
     private  List<SleepNight> sleepNightList;
     private int waterIntake=0;
     AppDatabase db;
+    List<Integer> goals;
 
     public CustomPageAdapter(Context mContext,AppDatabase db) {
         this.mContext = mContext;
@@ -50,6 +52,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup collection, int position) {
+        goals=new ArrayList<>();
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.card_list, collection, false);
 
@@ -62,8 +66,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         Button btnAddWater=layout.findViewById(R.id.btn_waterAdd);
         Button btnMinusWater=layout.findViewById(R.id.btn_waterMinus);
 
-        //AppDatabase db = AppDatabase.getDatabase(mContext);
-        //Get this page date
+
 
         Calendar pageDay=Calendar.getInstance();
         pageDay.add(Calendar.DATE,position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
@@ -72,7 +75,9 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         pageDay.set(Calendar.MINUTE,0);
         pageDay.set(Calendar.SECOND,0);
         pageDay.set(Calendar.MILLISECOND,0);
-        //List<Run> runs=db.runDao().getHabitFrom(pageDay);
+
+        goals=db.goalDao().getTargets().getValue();
+
         db.sleepDao().getHabitFrom(pageDay).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
@@ -82,10 +87,10 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
                     }
-                    sleepTime.setText(String.valueOf(totalSleepDuration)+" / ");
+                    sleepTime.setText(String.valueOf(totalSleepDuration)+" / "+goals.get(2));
                 }
                 else{
-                    sleepTime.setText("0:00 / ");
+                    sleepTime.setText("0:00 / "+goals.get(2));
                 }
 
             }
@@ -97,7 +102,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 //waterIntake=water.inTake;
                 if(water!=null)
                 {
-                    tvWater.setText(String.valueOf(water.inTake)+" / "+"15 cups");
+                    tvWater.setText(String.valueOf(water.inTake)+" / "+goals.get(1));
                     if (water.inTake>0)
                         btnMinusWater.setVisibility(View.VISIBLE);
                     else
@@ -111,6 +116,15 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             }
         });
 
+        db.goalDao().getTargets().observe((AppCompatActivity) mContext, new Observer<List<Integer>>() {
+            @Override
+            public void onChanged(List<Integer> targets) {
+                if(targets!=null){
+                    goals=targets;
+                }
+            }
+        });
+
         btnRun.setOnClickListener(this);
         btnSleep.setOnClickListener(this);
         btnMeal.setOnClickListener(this);
@@ -121,6 +135,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         collection.addView(layout);
         return layout;
     }
+
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
@@ -204,27 +219,5 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 break;
             }
         }
-       /* if (v.getId() == R.id.startRunning) {
-            Intent intent = new Intent(mContext, demo.class);
-            mContext.startActivity(intent);
-        } else if (v.getId() == R.id.startSleeping) {
-            Intent intent = new Intent(mContext, SleepTracker.class);
-            mContext.startActivity(intent);
-        } else if (v.getId() == R.id.btnMeal) {
-            Intent intent = new Intent(mContext, MealActivity.class);
-            mContext.startActivity(intent);
-        } else if (v.getId() == R.id.btnRunStatistic) {
-            Intent intent = new Intent(mContext, StatisticActivity.class);
-            intent.putExtra("statisticType", StatisticActivity.RUN_TYPE);
-            mContext.startActivity(intent);
-        } else if (v.getId() == R.id.btnSleepStatistic) {
-            Intent intent = new Intent(mContext, StatisticActivity.class);
-            intent.putExtra("statisticType", StatisticActivity.SLEEP_TYPE);
-            mContext.startActivity(intent);
-        } else if (v.getId() == R.id.btnWaterStatistic) {
-            Intent intent = new Intent(mContext, StatisticActivity.class);
-            intent.putExtra("statisticType", StatisticActivity.WATER_TYPE);
-            mContext.startActivity(intent);
-        }*/
     }
 }

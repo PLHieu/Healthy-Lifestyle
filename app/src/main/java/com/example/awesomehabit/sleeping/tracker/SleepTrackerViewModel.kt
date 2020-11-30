@@ -131,5 +131,8 @@ class SleepTrackerViewModel(
 //            }
 //        })
 //        sleepGoalDialog.show(fragmentManager, "sleepGoalDialog")
+
+        snackbarString = getApplication<Application>().applicationContext.getString(R.string.implementing)
+        _showSnackbarEvent.value = true
     }
 }
