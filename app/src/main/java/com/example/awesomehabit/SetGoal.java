@@ -30,13 +30,13 @@ public class SetGoal extends AppCompatActivity {
 
         ok.setOnClickListener(v -> {
 
-            String regex = "[0-9]";
+            String regex = "[0-9]+";
 
             String run = distanceGoal.getText().toString();
             String sleep = sleepGoal.getText().toString();
             String water = WaterGoal.getText().toString();
 
-            if(!run.matches(regex) || !sleep.matches(regex) || !water.matches(regex)){
+            if( !run.matches(regex) | !water.matches(regex) | !sleep.matches(regex)){
                 new AlertDialog.Builder(this)
                         .setMessage("Value Invalid, Please Try Again !")
                         .setPositiveButton("Yes", null )
