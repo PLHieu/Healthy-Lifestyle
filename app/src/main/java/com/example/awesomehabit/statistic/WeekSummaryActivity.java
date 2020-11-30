@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 public class WeekSummaryActivity extends AppCompatActivity {
     ArrayList<Long> listRunDateInMilli = new ArrayList<>();
@@ -155,13 +154,13 @@ public class WeekSummaryActivity extends AppCompatActivity {
                 runTime += listRunTimeLength.get(i);
             }
         }
-        setContextForRunTextview(runData, runTime);
+        setContextForRunSumaryTextView(runData, runTime);
         qualifiedRunDay = 6;
     }
 
-    private void setContextForRunTextview(float runData, long runTime) {
+    private void setContextForRunSumaryTextView(float runData, long runTime) {
         TextView textView1 = findViewById(R.id.textViewRunDataSum);
-        textView1.setText(runData + " km");
+        textView1.setText(String.format("%s km", runData));
         textView1 = findViewById(R.id.textViewRunTimeSum);
         long hour = runTime / 1000 / 60 / 60;
         long minute = runTime / 1000 / 60 % 60;

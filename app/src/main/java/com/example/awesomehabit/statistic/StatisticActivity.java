@@ -3,7 +3,6 @@ package com.example.awesomehabit.statistic;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,8 +10,6 @@ import android.widget.Spinner;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,11 +18,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.running.Run;
-import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -36,7 +29,6 @@ import java.util.List;
 import java.util.Random;
 
 public class StatisticActivity extends AppCompatActivity {
-    private static final String TAG = "StatisticActivity";
     private ArrayList<ArrayList<Float>> arrayListData;
     private ArrayList<ArrayList<String>> arrayListShortDay;
     private ArrayList<ArrayList<Calendar>> arrayListLongDay;
@@ -138,22 +130,6 @@ public class StatisticActivity extends AppCompatActivity {
         else if (statisticType == WATER_TYPE)
             getWaterData();
 
-    }
-
-    private void generateRunData() {
-        listTime.add(Calendar.getInstance().getTimeInMillis());
-        listData.add(10f);
-        listTimeLength.add((long)new Random().nextInt(360) *10000);
-        listSleepQuality.add(0);
-
-        Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 7; i++) {
-            calendar.add(Calendar.DAY_OF_YEAR, new Random().nextInt(7));
-            listTime.add(calendar.getTimeInMillis());
-            listData.add((float) (new Random().nextInt(10) + 5));
-            listTimeLength.add((long)new Random().nextInt(360) *10000);
-            listSleepQuality.add(0);
-        }
     }
 
     private void getWaterData() {
