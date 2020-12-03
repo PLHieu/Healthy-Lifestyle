@@ -146,53 +146,17 @@ public class SimpleService extends LifecycleService {
             // debug for api level 22
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
-
-            /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-            }else{
-                notificationBuilder = new NotificationCompat.Builder(this, "");
-            }*/
-
             notificationBuilder
                     .setAutoCancel(false)
                     .setOngoing(true)
-                   /* .setDefaults(Notification.DEFAULT_ALL)
-                    .setWhen(System.currentTimeMillis())*/
-//                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
-//                    .setTicker("Hearty365")
-//                    .setPriority(Notification.PRIORITY_MAX) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
                     .setSmallIcon(R.drawable.run)
                     .setContentIntent(pendingIntent)
                     .setContentTitle("Running Tracking")
                     .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(Utils.round(value1,2)) + " km")
                     .setContentInfo("Info");
 
-            /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                notificationBuilder.setSmallIcon(R.drawable.ic_baseline_directions_run_24);
-                notificationBuilder.setContentIntent(pendingIntent);
-                Notification notification = notificationBuilder.build();
-                notificationManager.notify(NOTIFICATION_ID, notification);
-            }else{
-
-                notificationBuilder.setPriority(Notification.PRIORITY_MAX);
-                notificationBuilder.setContentIntent(pendingIntent);
-                Notification notification = notificationBuilder.build();
-                notificationManager.notify(0, notification);
-
-            }*/
-
             Notification notification = notificationBuilder.build();
             notificationManager.notify(NOTIFICATION_ID, notification);
-
-            /*Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
-                    .setContentTitle("Running Tracking")
-                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(Utils.round(value1,2)) + " km")
-                    .setContentIntent(pendingIntent)
-                    .build();
-            notificationManager.notify(NOTIFICATION_ID, notification);*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,61 +244,16 @@ public class SimpleService extends LifecycleService {
 
         // debug for api level 22
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        ;
-
-        /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        }else{
-            notificationBuilder = new NotificationCompat.Builder(this, "");
-        }*/
-
         notificationBuilder
                 .setAutoCancel(false)
                 .setOngoing(true)
-                /*.setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())*/
-
-               /* .setTicker("Hearty365")*/
-//                .setPriority(Notification.PRIORITY_MAX) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
                 .setSmallIcon(R.drawable.run)
                 .setContentIntent(pendingIntent)
                 .setContentTitle("Running Tracking")
                 .setContentText("00:00:00")
                 .setContentInfo("Info");
-
-        /*Notification notification = null;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            notificationBuilder
-                    .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
-                    .setContentIntent(pendingIntent);
-            notification = notificationBuilder.build();
-            notificationManager.notify(NOTIFICATION_ID, notification);
-        }else{
-
-            notificationBuilder
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .setContentIntent(pendingIntent);
-
-            notification = notificationBuilder.build();
-            notificationManager.notify(0, notification);
-
-        }*/
-
         Notification notification = notificationBuilder.build();
         notificationManager.notify(NOTIFICATION_ID, notification);
-
-//        Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-
-
-
-        /*Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setSmallIcon(R.drawable.ic_baseline_directions_run_24)
-                .setContentTitle("Running Tracking")
-                .setContentText("00:00:00")
-                .setContentIntent(pendingIntent)
-                .build();*/
 
         startForeground(NOTIFICATION_ID, notification);
         startStopWatch();
@@ -415,7 +334,7 @@ public class SimpleService extends LifecycleService {
     private String getStringfromListPoints(List<Point> pointList) {
         String result = "";
         for (Point point:pointList){
-            result += String.valueOf(point.latitude()) + "@" + String.valueOf(point.longitude()) + " " ;
+            result += point.latitude() + "@" + point.longitude() + " " ;
         }
         return result;
     }
