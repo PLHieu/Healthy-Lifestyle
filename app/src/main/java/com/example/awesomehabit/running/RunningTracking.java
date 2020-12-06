@@ -28,7 +28,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 
 import com.example.awesomehabit.R;
-import com.example.awesomehabit.running.utils.Utils;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
@@ -125,7 +124,7 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
         // observe tong khoang cach
         RunningService.totalDistance.observe(this, aDouble -> {
             _distance = aDouble;
-            _tv_distance.setText(String.valueOf(Utils.round(_distance,2)));
+            _tv_distance.setText(String.valueOf(RunningUtils.round(_distance,2)));
         });
 
         //observe list point
