@@ -22,11 +22,10 @@ import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.database.water.Water;
-import com.example.awesomehabit.running.demo;
+import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -169,7 +168,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.startRunning: {
-                Intent intent = new Intent(mContext, demo.class);
+                Intent intent = new Intent(mContext, RunningTracking.class);
                 mContext.startActivity(intent);
                 break;
             }

@@ -23,10 +23,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity><!--
         <activity android:name=".running.demo"></activity>
 
-        <service android:name=".running.service.SimpleService" />
+        <service android:name=".running.service.SimpleService" />-->
+
+        <activity android:name=".running.RunningTracking"
+            android:noHistory="true"
+            ><!--android:launchMode="singleInstance"-->
+
+        </activity>
+
+        <service android:name=".running.RunningService" />
 
         <activity android:name=".sleeping.SleepTracker"></activity>
         <activity android:name=".meal.MealActivity" />
