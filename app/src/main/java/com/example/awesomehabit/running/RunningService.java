@@ -5,11 +5,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -20,6 +22,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Goal;
+import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.running.Run;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -50,12 +54,18 @@ public class RunningService extends LifecycleService {
     private RunningService.LocationChangeListeningActivityLocationCallback callback =
             new RunningService.LocationChangeListeningActivityLocationCallback();
 
+    private double goalDistance ;
+    // hien thi thong bao
+    RemoteViews collapsedView, expandedView ;
+
     @Override
     public void onCreate() {
         super.onCreate();
 //        Log.d("sv", "OnCreate");
-        initValues();
+        goalDistance = getGoalDistance();
+        resetValues();
         initLocationEngine();
+
     }
 
 
@@ -65,23 +75,36 @@ public class RunningService extends LifecycleService {
         if(intent!=null){
             if(intent.getAction() == RunCons.SERVICE_START_RUNNINGTRACKING){
 //                        Log.d("sv", "start runnign trackinh");
+                goalDistance = getGoalDistance(); // Trước khi chạy thì cập nhật 1 goal lần nữa
+                initNotifyLayout();
                 startRunningTracking();
 
-            }else if(intent.getAction() == RunCons.SERVICE_STOPSAVE_RUNNINGTRACKING){
-                isTracking = false;
-                saveData(totalDistance.getValue(),seconds.getValue(), true);
-                totalDistance.setValue(0.);
-                seconds.setValue(0);
-                _timer.cancel();
+            }else if(intent.getAction() == (RunCons.SERVICE_STOPSAVE_RUNNINGTRACKING)){
 
-            }else if(intent.getAction() == RunCons.SERVICE_STOPNOTSAVE_RUNNINGTRACKING){
-                totalDistance.setValue(0.);
-                isTracking = false;
-                seconds.setValue(0);
+                saveData(totalDistance.getValue(),seconds.getValue(), true);
                 _timer.cancel();
+                resetValues();
+
+            }else if(intent.getAction() == (RunCons.SERVICE_STOPNOTSAVE_RUNNINGTRACKING)){
+                _timer.cancel();
+                resetValues();
+            }else if(intent.getAction() == (RunCons.SERVICE_STOP)){
+//                Log.d("sv", "stopservice");
+                _timer.cancel();
+                resetValues();
+                Intent temp = new Intent();
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,temp, PendingIntent.FLAG_UPDATE_CURRENT );
+                _locationEngine.removeLocationUpdates(pendingIntent);
+                stopForeground(true);
+                stopSelf();
             }
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initNotifyLayout() {
+        collapsedView = new RemoteViews(getPackageName(), R.layout.run_notify_collapsed_portrait);
+        expandedView = new RemoteViews(getPackageName(), R.layout.run_notify_expanded_portrait);
     }
 
     private void saveData(double distance, long elapsedMillis, boolean saveRoute) {
@@ -117,37 +140,15 @@ public class RunningService extends LifecycleService {
 
     private void startRunningTracking(){
 //        Log.d("sv", "startrunnning");
-        initValues();
+        resetValues();
         isTracking = true;
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            createNotificationChannel(notificationManager);
-        }
-
-        Intent intent = new Intent(this, RunningTracking.class);
-        intent.setAction(RunCons.HOME_SHOW);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
-
-        // debug for api level 22
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, RunCons.NOTIFICATION_CHANNEL_ID);
-        notificationBuilder
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setSmallIcon(R.drawable.run)
-                .setContentIntent(pendingIntent)
-                .setContentTitle("Running Tracking")
-                .setContentText("00:00:00")
-                .setContentInfo("Info");
-        Notification notification = notificationBuilder.build();
-        notificationManager.notify(RunCons.NOTIFICATION_ID, notification);
-
+        Notification notification = createNotification(0,0.);
         startForeground(RunCons.NOTIFICATION_ID, notification);
         startStopWatch();
     }
 
-    private void initValues(){
+    private void resetValues(){
         isTracking = false ;
         data.clear();
         points.setValue(new ArrayList<>());
@@ -164,20 +165,42 @@ public class RunningService extends LifecycleService {
             public void run() {
                 if(seconds.getValue()!= null && totalDistance.getValue()!=null){
                     seconds.postValue(seconds.getValue() + 1);
-                    updatenotification(seconds.getValue(), totalDistance.getValue());
+                    createNotification(seconds.getValue(), totalDistance.getValue());
                 }
             }
         }, 0,1000);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updatenotification(Integer value, Double value1) {
+    private Notification createNotification(Integer value, Double value1) {
         try {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-            Intent intent = new Intent(this, RunningTracking.class);
-            intent.setAction(RunCons.HOME_SHOW);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT );
+            Intent homeShowIntent = new Intent(this, RunningTracking.class);
+            homeShowIntent.setAction(RunCons.HOME_SHOW);
+            PendingIntent homeShowpendingIntent = PendingIntent.getActivity(this, 0,homeShowIntent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+
+            Intent stopIntent = new Intent(this, RunningTracking.class);
+            stopIntent.setAction(RunCons.HOME_STOP);
+            PendingIntent stopPendingIntent = PendingIntent.getActivity(this, 0,stopIntent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+            Intent closeIntent = new Intent(this, RunningService.class);
+            closeIntent.setAction(RunCons.SERVICE_STOP);
+            PendingIntent closePendingIntent = PendingIntent.getService(this, 0,closeIntent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+            collapsedView.setOnClickPendingIntent(R.id.btn_run_notify_home, homeShowpendingIntent);
+            collapsedView.setOnClickPendingIntent(R.id.btn_run_notify_stop, stopPendingIntent);
+            collapsedView.setOnClickPendingIntent(R.id.btn_run_notify_close, closePendingIntent);
+            collapsedView.setTextViewText(R.id.tv_notify_runtime, (int) (value / 60) + ":" + value % 60);
+            collapsedView.setTextViewText(R.id.tv_notify_distance, RunningUtils.round(value1, 2) + " km");
+
+            expandedView.setOnClickPendingIntent(R.id.btn_run_notify_home, homeShowpendingIntent);
+            expandedView.setOnClickPendingIntent(R.id.btn_run_notify_stop, stopPendingIntent);
+            expandedView.setOnClickPendingIntent(R.id.btn_run_notify_close, closePendingIntent);
+            expandedView.setTextViewText(R.id.tv_notify_runtime, "Run Time: " + (int) (value / 60) + ":" + value % 60);
+            expandedView.setTextViewText(R.id.tv_notify_distance, "Total Distance: " + RunningUtils.round(value1, 2) + " km");
+            expandedView.setProgressBar(R.id.progressBar, ((int) goalDistance),(totalDistance.getValue().intValue()), false );
+            expandedView.setTextViewText(R.id.progresstext,RunningUtils.round(totalDistance.getValue()/goalDistance*100,0) + "% of " + RunningUtils.round(goalDistance,2)+"km Goal");
 
             // debug for api level 22
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, RunCons.NOTIFICATION_CHANNEL_ID);
@@ -186,19 +209,23 @@ public class RunningService extends LifecycleService {
                     .setAutoCancel(false)
                     .setOngoing(true)
                     .setSmallIcon(R.drawable.run)
-                    .setContentIntent(pendingIntent)
-                    .setContentTitle("Running Tracking")
-                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(RunningUtils.round(value1,2)) + " km")
+                    .setCustomContentView(collapsedView)
+                    .setCustomBigContentView(expandedView)
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+//                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(RunningUtils.round(value1,2)) + " km");
                     .setContentInfo("Info");
 
 
             Notification notification = notificationBuilder.build();
             notificationManager.notify(RunCons.NOTIFICATION_ID, notification);
+            return notification;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNotificationChannel(NotificationManager notificationManager){
@@ -207,6 +234,7 @@ public class RunningService extends LifecycleService {
 
         notificationManager.createNotificationChannel(notificationChannel);
     }
+
 
     private void initLocationEngine() {
         // lay cong cu dinh vi tot nhat hien tai, co the la gps, wwiffi , ko can biet
@@ -276,6 +304,11 @@ public class RunningService extends LifecycleService {
         public void onFailure(@NonNull Exception exception) {
             Log.e("service", "location Egine Call backk failure");
         }
+    }
+
+    double getGoalDistance(){
+        Goal runGoal =AppDatabase.getDatabase(this).goalDao().getGoal(Habit.TYPE_RUN);
+        return runGoal.target/1000;
     }
 
 

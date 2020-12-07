@@ -74,9 +74,18 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
 
         initView();
 
+        // handle intent stop
+        Intent intent = getIntent();
+        if(intent!=null && intent.getAction()!= null && intent.getAction().equals(RunCons.HOME_STOP)){
+            stopRunningTracking();
+        }else if(intent!=null && intent.getAction()!= null && intent.getAction().equals(RunCons.SERVICE_STOP)){
+            sendCommandToService(RunCons.SERVICE_STOP);
+        }
+
         _mapView.onCreate(savedInstanceState);
         _mapView.getMapAsync(this);
     }
+
 
 
 
@@ -156,7 +165,7 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
         RunningService.currentLocation.observe(this , location -> {
             CameraPosition position = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude())) // Sets the new camera position
-//                    .zoom(15) // Sets the zoom
+                    .zoom(15) // Sets the zoom
 //                    .bearing(180) // Rotate the camera
 //                    .tilt(30) // Set the camera tilt
                     .build(); // Creates a CameraPosition from the builder
@@ -186,33 +195,33 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
                 _btn_Running.setText("Finish");
                 sendCommandToService(RunCons.SERVICE_START_RUNNINGTRACKING);
             }else{
-                new AlertDialog.Builder(RunningTracking.this)
-                        .setMessage("Do you really want to stop ??")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            rotate.cancel();
-                            imv.setAnimation(rotate);
-                            _btn_Running.setText("Start");
-                            new AlertDialog.Builder(RunningTracking.this)
-                                    .setMessage("Wanna Save Your Route ?")
-                                    .setPositiveButton("Of Course", (dialog1, which1) -> {
-                                        sendCommandToService(RunCons.SERVICE_STOPSAVE_RUNNINGTRACKING);
-                                    })
-                                    .setNegativeButton("Don't save route", (dialog1, which1) -> {
-                                        sendCommandToService(RunCons.SERVICE_STOPNOTSAVE_RUNNINGTRACKING);
-                                    })
-                                    .show();
-
-                        } )
-                        .setNegativeButton("Cancel", null)
-                        .show();
+                stopRunningTracking();
             }
 
         }
     }
 
+    private void stopRunningTracking() {
+        new AlertDialog.Builder(RunningTracking.this)
+                .setMessage("Do you really want to stop ??")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    rotate.cancel();
+                    imv.setAnimation(rotate);
+                    _btn_Running.setText("Start");
+                    new AlertDialog.Builder(RunningTracking.this)
+                            .setMessage("Wanna Save Your Route ?")
+                            .setPositiveButton("Of Course", (dialog1, which1) -> {
+                                sendCommandToService(RunCons.SERVICE_STOPSAVE_RUNNINGTRACKING);
+                            })
+                            .setNegativeButton("Don't save route", (dialog1, which1) -> {
+                                sendCommandToService(RunCons.SERVICE_STOPNOTSAVE_RUNNINGTRACKING);
+                            })
+                            .show();
 
-
-
+                } )
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 
 
     private void initView() {
@@ -229,6 +238,12 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
             _btn_Running.setText("start");
         }else{
             _btn_Running.setText("finish");
+        }
+        if(RunningService.isTracking == null ){
+            Log.d("main", "null");
+        }else{
+            Log.d("main", RunningService.isTracking.toString());
+
         }
 
     }
@@ -346,6 +361,53 @@ public class RunningTracking extends AppCompatActivity implements OnMapReadyCall
         } else {
             Toast.makeText(this, "Cannot using running tracker without accessing location", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("demo","OnStart");
+        super.onStart();
+        _mapView.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("demo", "OnResume");
+        super.onResume();
+        _mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("demo", "onPaused");
+        super.onPause();
+        _mapView.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("demo", "onStop");
+        super.onStop();
+        _mapView.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        _mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("demo", "onDestroy");
+        super.onDestroy();
+        _mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        _mapView.onLowMemory();
     }
 
 }
