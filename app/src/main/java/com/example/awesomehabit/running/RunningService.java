@@ -174,6 +174,9 @@ public class RunningService extends LifecycleService {
     private Notification createNotification(Integer value, Double value1) {
         try {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(notificationManager);
+            }
 
             Intent homeShowIntent = new Intent(this, RunningTracking.class);
             homeShowIntent.setAction(RunCons.HOME_SHOW);
@@ -211,9 +214,7 @@ public class RunningService extends LifecycleService {
                     .setSmallIcon(R.drawable.run)
                     .setCustomContentView(collapsedView)
                     .setCustomBigContentView(expandedView)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-//                    .setContentText("Time: " + String.valueOf((int)(value/60)) + ":" + String.valueOf(value%60) + "        " + String.valueOf(RunningUtils.round(value1,2)) + " km");
-                    .setContentInfo("Info");
+                    .setStyle(new NotificationCompat.BigTextStyle());
 
 
             Notification notification = notificationBuilder.build();
