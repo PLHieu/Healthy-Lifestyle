@@ -26,6 +26,8 @@ import com.example.awesomehabit.running.demo;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -72,8 +74,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
 
         Calendar pageDay=Calendar.getInstance();
         pageDay.add(Calendar.DATE,position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-        Log.d("gay", String.valueOf(position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2));
-        pageDay.set(Calendar.HOUR,0);
+        pageDay.set(Calendar.HOUR,12);
         pageDay.set(Calendar.MINUTE,0);
         pageDay.set(Calendar.SECOND,0);
         pageDay.set(Calendar.MILLISECOND,0);
@@ -88,24 +89,29 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                         totalRunDistance+=runList.get(i).distance;
                     }
                 }
-                distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
+               distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
             }
         });
         db.sleepDao().getHabitFrom(pageDay).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
                 sleepNightList=sleepNights;
+                int totalSleepDuration=0;
                 if (sleepNightList!=null && sleepNightList.size()>0){
-                    int totalSleepDuration=0;
+
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
                     }
-                    sleepTime.setText(String.valueOf(totalSleepDuration)+" / ");
+                    //sleepTime.setText(String.valueOf(totalSleepDuration)+" / ");
                 }
                 else{
-                    sleepTime.setText("0:00 / ");
+                    //sleepTime.setText("0:00 / ");
                 }
+                int seconds = (int) (totalSleepDuration / 1000) % 60 ;
+                int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
+                int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
 
+                sleepTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes)+"/");
             }
         });
 

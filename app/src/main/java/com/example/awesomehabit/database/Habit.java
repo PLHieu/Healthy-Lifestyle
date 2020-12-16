@@ -12,7 +12,7 @@ public class Habit {
 //        this.id = id;
         this.type = type;
         this.time = Calendar.getInstance();
-        time.set(Calendar.HOUR, 0);
+        time.set(Calendar.HOUR, 12);
         time.set(Calendar.MINUTE, 0);
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);

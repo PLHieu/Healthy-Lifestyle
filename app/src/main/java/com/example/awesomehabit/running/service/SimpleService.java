@@ -228,7 +228,7 @@ public class SimpleService extends LifecycleService {
                 Long currenttime = System.currentTimeMillis();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(currenttime);
-                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.HOUR, 12);
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
                 calendar.set(Calendar.MILLISECOND, 0);

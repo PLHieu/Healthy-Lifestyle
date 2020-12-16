@@ -37,7 +37,7 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
         setLayoutManager(mLayoutManager);
 
         scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
-        currentDay.set(Calendar.HOUR,0);
+        currentDay.set(Calendar.HOUR,12);
         currentDay.set(Calendar.MINUTE,0);
         currentDay.set(Calendar.SECOND,0);
         currentDay.set(Calendar.MILLISECOND,0);
@@ -57,7 +57,7 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
 
         currentDay=Calendar.getInstance();
         currentDay.add(Calendar.DATE,position-NUMBER_OF_DAY_BUTTONS/2);
-        currentDay.set(Calendar.HOUR,0);
+        currentDay.set(Calendar.HOUR,12);
         currentDay.set(Calendar.MINUTE,0);
         currentDay.set(Calendar.SECOND,0);
         currentDay.set(Calendar.MILLISECOND,0);

@@ -84,7 +84,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         int minute = rand.nextInt(50);
                         int second = rand.nextInt(50);
 
-                        Calendar calendar = new GregorianCalendar(2020,10,i,hour,minute,second);
+                        Calendar calendar = new GregorianCalendar(2020,10,i,0,0,0);
 
                         Date date = calendar.getTime();
                         String timestamp = String.valueOf(date.getTime());
