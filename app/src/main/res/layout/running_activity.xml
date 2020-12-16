@@ -35,7 +35,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@drawable/circle_button"
-        android:text="start"
+        android:text="finish"
         android:textStyle="bold"
         android:textSize="22dp"
         mapbox:layout_constraintBottom_toBottomOf="@+id/imgView"

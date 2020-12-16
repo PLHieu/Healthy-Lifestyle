@@ -24,9 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".running.demo"></activity>
 
-        <service android:name=".running.service.SimpleService" />
+        <activity android:name=".running.RunningTracking"
+            android:noHistory="true">
+        </activity>
+
+        <service android:name=".running.RunningService"
+          />  <!-- android:stopWithTask="true"-->
 
         <activity android:name=".sleeping.SleepTracker"></activity>
         <activity android:name=".meal.MealActivity" />

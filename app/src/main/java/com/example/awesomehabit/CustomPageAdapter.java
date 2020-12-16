@@ -22,15 +22,13 @@ import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.database.water.Water;
-import com.example.awesomehabit.running.demo;
+import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class CustomPageAdapter extends PagerAdapter implements View.OnClickListener {
     private Context mContext;
@@ -138,7 +136,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         db.goalDao().getTargets().observe((AppCompatActivity) mContext, new Observer<List<Integer>>() {
             @Override
             public void onChanged(List<Integer> targets) {
-                if(targets!=null) {
+                if(targets!=null && targets.size() > 2) {
                     distanceGoal.setText(String.valueOf((float) targets.get(Habit.TYPE_RUN) / 1000) + " KM");
                     sleepTimeGoal.setText(String.valueOf(targets.get(Habit.TYPE_SLEEP)));
                     tvWaterGoal.setText(String.valueOf(targets.get(Habit.TYPE_COUNT)));
@@ -175,7 +173,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.startRunning: {
-                Intent intent = new Intent(mContext, demo.class);
+                Intent intent = new Intent(mContext, RunningTracking.class);
                 mContext.startActivity(intent);
                 break;
             }

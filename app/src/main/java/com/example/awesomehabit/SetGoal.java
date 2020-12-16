@@ -4,15 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.Goal;
 import com.example.awesomehabit.database.Habit;
-import com.example.awesomehabit.generated.callback.OnClickListener;
-import com.example.awesomehabit.running.demo;
 
 public class SetGoal extends AppCompatActivity {
 
