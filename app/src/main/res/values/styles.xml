@@ -12,4 +12,11 @@
         <item name="colorControlHighlight">@color/purple_200</item>
         <item name="android:textStyle">bold</item>
     </style>
+    
+    <style name="timePickerStyle"   parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="title">false</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#bb88bb</item>
+        <item name="android:textSize">28sp</item>
+    </style>
 </resources>
