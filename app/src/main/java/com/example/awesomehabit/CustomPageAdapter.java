@@ -2,7 +2,6 @@ package com.example.awesomehabit;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +18,17 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.Habit;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
-import com.example.awesomehabit.database.water.Water;
 import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 public class CustomPageAdapter extends PagerAdapter implements View.OnClickListener {
     private Context mContext;
-    private  List<SleepNight> sleepNightList;
     AppDatabase db;
 
     public CustomPageAdapter(Context mContext,AppDatabase db) {
@@ -60,13 +56,13 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
 
         TextView distance=layout.findViewById(R.id.runDistance);
         TextView sleepTime=layout.findViewById(R.id.sleepTime);
-        TextView tvWater=layout.findViewById(R.id.tvWater);
+        TextView tvWater=layout.findViewById(R.id.tvCountCurrent);
         TextView sleepTimeGoal=layout.findViewById(R.id.sleepTimeGoal);
-        TextView tvWaterGoal=layout.findViewById(R.id.tvWaterGoal);
+        TextView tvWaterGoal=layout.findViewById(R.id.tvCountGoal);
         TextView distanceGoal=layout.findViewById(R.id.runDistanceGoal);
 
-        Button btnAddWater=layout.findViewById(R.id.btn_waterAdd);
-        Button btnMinusWater=layout.findViewById(R.id.btn_waterMinus);
+        Button btnAddWater=layout.findViewById(R.id.btn_countAdd);
+        Button btnMinusWater=layout.findViewById(R.id.btn_countMinus);
 
 
 
@@ -93,9 +89,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         db.sleepDao().getHabitFrom(pageDay).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
-                sleepNightList=sleepNights;
                 int totalSleepDuration=0;
-                if (sleepNightList!=null && sleepNightList.size()>0){
+                if (sleepNights!=null && sleepNights.size()>0){
 
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
@@ -113,23 +108,20 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             }
         });
 
-        db.waterDao().getHabitFrom(pageDay).observe((AppCompatActivity) mContext, new Observer<Water>() {
+        db.dailyCustomHabitDao().getHabit(1,pageDay).observe((AppCompatActivity) mContext, new Observer<DailyCustomHabit>() {
             @Override
-            public void onChanged(Water water) {
-                //waterIntake=water.inTake;
-                if(water!=null)
-                {
-                    tvWater.setText(String.valueOf(water.inTake)+" / ");
-                    if (water.inTake>0)
+            public void onChanged(DailyCustomHabit dailyCustomHabit) {
+                if(dailyCustomHabit!=null){
+                    tvWater.setText(String.valueOf(dailyCustomHabit.current)+" / ");
+                    if(dailyCustomHabit.current>0)
                         btnMinusWater.setVisibility(View.VISIBLE);
                     else
                         btnMinusWater.setVisibility(View.INVISIBLE);
                 }
-                else
-                {
+                else {
+                    tvWater.setText("Found nothing today");
                     btnMinusWater.setVisibility(View.INVISIBLE);
                 }
-
             }
         });
 
@@ -200,52 +192,50 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 mContext.startActivity(intent);
                 break;
             }
-            case R.id.btnWaterStatistic: {
+            case R.id.btnCountStatistic: {
                 Intent intent = new Intent(mContext, StatisticActivity.class);
                 intent.putExtra("statisticType", StatisticActivity.WATER_TYPE);
                 mContext.startActivity(intent);
                 break;
             }
-            case R.id.btn_waterAdd:{
-                LiveData<Water> waters= db.waterDao().getHabitFrom(CustomCalendarView.currentDay);
-                Observer observer=new Observer<Water>() {
+            case R.id.btn_countAdd: {
+                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay);
+                Observer observer=new Observer<DailyCustomHabit>() {
                     @Override
-                    public void onChanged(Water water) {
-                        waters.removeObserver(this);
-                        if(water!=null)
-                        {
-                            water.inTake++;
-                            db.waterDao().update(water);
+                    public void onChanged(DailyCustomHabit dailyCustom) {
+                        LDdailyCustom.removeObserver(this);
+                        if(dailyCustom!=null){
+                            dailyCustom.current++;
+                            db.dailyCustomHabitDao().update(dailyCustom);
                         }
                         else{
-                            Water w=new Water(Habit.TYPE_COUNT,CustomCalendarView.currentDay,1);
-                            db.waterDao().insert(w);
+                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,1,10,CustomCalendarView.currentDay);
+                            db.dailyCustomHabitDao().insert(dailyCustomHabit);
                         }
                     }
                 };
-                waters.observe((AppCompatActivity)mContext,observer);
-                break;
+                LDdailyCustom.observe((AppCompatActivity)mContext, observer);
             }
-            case R.id.btn_waterMinus:{
-                LiveData<Water> waters= db.waterDao().getHabitFrom(CustomCalendarView.currentDay);
-                Observer observer=new Observer<Water>() {
+            break;
+            case R.id.btn_countMinus:{
+                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay);
+                Observer observer=new Observer<DailyCustomHabit>() {
                     @Override
-                    public void onChanged(Water water) {
-                        waters.removeObserver(this);
-                        if(water!=null)
-                        {
-                            water.inTake--;
-                            db.waterDao().update(water);
+                    public void onChanged(DailyCustomHabit dailyCustom) {
+                        LDdailyCustom.removeObserver(this);
+                        if(dailyCustom!=null){
+                            dailyCustom.current--;
+                            db.dailyCustomHabitDao().update(dailyCustom);
                         }
                         else{
-                            Water w=new Water(Habit.TYPE_COUNT,CustomCalendarView.currentDay,0);
-                            db.waterDao().insert(w);
+                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,0,10,CustomCalendarView.currentDay);
+                            db.dailyCustomHabitDao().insert(dailyCustomHabit);
                         }
                     }
                 };
-                waters.observe((AppCompatActivity)mContext,observer);
-                break;
+                LDdailyCustom.observe((AppCompatActivity)mContext, observer);
             }
+
         }
     }
 }

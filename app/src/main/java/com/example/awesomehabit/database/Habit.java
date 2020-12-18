@@ -1,12 +1,10 @@
 package com.example.awesomehabit.database;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import java.util.Calendar;
 
-@Entity
 public class Habit {
     public Habit(int type) {
 //        this.id = id;
@@ -31,4 +29,7 @@ public class Habit {
     @ColumnInfo(name = "time")
     @TypeConverters(Converters.class)
     public Calendar time;
+
+    @ColumnInfo(name="target")
+    public int target=0;
 }

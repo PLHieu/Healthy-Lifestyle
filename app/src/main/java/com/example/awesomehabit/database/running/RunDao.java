@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
+import androidx.room.Update;
 
 import com.example.awesomehabit.database.Converters;
 import com.example.awesomehabit.database.HabitDao;
@@ -31,6 +32,9 @@ public interface RunDao extends HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertRun(Run run);
 
+    @Update
+    void update(Run run);
+
     @Query("SELECT Distance FROM running_table")
     List<Integer> getAllDistance();
 
@@ -49,4 +53,7 @@ public interface RunDao extends HabitDao {
     @TypeConverters(Converters.class)
     @Query("SELECT * from running_table where time = :calendar")
     LiveData<List<Run>> getHabitFrom(Calendar calendar);
+
+    @Query("SELECT * from running_table where time=(select max(time) from running_table)")
+    LiveData<Run> getLastestHabit();
 }

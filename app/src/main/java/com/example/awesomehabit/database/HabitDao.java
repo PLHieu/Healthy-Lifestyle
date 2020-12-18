@@ -10,4 +10,5 @@ public interface HabitDao {
     //LiveData<List<Habit>> getAll();
     int getType();
     LiveData<?> getHabitFrom(Calendar calendar);
+    LiveData<?> getLastestHabit();
 }

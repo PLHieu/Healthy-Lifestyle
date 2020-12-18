@@ -10,12 +10,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.awesomehabit.database.custom.CustomHabit;
+import com.example.awesomehabit.database.custom.CustomHabitDao;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
+import com.example.awesomehabit.database.custom.DailyCustomHabitDao;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.running.RunDao;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
-import com.example.awesomehabit.database.water.Water;
-import com.example.awesomehabit.database.water.WaterDao;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,14 +29,15 @@ import java.util.concurrent.Executors;
 
 import static androidx.room.RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING;
 
-@Database(entities = {Habit.class, Run.class, SleepNight.class, Water.class,Goal.class}, version = 1, exportSchema = false)
+@Database(entities = {Run.class, SleepNight.class,Goal.class, CustomHabit.class, DailyCustomHabit.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
     public abstract RunDao runDao();
     public abstract SleepDatabaseDao sleepDao();
-    public abstract WaterDao waterDao();
     public abstract GoalDao goalDao();
+    public abstract CustomHabitDao customHabitDao();
+    public abstract DailyCustomHabitDao dailyCustomHabitDao();
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
@@ -76,6 +79,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
                     // init dump data
+                    INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT));
+
                     // in tracking running for 1 month from 1/11 - 30/11/2020
                     Random rand = new Random();
                     for (int i = 1; i <= 30; i++ ){

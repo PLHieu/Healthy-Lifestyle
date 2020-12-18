@@ -2,14 +2,18 @@ package com.example.awesomehabit;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.Goal;
 import com.example.awesomehabit.database.Habit;
+import com.example.awesomehabit.database.running.Run;
 
 public class SetGoal extends AppCompatActivity {
 
@@ -39,6 +43,7 @@ public class SetGoal extends AppCompatActivity {
                         .setPositiveButton("Yes", null )
                         .show();
             }else{
+                /*
                 Goal runGoal=db.goalDao().getGoal(Habit.TYPE_RUN);
                 runGoal.target=Integer.parseInt(run);
                 db.goalDao().update(runGoal);
@@ -50,6 +55,23 @@ public class SetGoal extends AppCompatActivity {
                 Goal waterGoal=db.goalDao().getGoal(Habit.TYPE_COUNT);
                 waterGoal.target=Integer.parseInt(water);
                 db.goalDao().update(waterGoal);
+                */
+
+                LiveData<Run> runHabit=db.runDao().getLastestHabit();
+                runHabit.observe(this, new Observer<Run>() {
+                    @Override
+                    public void onChanged(Run run_) {
+                        if (run_==null){
+                            Log.d("@@","No habit found");
+                        }
+                        else
+                        {
+                            run_.target=Integer.parseInt(run);
+                            db.runDao().update(run_);
+                        }
+                    }
+                });
+
             }
         });
     }
