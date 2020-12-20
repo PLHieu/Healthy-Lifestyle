@@ -6,7 +6,7 @@ import androidx.room.TypeConverters;
 import java.util.Calendar;
 
 public class Habit {
-    public Habit(int type) {
+    public Habit(int type) {//Auto today
 //        this.id = id;
         this.type = type;
         this.time = Calendar.getInstance();
@@ -15,10 +15,16 @@ public class Habit {
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);
     }
+    public Habit(int type,Calendar time) {//Get time passed in
+//        this.id = id;
+        this.type = type;
+        this.time = time;
+    }
 
     public static final int TYPE_RUN = 0;
     public static final int TYPE_SLEEP = 1;
     public static final int TYPE_COUNT = 2;
+    public static final int TYPE_MEAL = 3;
 
     @PrimaryKey(autoGenerate = true)
     public Long id;

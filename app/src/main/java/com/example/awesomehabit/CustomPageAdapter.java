@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +20,7 @@ import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
+import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
@@ -175,7 +175,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 break;
             }
             case R.id.btnMeal:{
-                Toast.makeText(mContext,"This feature is coming soon!",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(mContext, MealActivity.class);
+                mContext.startActivity(intent);
                 break;
             }
             case R.id.btnRunStatistic:

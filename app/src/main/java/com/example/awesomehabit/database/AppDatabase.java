@@ -1,7 +1,6 @@
 package com.example.awesomehabit.database;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -14,12 +13,13 @@ import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.custom.DailyCustomHabitDao;
+import com.example.awesomehabit.database.meal.DailyMeal;
+import com.example.awesomehabit.database.meal.DailyMealDao;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.running.RunDao;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 
 import static androidx.room.RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING;
 
-@Database(entities = {Run.class, SleepNight.class,Goal.class, CustomHabit.class, DailyCustomHabit.class}, version = 1, exportSchema = false)
+@Database(entities = {Run.class, SleepNight.class,Goal.class, CustomHabit.class, DailyCustomHabit.class, DailyMeal.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
@@ -38,6 +38,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract GoalDao goalDao();
     public abstract CustomHabitDao customHabitDao();
     public abstract DailyCustomHabitDao dailyCustomHabitDao();
+    public abstract DailyMealDao dailyMealDao();
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
@@ -77,7 +78,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE.goalDao().insert(waterGoal);
                     INSTANCE.goalDao().insert(sleepGoal);
 
-
                     // init dump data
                     INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT));
 
@@ -89,7 +89,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         int minute = rand.nextInt(50);
                         int second = rand.nextInt(50);
 
-                        Calendar calendar = new GregorianCalendar(2020,10,i,0,0,0);
+                        Calendar calendar = new GregorianCalendar(2020,11,i,0,0,0);
 
                         Date date = calendar.getTime();
                         String timestamp = String.valueOf(date.getTime());
@@ -103,7 +103,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         int hour = rand.nextInt(3) + 20;
                         int minute = rand.nextInt(59);
                         int second = rand.nextInt(59);
-                        Calendar time = new GregorianCalendar(2020, 10, i, 0, 0, 0);
+                        Calendar time = new GregorianCalendar(2020, 11, i, 12, 0, 0);
                         Calendar startTime = new GregorianCalendar(2020, 10, i, hour, minute, second);
                         hour = rand.nextInt(8);
                         minute = rand.nextInt(59);
