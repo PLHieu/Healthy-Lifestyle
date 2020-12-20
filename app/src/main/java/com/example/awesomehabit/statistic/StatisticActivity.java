@@ -49,16 +49,15 @@ public class StatisticActivity extends AppCompatActivity {
     public static float YEAR_MODE = 12f;
 
     public static String RUN_LABEL = "Distance(km)";
-    public static String WATER_LABEL = "Amount water";
     public static final String SLEEP_LABEL = "Sleep hour";
 
     public static String RUN_UNIT = "km";
-    public static String WATER_UNIT = "l";
     public static String SLEEP_UNIT = "hour";
 
     public static int RUN_TYPE = 0;
     public static int SLEEP_TYPE = 1;
-    public static int WATER_TYPE = 2;
+    public static int COUNT_TYPE = 2;
+    public static int TIME_TYPE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +128,18 @@ public class StatisticActivity extends AppCompatActivity {
             getRunData();
         else if (statisticType == SLEEP_TYPE)
             getSleepData();
-        else if (statisticType == WATER_TYPE)
-            getWaterData();
+        else if (statisticType == COUNT_TYPE)
+            getCountData();
+        else if (statisticType == TIME_TYPE)
+            getTimeData();
 
     }
 
-    private void getWaterData() {
+    private void getTimeData() {
+        //to be continued
+    }
+
+    private void getCountData() {
         //to be continued
     }
 

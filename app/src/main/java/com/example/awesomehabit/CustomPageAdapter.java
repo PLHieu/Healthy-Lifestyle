@@ -195,7 +195,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             }
             case R.id.btnCountStatistic: {
                 Intent intent = new Intent(mContext, StatisticActivity.class);
-                intent.putExtra("statisticType", StatisticActivity.WATER_TYPE);
+                intent.putExtra("statisticType", StatisticActivity.COUNT_TYPE);
                 mContext.startActivity(intent);
                 break;
             }
