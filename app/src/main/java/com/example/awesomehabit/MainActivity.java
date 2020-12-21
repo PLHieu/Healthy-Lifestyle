@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.statistic.StatisticActivity;
 import com.example.awesomehabit.statistic.WeekSummaryActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.mapboxsdk.Mapbox;
 
 public class MainActivity extends AppCompatActivity implements CustomCalendarView.CustomCalendarViewInterface {
@@ -59,6 +60,19 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
 
             }
         });
+
+        FloatingActionButton fab = findViewById(R.id.fabAddHabit);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setActionForFAB();
+            }
+        });
+    }
+
+    void setActionForFAB(){
+        Intent intent = new Intent(this, AddHabitActivity.class);
+        startActivity(intent);
     }
 
     @Override
