@@ -55,13 +55,13 @@
     <string name="set_goal_snackbar_success">Your goal is set to</string>
     <string name="set_goal_snackbar_fail">Your input is invalid!</string>
     <string name="implementing">Sorry! This feature is being developed.</string>
-    
+
     <!-- Day Label -->
     <string name="dateLabel">Date </string>
     <string name="monthLabel">Month </string>
     <string name="yearLabel"> Year </string>
     <string name="weekLabel">Week</string>
-    
+
     <!-- Week summary -->
     <string name="totalDistance">Total Distance</string>
     <string name="totalTime">Total Time</string>

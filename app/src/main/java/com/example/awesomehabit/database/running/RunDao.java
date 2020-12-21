@@ -56,4 +56,7 @@ public interface RunDao extends HabitDao {
 
     @Query("SELECT * from running_table where time=(select max(time) from running_table)")
     LiveData<Run> getLastestHabit();
+
+    @Query("SELECT * FROM running_table where id = '1'")
+    Run gettestRun();
 }

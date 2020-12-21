@@ -19,4 +19,8 @@ public class Meal {
     public int getCalories() {
         return calories;
     }
+
+    public int gettime(){
+        return 0; // todo: add
+    }
 }
