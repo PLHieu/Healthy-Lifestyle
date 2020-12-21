@@ -1,5 +1,4 @@
 package com.example.awesomehabit.meal;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,10 @@ import com.example.awesomehabit.R;
 import java.util.ArrayList;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
+    public void setMeals(ArrayList<Meal> meals) {
+        this.meals = meals;
+        notifyDataSetChanged();
+    }
 
     ArrayList<Meal> meals;
 
@@ -26,7 +29,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
         ImageView foodImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             foodName=itemView.findViewById(R.id.foodItem_name);
             foodCalo=itemView.findViewById(R.id.foodItem_calo);
             foodImage=itemView.findViewById(R.id.foodItem_image);
@@ -44,6 +46,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.foodName.setText(meals.get(position).getName());
         holder.foodCalo.setText(String.valueOf(meals.get(position).getCalories()));
+        if(meals.get(position).getBitmap()!=null)
+        holder.foodImage.setImageBitmap(meals.get(position).getBitmap());
     }
 
     @Override

@@ -1,18 +1,12 @@
 package com.example.awesomehabit.statistic;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.awesomehabit.R;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -24,14 +18,16 @@ public class ItemViewManager {
             return LayoutInflater.from(context).inflate(R.layout.my_run_view, null);
         else if (item.type == StatisticActivity.SLEEP_TYPE)
             return LayoutInflater.from(context).inflate(R.layout.my_sleep_view, null);
-        return LayoutInflater.from(context).inflate(R.layout.my_run_view, null);
+        else if (item.type == StatisticActivity.COUNT_TYPE)
+            return LayoutInflater.from(context).inflate(R.layout.my_count_view, null);
+        return LayoutInflater.from(context).inflate(R.layout.my_time_view, null);
     }
 
 
     public static void bindPlease(Context context, MyDataView item, View convertView) {
         setTextViewDate(item, convertView);
 
-        if (item.type != StatisticActivity.WATER_TYPE)
+        if (item.type != StatisticActivity.COUNT_TYPE)
             setTextViewTime(item, convertView);
 
         if (item.type == StatisticActivity.SLEEP_TYPE)
@@ -42,6 +38,14 @@ public class ItemViewManager {
             textView.setText(getText(item));
         }
 
+        if (item.type == StatisticActivity.COUNT_TYPE)
+            setTextViewCount(item, convertView);
+
+    }
+
+    private static void setTextViewCount(MyDataView item, View convertView) {
+        TextView textView = (TextView) convertView.findViewById(R.id.textViewCount);
+        textView.setText(item.data.toString());
     }
 
     private static void setSleepIconAndQuality(Context context, MyDataView item, View convertView) {
@@ -85,7 +89,6 @@ public class ItemViewManager {
             return item.data + " " + StatisticActivity.RUN_UNIT;
         else if (item.type == 2)
             return (int) (float) item.data + " " + StatisticActivity.SLEEP_UNIT;
-        else
-            return (int) (float) item.data + " " + StatisticActivity.WATER_UNIT;
+        return "";
     }
 }

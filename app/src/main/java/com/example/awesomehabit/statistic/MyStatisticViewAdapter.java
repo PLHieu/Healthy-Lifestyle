@@ -182,10 +182,10 @@ public class MyStatisticViewAdapter extends RecyclerView.Adapter<MyStatisticView
     }
 
     private String getLabel() {
-        if(statisticType == StatisticActivity.WATER_TYPE)
-            return StatisticActivity.WATER_LABEL;
+        if(statisticType == StatisticActivity.RUN_TYPE)
+            return StatisticActivity.RUN_LABEL;
         else if (statisticType == StatisticActivity.SLEEP_TYPE)
             return StatisticActivity.SLEEP_LABEL;
-        return StatisticActivity.RUN_LABEL;
+        return "";
     }
 }
