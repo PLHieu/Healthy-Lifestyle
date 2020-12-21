@@ -19,6 +19,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.custom.CustomHabit;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
+import com.example.awesomehabit.database.meal.DailyMeal;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.meal.Meal;
@@ -56,24 +58,7 @@ public class test_sync_data extends AppCompatActivity {
         signInButton = findViewById(R.id.sign_in_button);
 
         btn.setOnClickListener(v -> {
-           /* // Instantiate the RequestQueue.
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String urlRun ="http://192.168.178.35:8000/run/allrun/?userid=3";
-            String urlSleep ="http://192.168.178.35:8000/sleep/allsleep";
-            String urlFood ="http://192.168.178.35:8000/food/allfood";
-            String urlCustomHabit ="http://192.168.178.35:8000/customhabit/allcustomhabit";
-
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlRun, null,
-                    response -> {
-                        Log.d("sync", "Response is: "+ response.toString());
-
-
-                    },
-                    error -> Log.d("sync", error.toString()));
-
-            queue.add(jsonArrayRequest);*/
-
-            pushAllRun();
+            pushAllSleep();
 
         });
 
@@ -132,20 +117,6 @@ public class test_sync_data extends AppCompatActivity {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void pushRun() throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -179,47 +150,13 @@ public class test_sync_data extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
-
-       /* Map<String,Object> objMap = new HashMap<String,Object>();
-        *//*objMap.put("userid", run.id);
-        objMap.put("starttime", run.timeStart);
-        objMap.put("distance", run.distance);
-        objMap.put("routeID", run.routeID);
-        objMap.put("goal", run.target);
-        JSONObject JsonObject = JSONObject.wrap(objMap);*//*
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("userid", "1");
-        jsonObject.put("starttime", run.timeStart);
-        jsonObject.put("distance", run.distance);
-        jsonObject.put("routeID", run.routeID);
-        jsonObject.put("goal", run.target);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.178.35:8000/run/add/", jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("sync", "Response is: " + response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("sync", error.toString());
-
-                    }
-                }
-        );
-
-        queue.add(jsonObjectRequest);*/
     }
-
     private void pushAllRun(){
         RequestQueue queue = Volley.newRequestQueue(this);
 
         List<Run> runs = AppDatabase.getDatabase(this).runDao().getAllRun();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/run/add/", new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/run/push/", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("sync", "Response is: " + response);
@@ -229,14 +166,128 @@ public class test_sync_data extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> params = new HashMap<String, String>(); //todo them user id
+                params.put("userid", "1");
 
-                for(int i = 0; i< runs.size(); i++){
-                    try {
-                        params.put(String.valueOf(i), runtoJSON(runs.get(i)).toString());
-                    } catch (JSONException e) {
-                        Log.d("sync", e.getMessage());
+                Map<String, String> data = new HashMap<String, String>();
+
+                try{
+                    JSONArray jsonArray = new JSONArray() ;
+                    for(int i = 0; i< runs.size(); i++){
+                        jsonArray.put(runtoJSON(runs.get(i)));
                     }
 
+
+                    params.put("data", jsonArray.toString());
+
+                }catch (JSONException e) {
+                    Log.d("sync", e.getMessage());
+                }
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+    private void pushAllSleep(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        List<SleepNight> sleeps = AppDatabase.getDatabase(this).sleepDao().getAllNightsNonLive();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/sleep/push/", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("sync", "Response is: " + response);
+            }
+        }, error -> Log.d("sync", error.toString())){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userid", "1");
+
+                Map<String, String> data = new HashMap<String, String>();
+
+                try{
+                    JSONArray jsonArray = new JSONArray() ;
+                    for(int i = 0; i< sleeps.size(); i++){
+                        jsonArray.put(sleeptoJSON(sleeps.get(i)));
+                    }
+
+
+                    params.put("data", jsonArray.toString());
+
+                }catch (JSONException e) {
+                    Log.d("sync", e.getMessage());
+                }
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+    private void pushCustomHabit(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        List<CustomHabit> customHabits = AppDatabase.getDatabase(this).customHabitDao().getAllNone();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/customhabit/pushhb/", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("sync", "Response is: " + response);
+            }
+        }, error -> Log.d("sync", error.toString())){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userid", "1");
+
+                Map<String, String> data = new HashMap<String, String>();
+
+                try{
+                    JSONArray jsonArray = new JSONArray() ;
+                    for(int i = 0; i< customHabits.size(); i++){
+                        jsonArray.put(customHabittoJSON(customHabits.get(i)));
+                    }
+
+                    params.put("data", jsonArray.toString());
+
+                }catch (JSONException e) {
+                    Log.d("sync", e.getMessage());
+                }
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+    private void pushdailyCustomHabit(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        List<DailyCustomHabit> dailycustomHabits = AppDatabase.getDatabase(this).dailyCustomHabitDao().getAllHabitNone();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/customhabit/pushhbtrack/", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("sync", "Response is: " + response);
+            }
+        }, error -> Log.d("sync", error.toString())){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userid", "1");
+
+                Map<String, String> data = new HashMap<String, String>();
+
+                try{
+                    JSONArray jsonArray = new JSONArray() ;
+                    for(int i = 0; i< dailycustomHabits.size(); i++){
+                        jsonArray.put(dailycustomHabittoJSON(dailycustomHabits.get(i)));
+                    }
+
+                    params.put("data", jsonArray.toString());
+
+                }catch (JSONException e) {
+                    Log.d("sync", e.getMessage());
                 }
                 return params;
             }
@@ -245,15 +296,16 @@ public class test_sync_data extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+
     public JSONObject runtoJSON(Run run) throws JSONException {
         JSONObject jo = new JSONObject();
         jo.put("starttime", run.timeStart);
         jo.put("distance", String.valueOf(run.distance) );
+        jo.put("runningtime", String.valueOf(run.runningTime) );
         jo.put("routeID", String.valueOf(run.routeID) );
         jo.put("goal", String.valueOf(run.target) );
         return jo;
     }
-
     public JSONObject sleeptoJSON(SleepNight sleep) throws JSONException {
         JSONObject jo = new JSONObject();
         jo.put("starttime", sleep.getStartTimeMilli());
@@ -262,14 +314,6 @@ public class test_sync_data extends AppCompatActivity {
         jo.put("goal", String.valueOf(sleep.target) );
         return jo;
     }
-
-    public JSONObject foodtoJSON(Meal meal)  throws JSONException {
-        JSONObject jo = new JSONObject();
-        jo.put("starttime", meal.gettime());
-        jo.put("calo", String.valueOf(meal.getCalories()) );
-        return jo;
-    }
-
     public JSONObject customHabittoJSON(CustomHabit customHabit) throws JSONException {
         JSONObject jo = new JSONObject();
         jo.put("habitID", customHabit.HabitID);
@@ -277,15 +321,21 @@ public class test_sync_data extends AppCompatActivity {
         jo.put("type", customHabit.type );
         return jo;
     }
-
-    //todo: them phan detail
-    /*public JSONObject customHabitDetailtoJSON(CustomHabit customHabit) throws JSONException {
+    public JSONObject dailycustomHabittoJSON(DailyCustomHabit dailyCustomHabit) throws JSONException {
         JSONObject jo = new JSONObject();
-        jo.put("habitID", customHabit.HabitID);
-        jo.put("name", customHabit.name );
-        jo.put("type", customHabit.type );
+        jo.put("habitID", dailyCustomHabit.HabitID);
+        jo.put("target", dailyCustomHabit.target );
+        jo.put("current", dailyCustomHabit.current );
+        jo.put("time", String.valueOf(dailyCustomHabit.time.getTimeInMillis()));
         return jo;
-    }*/
+    }
+    //todo: xu li daily meal
+        /*public JSONObject foodtoJSON(DailyMeal meal)  throws JSONException {
+            JSONObject jo = new JSONObject();
+            jo.put("starttime", meal.gettime());
+            jo.put("calo", String.valueOf(meal.getCalories()) );
+            return jo;
+        }*/
 
 
     private void pullRun(){
@@ -326,7 +376,6 @@ public class test_sync_data extends AppCompatActivity {
                 );
     }
 
-
     private void pullSleep(){
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, "http://192.168.178.35:8000/sleep/allsleep", null,
@@ -363,7 +412,9 @@ public class test_sync_data extends AppCompatActivity {
     }
 
 
-    private void pullMeal(){
+
+    //todo: xu li meal
+    /*private void pullMeal(){
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, "http://192.168.178.35:8000/food/allfood/", null,
                 response -> {
@@ -399,6 +450,17 @@ public class test_sync_data extends AppCompatActivity {
                 jsrun.getLong("runningtime"),
                 jsrun.getString("rouid")
         );
-    }
+    }*/
+
+    /*private CustomHabit parseCustomHabitJS(JSONObject jssleep) throws JSONException {
+        Long timeMillis = jssleep.getLong("starttime");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeMillis);
+        return new CustomHabit(na,
+                timeMillis,
+                jssleep.getLong("endtime"),
+                jssleep.getInt("quality")
+        );
+    }*/
 
 }

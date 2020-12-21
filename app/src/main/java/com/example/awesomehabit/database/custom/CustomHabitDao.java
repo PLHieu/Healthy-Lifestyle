@@ -13,4 +13,7 @@ public interface CustomHabitDao {
     void insert(CustomHabit customHabit);
     @Query("select * from customhabit")
     LiveData<List<CustomHabit>> getAll();
+
+    @Query("select * from customhabit")
+    List<CustomHabit> getAllNone();
 }

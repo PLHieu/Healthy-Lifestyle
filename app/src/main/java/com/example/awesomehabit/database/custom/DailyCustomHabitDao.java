@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Dao
 public interface DailyCustomHabitDao {
@@ -16,4 +17,8 @@ public interface DailyCustomHabitDao {
     void update(DailyCustomHabit dailyCustomHabit);
     @Query("select * from dailycustomhabit where HabitID=:id and time=:time limit 1")
     LiveData<DailyCustomHabit> getHabit(int id, Calendar time);//Lay habit vs ID vao ngay time
+
+    @Query("select * from dailycustomhabit ")
+    List<DailyCustomHabit> getAllHabitNone();
+
 }

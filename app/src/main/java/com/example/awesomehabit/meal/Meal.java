@@ -58,7 +58,5 @@ public class Meal {
             return decodedByte;
         }
        return null;
-    public int gettime(){
-        return 0; // todo: add
     }
 }

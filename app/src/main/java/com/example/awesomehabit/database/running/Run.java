@@ -47,12 +47,6 @@ public class Run extends Habit {
     @ColumnInfo(name = "runningTime")
     public long runningTime;
 
-//    public Run(int distance, long timeStampStart, long runningTime) {
-//        this.distance = distance;
-//        this.timeStampStart = timeStampStart;
-//        this.routeID = String.valueOf(timeStampStart);
-//        this.runningTime = runningTime;
-//    }
     public Run(int distance, String timeStart,Calendar time, long runningTime, String routeID) {
         super(Habit.TYPE_RUN);
         this.distance = distance;
@@ -61,14 +55,6 @@ public class Run extends Habit {
         this.runningTime = runningTime;
         this.time = time;
     }
-
-//    public Run(int distance, String timeStart, long runningTime, String routeID) {
-//        super(Habit.TYPE_RUN);
-//        this.distance = distance;
-//        this.timeStart = timeStart;
-//        this.routeID = routeID;
-//        this.runningTime = runningTime;
-//    }
 
 
     //Tra ve speed voi toc do la km/h
