@@ -2,21 +2,22 @@ package com.example.awesomehabit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.awesomehabit.database.AppDatabase;
-import com.example.awesomehabit.database.Habit;
+import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
@@ -50,6 +51,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.card_list, collection, false);
 
+        /*
         Button btnRun=(Button)layout.findViewById(R.id.startRunning);
         Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
         Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
@@ -63,15 +65,16 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
 
         Button btnAddWater=layout.findViewById(R.id.btn_countAdd);
         Button btnMinusWater=layout.findViewById(R.id.btn_countMinus);
+*/
 
-
+        RecyclerView recyclerView=layout.findViewById(R.id.rvCards);
+        CardAdapter cardAdapter=new CardAdapter();
+        cardAdapter.setmContext(mContext);
+        recyclerView.setAdapter(cardAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         Calendar pageDay=Calendar.getInstance();
         pageDay.add(Calendar.DATE,position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-        //pageDay.set(Calendar.HOUR,12);
-        //pageDay.set(Calendar.MINUTE,0);
-        //pageDay.set(Calendar.SECOND,0);
-        //pageDay.set(Calendar.MILLISECOND,0);
         int day=pageDay.get(Calendar.DAY_OF_MONTH);
         int month=pageDay.get(Calendar.MONTH);
         int year=pageDay.get(Calendar.YEAR);
@@ -86,7 +89,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                         totalRunDistance+=runList.get(i).distance;
                     }
                 }
-               distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
+                //distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
+                cardAdapter.updateRun(totalRunDistance);
             }
         });
         db.sleepDao().getHabitFrom(day,month,year).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
@@ -94,27 +98,31 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             public void onChanged(List<SleepNight> sleepNights) {
                 int totalSleepDuration=0;
                 if (sleepNights!=null && sleepNights.size()>0){
-
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
                     }
-                    //sleepTime.setText(String.valueOf(totalSleepDuration)+" / ");
                 }
                 else{
-                    //sleepTime.setText("0:00 / ");
                 }
-                int seconds = (int) (totalSleepDuration / 1000) % 60 ;
-                int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
-                int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
+                //int seconds = (int) (totalSleepDuration / 1000) % 60 ;
+                //int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
+                //int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
+                //sleepTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes)+"/");
+                cardAdapter.updateSleep(totalSleepDuration);
 
-                sleepTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes)+"/");
             }
         });
-
+        db.customHabitDao().getAllCustomHabitFromDate(day,month,year).observe((AppCompatActivity) mContext, new Observer<List<CustomHabitDao.CustomHabit_DailyCustomHabit>>() {
+            @Override
+            public void onChanged(List<CustomHabitDao.CustomHabit_DailyCustomHabit> customHabit_dailyCustomHabits) {
+                cardAdapter.setHabitPairs(customHabit_dailyCustomHabits);
+                Log.d("@@@",String.valueOf(customHabit_dailyCustomHabits.size()));
+            }
+        });
         db.dailyCustomHabitDao().getHabit(1,day,month,year).observe((AppCompatActivity) mContext, new Observer<DailyCustomHabit>() {
             @Override
             public void onChanged(DailyCustomHabit dailyCustomHabit) {
-                if(dailyCustomHabit!=null){
+                /*if(dailyCustomHabit!=null){
                     tvWater.setText(String.valueOf(dailyCustomHabit.current)+" / ");
                     if(dailyCustomHabit.current>0)
                         btnMinusWater.setVisibility(View.VISIBLE);
@@ -124,7 +132,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 else {
                     tvWater.setText("Found nothing today");
                     btnMinusWater.setVisibility(View.INVISIBLE);
-                }
+                }*/
             }
         });
 
@@ -132,22 +140,22 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             @Override
             public void onChanged(List<Integer> targets) {
                 if(targets!=null && targets.size() > 2) {
-                    distanceGoal.setText(String.valueOf((float) targets.get(Habit.TYPE_RUN) / 1000) + " KM");
-                    sleepTimeGoal.setText(String.valueOf(targets.get(Habit.TYPE_SLEEP)));
-                    tvWaterGoal.setText(String.valueOf(targets.get(Habit.TYPE_COUNT)));
+                    //distanceGoal.setText(String.valueOf((float) targets.get(Habit.TYPE_RUN) / 1000) + " KM");
+                    //sleepTimeGoal.setText(String.valueOf(targets.get(Habit.TYPE_SLEEP)));
+                    //tvWaterGoal.setText(String.valueOf(targets.get(Habit.TYPE_COUNT)));
                 }
             }
         });
 
 
-
+/*
         btnRun.setOnClickListener(this);
         btnSleep.setOnClickListener(this);
         btnMeal.setOnClickListener(this);
         btnAddWater.setOnClickListener(this);
         btnMinusWater.setOnClickListener(this);
         ((Button)layout.findViewById(R.id.btnRunStatistic)).setOnClickListener(this);
-        ((Button)layout.findViewById(R.id.btnSleepStatistic)).setOnClickListener(this);
+        ((Button)layout.findViewById(R.id.btnSleepStatistic)).setOnClickListener(this);*/
         collection.addView(layout);
         return layout;
     }

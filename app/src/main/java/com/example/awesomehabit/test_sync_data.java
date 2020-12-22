@@ -323,7 +323,7 @@ public class test_sync_data extends AppCompatActivity {
     }
     public JSONObject dailycustomHabittoJSON(DailyCustomHabit dailyCustomHabit) throws JSONException {
         JSONObject jo = new JSONObject();
-        jo.put("habitID", dailyCustomHabit.HabitID);
+        jo.put("habitID", dailyCustomHabit.HabitID_);
         jo.put("target", dailyCustomHabit.target );
         jo.put("current", dailyCustomHabit.current );
         jo.put("time", String.valueOf(dailyCustomHabit.time.getTimeInMillis()));
