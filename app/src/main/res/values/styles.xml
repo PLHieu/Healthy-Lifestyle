@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/purple_200</item>
+        <item name="android:windowAnimationStyle">@style/animation</item>
     </style>
     <style name="SleepButtons" parent="Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@android:color/white</item>
@@ -18,5 +19,10 @@
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorSecondary">#bb88bb</item>
         <item name="android:textSize">28sp</item>
+    </style>
+    
+    <style name="animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>
