@@ -11,11 +11,13 @@ class SleepNight() : Habit(TYPE_SLEEP) {
 //    @PrimaryKey(autoGenerate = true)
 //    var id = 0;
 
-    constructor(time: Calendar, startTimeMilli: Long, endTimeMilli: Long, sleepQuality: Int) : this() {
-        this.time = time
+    constructor(day:Int,month:Int,year:Int, startTimeMilli: Long, endTimeMilli: Long, sleepQuality: Int) : this() {
         this.startTimeMilli = startTimeMilli
         this.endTimeMilli = endTimeMilli
         this.sleepQuality = sleepQuality
+        this.day=day
+        this.month=month
+        this.year=year
     }
 
     @ColumnInfo(name = "start_time_milli")

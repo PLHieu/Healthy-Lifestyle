@@ -47,13 +47,16 @@ public class Run extends Habit {
     @ColumnInfo(name = "runningTime")
     public long runningTime;
 
-    public Run(int distance, String timeStart,Calendar time, long runningTime, String routeID) {
+    public Run(int distance, String timeStart,int day,int month,int year, long runningTime, String routeID) {
         super(Habit.TYPE_RUN);
         this.distance = distance;
         this.timeStart = timeStart;
         this.routeID = routeID;
         this.runningTime = runningTime;
-        this.time = time;
+        this.day=day;
+        this.month=month;
+        this.year=year;
+        //this.time = time;
     }
 
 

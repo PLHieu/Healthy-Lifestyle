@@ -116,15 +116,14 @@ public class RunningService extends LifecycleService {
                 Long currenttime = System.currentTimeMillis();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(currenttime);
-                calendar.set(Calendar.HOUR, 12);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
+                int day=calendar.get(Calendar.DAY_OF_MONTH);
+                int month=calendar.get(Calendar.MONTH);
+                int year=calendar.get(Calendar.YEAR);
                 Run run;
                 if(saveRoute){
-                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime), calendar,elapsedMillis, String.valueOf(date.getTime()));
+                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime), day,month,year,elapsedMillis, String.valueOf(date.getTime()));
                 }else{
-                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime),calendar,elapsedMillis, "none");
+                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime),day,month,year,elapsedMillis, "none");
                 }
 
                 // chen row vao data base

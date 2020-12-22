@@ -39,7 +39,7 @@ public class MealActivity extends AppCompatActivity {
                 Meal meal = new Meal("bun dau", 69);
 
                 meal.setBitmap(imageBitmap);
-                LiveData<DailyMeal> dailyMealLiveData = db.dailyMealDao().getHabitFrom(CustomCalendarView.currentDay);
+                LiveData<DailyMeal> dailyMealLiveData = db.dailyMealDao().getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
 
                 dailyMealLiveData.observe(this, new Observer<DailyMeal>() {
                     @Override
@@ -49,7 +49,7 @@ public class MealActivity extends AppCompatActivity {
                             dailyMeal.mealList.add(meal);
                             db.dailyMealDao().update(dailyMeal);
                         } else {
-                            DailyMeal dailyMeal1 = new DailyMeal(CustomCalendarView.currentDay);
+                            DailyMeal dailyMeal1 = new DailyMeal(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
                             dailyMeal1.mealList = new ArrayList<>();
                             dailyMeal1.mealList.add(meal);
                             db.dailyMealDao().insert(dailyMeal1);
@@ -75,7 +75,7 @@ public class MealActivity extends AppCompatActivity {
 
 
         db=AppDatabase.getDatabase(this);
-        db.dailyMealDao().getHabitFrom(CustomCalendarView.currentDay).observe(this, new Observer<DailyMeal>() {
+        db.dailyMealDao().getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year).observe(this, new Observer<DailyMeal>() {
             @Override
             public void onChanged(DailyMeal dailyMeal) {
                 if(dailyMeal!=null)

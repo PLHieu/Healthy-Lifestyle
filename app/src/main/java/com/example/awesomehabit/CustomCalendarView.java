@@ -16,6 +16,10 @@ import java.util.zip.Inflater;
 public class CustomCalendarView extends RecyclerView implements DaySelectButtonAdapter.OnDaySelectListener{
     public final static int NUMBER_OF_DAY_BUTTONS=1000;//Doesn't affect performance!
     public static Calendar currentDay=Calendar.getInstance();
+    public static int currentDay_Day=currentDay.get(Calendar.DAY_OF_MONTH);
+    public static int currentDay_Month=currentDay.get(Calendar.MONTH);
+    public static int currentDay_Year=currentDay.get(Calendar.YEAR);
+
     private  SnapHelper snapHelper = new PagerSnapHelper();
     private Context context;
     final LinearLayoutManager mLayoutManager;
@@ -37,10 +41,13 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
         setLayoutManager(mLayoutManager);
 
         scrollToPosition(NUMBER_OF_DAY_BUTTONS/2-2);
-        currentDay.set(Calendar.HOUR,12);
-        currentDay.set(Calendar.MINUTE,0);
-        currentDay.set(Calendar.SECOND,0);
-        currentDay.set(Calendar.MILLISECOND,0);
+        currentDay_Day=currentDay.get(Calendar.DAY_OF_MONTH);
+        currentDay_Month=currentDay.get(Calendar.MONTH);
+        currentDay_Year=currentDay.get(Calendar.YEAR);
+        //currentDay.set(Calendar.HOUR,12);
+        //currentDay.set(Calendar.MINUTE,0);
+        //currentDay.set(Calendar.SECOND,0);
+        //currentDay.set(Calendar.MILLISECOND,0);
         snapHelper.attachToRecyclerView(this);
     }
 
@@ -57,10 +64,14 @@ public class CustomCalendarView extends RecyclerView implements DaySelectButtonA
 
         currentDay=Calendar.getInstance();
         currentDay.add(Calendar.DATE,position-NUMBER_OF_DAY_BUTTONS/2);
-        currentDay.set(Calendar.HOUR,12);
-        currentDay.set(Calendar.MINUTE,0);
-        currentDay.set(Calendar.SECOND,0);
-        currentDay.set(Calendar.MILLISECOND,0);
+
+        currentDay_Day=currentDay.get(Calendar.DAY_OF_MONTH);
+        currentDay_Month=currentDay.get(Calendar.MONTH);
+        currentDay_Year=currentDay.get(Calendar.YEAR);
+        //currentDay.set(Calendar.HOUR,12);
+        //currentDay.set(Calendar.MINUTE,0);
+        //currentDay.set(Calendar.SECOND,0);
+        //currentDay.set(Calendar.MILLISECOND,0);
     }
     public interface CustomCalendarViewInterface
     {

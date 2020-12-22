@@ -15,7 +15,7 @@ class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application, private val fragmentManager: FragmentManager) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
-    private val nights = database.getHabitFrom(CustomCalendarView.currentDay)
+    private val nights = database.getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year)
     var snackbarString: String = ""
 
     val nightsString = Transformations.map(nights) { nights ->

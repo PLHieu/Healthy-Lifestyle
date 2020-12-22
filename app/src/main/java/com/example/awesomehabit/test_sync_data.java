@@ -368,9 +368,14 @@ public class test_sync_data extends AppCompatActivity {
         Long timeMillis = jsrun.getLong("timestart");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        int month=calendar.get(Calendar.MONTH);
+        int year=calendar.get(Calendar.YEAR);
         return new Run(jsrun.getInt("distance"),
                 jsrun.getString("timestart"),
-                calendar,
+                day,
+                month,
+                year,
                 jsrun.getLong("runningtime"),
                 jsrun.getString("rouid")
                 );
@@ -404,7 +409,10 @@ public class test_sync_data extends AppCompatActivity {
         Long timeMillis = jssleep.getLong("starttime");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
-        return new SleepNight(calendar,
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        int month=calendar.get(Calendar.MONTH);
+        int year=calendar.get(Calendar.YEAR);
+        return new SleepNight(day,month,year,
                 timeMillis,
                 jssleep.getLong("endtime"),
                 jssleep.getInt("quality")

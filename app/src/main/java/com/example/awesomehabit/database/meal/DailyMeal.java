@@ -9,8 +9,8 @@ import java.util.Calendar;
 
 @Entity
 public class DailyMeal extends Habit {
-    public DailyMeal(Calendar time) {
-        super(Habit.TYPE_MEAL,time);
+    public DailyMeal(int day,int month, int year) {
+        super(Habit.TYPE_MEAL,day,month,year);
     }
     public ArrayList<Meal> mealList;
 }

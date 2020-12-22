@@ -25,9 +25,6 @@ public interface DailyMealDao extends HabitDao {
     int getType();
 
     @TypeConverters(Converters.class)
-    @Query("select * from dailymeal where time=:calendar limit 1")
-    LiveData<DailyMeal> getHabitFrom(Calendar calendar);
-
-    @Query("SELECT * from dailymeal where time=(select max(time) from dailymeal)")
-    LiveData<DailyMeal> getLastestHabit();
+    @Query("select * from dailymeal where day=:day and month=:month and year=:year limit 1")
+    LiveData<DailyMeal> getHabitFrom(int day, int month, int year);
 }

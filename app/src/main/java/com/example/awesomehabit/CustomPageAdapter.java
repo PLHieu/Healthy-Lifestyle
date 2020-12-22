@@ -68,12 +68,15 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
 
         Calendar pageDay=Calendar.getInstance();
         pageDay.add(Calendar.DATE,position-CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-        pageDay.set(Calendar.HOUR,12);
-        pageDay.set(Calendar.MINUTE,0);
-        pageDay.set(Calendar.SECOND,0);
-        pageDay.set(Calendar.MILLISECOND,0);
+        //pageDay.set(Calendar.HOUR,12);
+        //pageDay.set(Calendar.MINUTE,0);
+        //pageDay.set(Calendar.SECOND,0);
+        //pageDay.set(Calendar.MILLISECOND,0);
+        int day=pageDay.get(Calendar.DAY_OF_MONTH);
+        int month=pageDay.get(Calendar.MONTH);
+        int year=pageDay.get(Calendar.YEAR);
 
-        db.runDao().getHabitFrom(pageDay).observe((AppCompatActivity) mContext, new Observer<List<Run>>() {
+        db.runDao().getHabitFrom(day,month,year).observe((AppCompatActivity) mContext, new Observer<List<Run>>() {
             @Override
             public void onChanged(List<Run> runList) {
                 int totalRunDistance=0;
@@ -86,7 +89,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
             }
         });
-        db.sleepDao().getHabitFrom(pageDay).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
+        db.sleepDao().getHabitFrom(day,month,year).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
                 int totalSleepDuration=0;
@@ -108,7 +111,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             }
         });
 
-        db.dailyCustomHabitDao().getHabit(1,pageDay).observe((AppCompatActivity) mContext, new Observer<DailyCustomHabit>() {
+        db.dailyCustomHabitDao().getHabit(1,day,month,year).observe((AppCompatActivity) mContext, new Observer<DailyCustomHabit>() {
             @Override
             public void onChanged(DailyCustomHabit dailyCustomHabit) {
                 if(dailyCustomHabit!=null){
@@ -200,7 +203,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 break;
             }
             case R.id.btn_countAdd: {
-                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay);
+                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
                 Observer observer=new Observer<DailyCustomHabit>() {
                     @Override
                     public void onChanged(DailyCustomHabit dailyCustom) {
@@ -210,7 +213,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                             db.dailyCustomHabitDao().update(dailyCustom);
                         }
                         else{
-                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,1,10,CustomCalendarView.currentDay);
+                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,1,10,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
                             db.dailyCustomHabitDao().insert(dailyCustomHabit);
                         }
                     }
@@ -219,7 +222,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             }
             break;
             case R.id.btn_countMinus:{
-                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay);
+                LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(1,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
                 Observer observer=new Observer<DailyCustomHabit>() {
                     @Override
                     public void onChanged(DailyCustomHabit dailyCustom) {
@@ -229,7 +232,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                             db.dailyCustomHabitDao().update(dailyCustom);
                         }
                         else{
-                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,0,10,CustomCalendarView.currentDay);
+                            DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(1,0,10,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
                             db.dailyCustomHabitDao().insert(dailyCustomHabit);
                         }
                     }

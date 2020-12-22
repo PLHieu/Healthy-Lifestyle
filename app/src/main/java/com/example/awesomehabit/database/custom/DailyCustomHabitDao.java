@@ -15,8 +15,8 @@ public interface DailyCustomHabitDao {
     void insert(DailyCustomHabit dailyCustomHabit);
     @Update
     void update(DailyCustomHabit dailyCustomHabit);
-    @Query("select * from dailycustomhabit where HabitID=:id and time=:time limit 1")
-    LiveData<DailyCustomHabit> getHabit(int id, Calendar time);//Lay habit vs ID vao ngay time
+    @Query("select * from dailycustomhabit where HabitID=:id and day=:day and month=:month and year=:year limit 1")
+    LiveData<DailyCustomHabit> getHabit(int id, int day, int month, int year);//Lay habit vs ID vao ngay time
 
     @Query("select * from dailycustomhabit ")
     List<DailyCustomHabit> getAllHabitNone();
