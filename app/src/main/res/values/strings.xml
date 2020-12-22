@@ -76,5 +76,6 @@
     <string name="water_intake">Water intake</string>
     <string name="add_a_meal">Add a meal</string>
     <string name="food_intake">Food intake</string>
+    <string name="name">Name</string>
 
 </resources>

@@ -31,6 +31,4 @@
             android:text="Mon"
             android:textColor="#ffffff"
             android:paddingBottom="8dp"/>
-
-
 </LinearLayout>
