@@ -3,12 +3,16 @@ package com.example.awesomehabit;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -18,6 +22,7 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -29,6 +34,8 @@ public class AddHabitActivity extends AppCompatActivity {
 
     static int GALLERY_REQUEST = 3004;
     ArrayList<Integer> listIcon = new ArrayList<>(Arrays.asList(R.drawable.sleep, R.drawable.run, R.drawable.water, R.drawable.waterbottle, R.drawable.bed));
+
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,7 @@ public class AddHabitActivity extends AppCompatActivity {
         buttonCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setDialog(getString(R.string.dialogCountType));
                 setActionForHabitTypeButton(buttonCount);
             }
         });
@@ -64,6 +72,7 @@ public class AddHabitActivity extends AppCompatActivity {
         buttonTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setDialog(getString(R.string.dialogTimeType));
                 setActionForHabitTypeButton(buttonTime);
             }
         });
@@ -72,11 +81,29 @@ public class AddHabitActivity extends AppCompatActivity {
         buttonTick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setDialog(getString(R.string.dialogTickType));
                 setActionForHabitTypeButton(buttonTick);
             }
         });
 
         createGridLayoutIcon();
+    }
+
+    private void setDialog(String content) {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_type, null);
+        TextView textView = view.findViewById(R.id.txtViewContentType);
+        textView.setText(content);
+
+        dialog = new Dialog(this);
+        dialog.setContentView(view);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.background));
+        }
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.background));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().getAttributes().windowAnimations= R.style.animation;
     }
 
     private void showGridToChooseIcon() {
@@ -121,6 +148,7 @@ public class AddHabitActivity extends AppCompatActivity {
         buttonTime.setBackgroundResource(R.color.teal_700);
 
         button.setBackgroundResource(R.color.teal_200);
+        dialog.show();
     }
 
 

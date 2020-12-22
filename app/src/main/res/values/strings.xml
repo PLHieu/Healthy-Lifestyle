@@ -78,4 +78,13 @@
     <string name="food_intake">Food intake</string>
     <string name="name">Name</string>
 
+    <string name="dialogCountType">
+        You can choose to increase or decrease the number when you do something (such like increase 1 when you do push-up 1 time).
+    </string>
+    <string name="dialogTimeType">
+        You can see the time you spend for that habit (like time for meditating).
+    </string>
+    <string name="dialogTickType">
+        You can tick when you do something in a day (like reading a book, doing homework, etc).
+    </string>
 </resources>
