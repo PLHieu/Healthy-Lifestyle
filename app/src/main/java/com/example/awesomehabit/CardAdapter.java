@@ -1,7 +1,6 @@
 package com.example.awesomehabit;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
-import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+
+    public class viewCardType {
+        public final static int RUN=0;
+        public final static int SLEEP=1;
+        public final static int FOOD=2;
+        public final static int COUNT=3;
+        public final static int TICK=4;
+        public final static int TIME=5;
+    }
+
     String totalDistanceString ="no data";
     String totalSleepdurationString ="no data";
     Context mContext;
@@ -41,21 +48,25 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType){
-            case 0: {
+            case viewCardType.RUN: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_card, parent, false);
                 return new RunViewHolder(view);
             }
-            case 1: {
+            case viewCardType.SLEEP: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sleeping_card, parent, false);
                 return new SleepViewHolder(view);
             }
-            case 2: {
+            case viewCardType.FOOD: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_card, parent, false);
                 return new FoodViewHolder(view);
             }
-            case 3: {
+            case viewCardType.COUNT: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.counting_card, parent, false);
                 return new CountViewHolder(view);
+            }
+            case viewCardType.TICK:{
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticking_card, parent, false);
+                return new TickViewHolder(view);
             }
         }
         return null;
@@ -64,19 +75,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()){
-            case 0:
+            case viewCardType.RUN:
                 RunViewHolder runViewHolder=(RunViewHolder)holder;
                 runViewHolder.distance.setText(totalDistanceString);
                 runViewHolder.distanceGoal.setText("99.99km");
             break;
-            case 1:
+            case viewCardType.SLEEP:
                 SleepViewHolder sleepViewHolder=(SleepViewHolder)holder;
                 sleepViewHolder.sleepTime.setText(totalSleepdurationString);
                 break;
-            case 2:
+            case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
                 break;
-            case 3:
+            case viewCardType.COUNT:
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
@@ -189,15 +200,29 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             tvName=itemView.findViewById(R.id.countingHabitName);
         }
     }
+    public class TickViewHolder extends RecyclerView.ViewHolder{
+
+        public TickViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
 
     @Override
     public int getItemViewType(int position) {
-        // Just as an example, return 0 or 2 depending on position
-        // Note that unlike in ListView adapters, types don't have to be contiguous
-        if(position<=2)
+        if(position<=2)//3 habit dau la default
             return position;
         else
-            return 3;
+        {
+            switch (habit_pairs.get(position-3).customHabit_.type){
+                case CustomHabit.TYPE_COUNT:
+                    return viewCardType.COUNT;
+                case CustomHabit.TYPE_TICK:
+                    return viewCardType.TICK;
+                case CustomHabit.TYPE_TIME:
+                    return viewCardType.TIME;
+            }
+        }
+        return -1;
     }
 
     public void updateRun(int totalDistance){
