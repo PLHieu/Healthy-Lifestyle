@@ -25,6 +25,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.custom.CustomHabit;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -159,6 +162,8 @@ public class AddHabitActivity extends AppCompatActivity {
             Toast.makeText(this, "You did not enter a name for your habit.", Toast.LENGTH_SHORT).show();
             return;
         }
+        AppDatabase appDatabase=AppDatabase.getDatabase(this);
+        appDatabase.customHabitDao().insert(new CustomHabit(habitName,CustomHabit.TYPE_COUNT));
     }
 
     private void setActionForImageChoosing() {
