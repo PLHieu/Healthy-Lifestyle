@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,7 +45,8 @@ import java.util.Map;
 
 public class test_sync_data extends AppCompatActivity {
 
-    Button btn;
+    Button btn, btnsiup;
+    EditText edtusername, edtpas;
     SignInButton signInButton;
     GoogleSignInClient mGoogleSignInClient;
     static int RC_SIGN_IN = 23;
@@ -56,13 +58,23 @@ public class test_sync_data extends AppCompatActivity {
 
         btn = findViewById(R.id.sync);
         signInButton = findViewById(R.id.sign_in_button);
+        btnsiup = findViewById(R.id.signup);
+        edtusername = findViewById(R.id.edtusername);
+        edtpas = findViewById(R.id.edtpass);
 
         btn.setOnClickListener(v -> {
-            pushAllSleep();
-
+//            pushAllSleep();
+            signin();
         });
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        btnsiup.setOnClickListener( v -> {
+            signup();
+        });
+
+
+
+
+        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //                .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
@@ -73,18 +85,53 @@ public class test_sync_data extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account!= null){
 
-        }
+        }*/
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signin();
+                signingoogle();
             }
         });
-
     }
 
     private void signin() {
+
+    }
+
+    private void signup() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String username = edtusername.getText().toString();
+        String pas = edtpas.getText().toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,"http://192.168.178.35:8000/run/newsignup/", r -> {
+            Log.d("sync", r);
+        }, e-> {
+            Log.d("sync", e.toString());
+        }) {
+            // danh cho viec request voi token
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("Authorization", "Token "+ "297805553436a44886b4d5b8d84f5fdd977eec2b" );
+//                return params;
+//            }
+
+            // danh cho dang nhap voi username va pass word
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", "hello");
+                params.put("password", "dmmay123");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+
+    }
+
+    private void signingoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
