@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/habit_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginTop="7dp"
+    card_view:cardCornerRadius="5dp">
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -49,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="0 /"
+            android:text="-- /"
             android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/tvCountCurrent"/>
@@ -70,3 +80,4 @@
         style="?android:attr/buttonBarButtonStyle"
         android:textColor="@color/colorPrimaryDark"/>
 </LinearLayout>
+</androidx.cardview.widget.CardView>

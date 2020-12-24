@@ -51,11 +51,8 @@ public interface RunDao extends HabitDao {
     int getType();
 
     @TypeConverters(Converters.class)
-    @Query("SELECT * from running_table where time = :calendar")
-    LiveData<List<Run>> getHabitFrom(Calendar calendar);
-
-    @Query("SELECT * from running_table where time=(select max(time) from running_table)")
-    LiveData<Run> getLastestHabit();
+    @Query("SELECT * from running_table where day=:day and month=:month and year=:year")
+    LiveData<List<Run>> getHabitFrom(int day,int month,int year);
 
     @Query("SELECT * FROM running_table where id = '1'")
     Run gettestRun();

@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class CustomHabit {
-    public static int TYPE_COUNT=0;
-    public static int TYPE_TIME=1;
-    public static int TYPE_TICK=2;
+    final public  static int TYPE_COUNT=0;
+    final public static int TYPE_TIME=1;
+    final public static int TYPE_TICK=2;
 
     @PrimaryKey(autoGenerate = true)
     public int HabitID;

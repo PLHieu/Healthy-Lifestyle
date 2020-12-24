@@ -80,21 +80,21 @@ public abstract class AppDatabase extends RoomDatabase {
 
                     // init dump data
                     INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
+                    INSTANCE.dailyCustomHabitDao().insert(new DailyCustomHabit(1,2,3,22,11,2020));
 
                     // in tracking running for 1 month from 1/11 - 30/11/2020
                     Random rand = new Random();
                     for (int i = 1; i <= 30; i++ ){
 
-                        int hour = rand.nextInt(18);
-                        int minute = rand.nextInt(50);
-                        int second = rand.nextInt(50);
-
                         Calendar calendar = new GregorianCalendar(2020,11,i,0,0,0);
-
                         Date date = calendar.getTime();
                         String timestamp = String.valueOf(date.getTime());
+
                         Run run  = new Run(rand.nextInt(5000)
-                                ,timestamp, calendar, rand.nextInt(14000), "");
+                                ,timestamp, i,11,2020, rand.nextInt(14000), "");
 
                         INSTANCE.runDao().insertRun(run);
                     }
@@ -110,7 +110,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         second = rand.nextInt(59);
                         Calendar endTime = new GregorianCalendar(2020, 10, i+1, hour, minute, second);
                         int sleepQuality = rand.nextInt(5);
-                        SleepNight sleepNight = new SleepNight(time, startTime.getTimeInMillis(), endTime.getTimeInMillis(), sleepQuality);
+                        SleepNight sleepNight = new SleepNight(i,11,2020, startTime.getTimeInMillis(), endTime.getTimeInMillis(), sleepQuality);
                         INSTANCE.sleepDao().insert(sleepNight);
                     }
 
