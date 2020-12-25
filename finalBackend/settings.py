@@ -42,9 +42,14 @@ INSTALLED_APPS = [
 
     # Third-Party Apps
     'rest_framework',
-    'rest_framework.authtoken',  #
+    'rest_framework.authtoken',
 
     'myuser.apps.MyuserConfig',
+    'run.apps.RunConfig',
+    'sleep.apps.SleepConfig',
+    'dailymeal.apps.DailymealConfig',
+    'dailycthb.apps.DailycthbConfig',
+    'goal.apps.GoalConfig',
 ]
 
 MIDDLEWARE = [
