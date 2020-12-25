@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from finalBackend import settings
 from . import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -32,8 +33,6 @@ class UserRegisterView(APIView):
 class UserLoginView(APIView):
     def post(self, request):
 
-        print(request.data)
-        print("hieumao")
         serializer = serializers.UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             user = authenticate(
@@ -45,7 +44,9 @@ class UserLoginView(APIView):
                 refresh = TokenObtainPairSerializer.get_token(user)
                 data = {
                     'refresh_token': str(refresh),
-                    'access_token': str(refresh.access_token)
+                    'access_token': str(refresh.access_token),
+                    'access_expires': int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()),
+                    'refresh_expires': int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
                 }
                 return Response(data, status=status.HTTP_200_OK)
 
