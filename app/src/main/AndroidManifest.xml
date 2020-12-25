@@ -41,6 +41,8 @@
         <activity android:name=".meal.MealActivity" />
         <activity android:name=".statistic.StatisticActivity" />
         <activity android:name=".statistic.WeekSummaryActivity" />
+        <activity android:name=".AddHabitActivity"/>
+
     </application>
 
 </manifest>
