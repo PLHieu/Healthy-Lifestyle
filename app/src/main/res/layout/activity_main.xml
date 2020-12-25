@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".HomeFragment"
     android:orientation="vertical"
     android:background="#cccccc"
     android:gravity="center_horizontal">
@@ -16,8 +16,8 @@
         android:src="@drawable/ic_add_habit"
         android:contentDescription="Setting"
         android:layout_margin="16dp"
-        android:background="@color/teal_700"
-        android:backgroundTint="@color/teal_700"
+        android:background="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,6 +36,5 @@
         <include
             layout="@layout/calendar_item_layout"/>
     </LinearLayout>
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
