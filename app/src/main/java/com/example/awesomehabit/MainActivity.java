@@ -1,6 +1,7 @@
 package com.example.awesomehabit;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,9 +23,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_navigation);
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+
+        setContentView(R.layout.activity_main_navigation);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,18 +72,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_set_goal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
                 break;
-            case R.id.actionsync:
+            case R.id.action_sync:
                 startActivity(new Intent(this, test_sync_data.class));
                 break;
 
-            case R.id.actionLogin:
+            case R.id.action_login:
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
 
-            case R.id.actionGoToToday:
-                //Nhảy tới ngày hôm nay
-                customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2,true);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
