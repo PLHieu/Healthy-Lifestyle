@@ -96,6 +96,14 @@ public class MainActivity extends AppCompatActivity implements CustomCalendarVie
             case R.id.actionSetGoal:
                 startActivity(new Intent(this, SetGoal.class));
                 break;
+            case R.id.actionsync:
+                startActivity(new Intent(this, test_sync_data.class));
+                break;
+
+            case R.id.actionLogin:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+
             case R.id.actionGoToToday:
                 //Nhảy tới ngày hôm nay
                 customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);

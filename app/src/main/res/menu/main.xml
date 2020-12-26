@@ -14,4 +14,12 @@
         android:title="Today"
         app:showAsAction="always"
         android:icon="@drawable/ic_baseline_today_24"/>
+
+    <item android:id="@+id/actionsync"
+        android:title="Sync"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/actionLogin"
+        android:title="Login"
+        app:showAsAction="never"/>
 </menu>

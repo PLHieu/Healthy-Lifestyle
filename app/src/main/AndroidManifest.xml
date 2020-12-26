@@ -25,6 +25,15 @@
 <!--            </intent-filter>-->
         </activity>
         <activity android:name=".SetGoal" />
+
+        <activity android:name=".LoginActivity" android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,10 +41,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".running.RunningTracking"
-            android:noHistory="true"></activity>
-
+            android:noHistory="true" />
+        <activity android:name=".SignupActivity" android:noHistory="true"/>
         <service android:name=".running.RunningService" /> <!-- android:stopWithTask="true" -->
         <activity android:name=".sleeping.SleepTracker" />
         <activity android:name=".meal.MealActivity" />

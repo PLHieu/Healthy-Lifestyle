@@ -1,6 +1,9 @@
 package com.example.awesomehabit;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,16 +14,34 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.input_name) EditText _nameText;
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.input_email) EditText _emailText;
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.input_password) EditText _passwordText;
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.btn_signup) Button _signupButton;
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.link_login) TextView _loginLink;
 
     @Override
@@ -29,25 +50,31 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.signup);
         ButterKnife.bind(this);
 
-        _signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        initView();
+
+        _signupButton.setOnClickListener(v -> {
+            try {
                 signup();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                finish();
-            }
+        _loginLink.setOnClickListener(v -> {
+            // Finish the registration screen and return to the Login activity
+            finish();
         });
     }
 
-    public void signup() {
-        Log.d(TAG, "Signup");
+    private void initView() {
+        _nameText = findViewById(R.id.input_name);
+        _emailText = findViewById(R.id.input_email);
+        _passwordText = findViewById(R.id.input_password);
+        _signupButton = findViewById(R.id.btn_signup);
+        _loginLink = findViewById(R.id.link_login);
+    }
 
+    public void signup() throws JSONException {
         if (!validate()) {
             onSignupFailed();
             return;
@@ -64,26 +91,43 @@ public class SignupActivity extends AppCompatActivity {
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own signup logic here.
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("email", email);
+        jsonObject.put("password", password);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,"http://192.168.178.35:8000/myuser/signup/",jsonObject, r -> {
+             Log.d(TAG, r.toString());
+            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+            try {
+                preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
+                preferences.edit().putString("access_token", r.getString("access_token")).apply();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            onSignupSuccess();
+        }, e-> {
+            // Log.d(TAG, e.toString());
+            onSignupFailed();
+        });
+        queue.add(jsonObjectRequest);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
-                        onSignupSuccess();
+//                        onSignupSuccess();
                         // onSignupFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
     }
 
-
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        finish();
+        Intent intent = new Intent(this, test_sync_data.class);
+        startActivity(intent);
     }
 
     public void onSignupFailed() {
