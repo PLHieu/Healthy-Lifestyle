@@ -7,4 +7,5 @@ app_name = 'sync'
 urlpatterns = [
     path('push/', views.MySync.as_view(), name='push'),
     path('pull/', views.MySync.as_view(), name='pull'),
+
 ]

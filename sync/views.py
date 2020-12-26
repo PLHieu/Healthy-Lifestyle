@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.utils import json
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
 
 from myuser.models import MyUser
 from run.models import Run
@@ -23,11 +24,12 @@ from dailycthb.serializes import DailyCTHBSerializer
 
 
 class MySync(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def put(self, request):
         # tu dong parse request duoi dang json
         parser_classes = [JSONParser]
-        user = MyUser.objects.get(email="a@gmail.com")
+        user = request.user
 
         runjs = json.loads(request.data.get("run"))
         sleepjs = json.loads(request.data.get("sleep"))
@@ -64,8 +66,7 @@ class MySync(APIView):
         return JsonResponse({"hieu" : "cc"}, status = status.HTTP_200_OK)
 
     def get(self, request):
-        user = MyUser.objects.get(email="a@gmail.com")
-
+        user = request.user
         runs = Run.objects.filter(user=user)
         sleeps = Sleep.objects.filter(user = user)
         meals = DailyMeal.objects.filter(user = user)
@@ -88,3 +89,4 @@ class MySync(APIView):
         }, status=status.HTTP_200_OK)
 
 
+#todo: time cua daily customhabit, chua xu li unique
