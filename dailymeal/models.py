@@ -1,7 +1,7 @@
 from django.db import models
 from myuser.models import MyUser
 class DailyMeal(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True)
     type = models.IntegerField()
     day = models.IntegerField()
     month = models.IntegerField()

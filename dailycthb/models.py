@@ -2,8 +2,8 @@ from django.db import models
 from myuser.models import MyUser
 
 class DailyCustomHabit(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    habitID = models.IntegerField()
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True)
+    HabitID = models.IntegerField()
     current = models.IntegerField()
     target = models.IntegerField()
     day = models.IntegerField()
@@ -11,4 +11,4 @@ class DailyCustomHabit(models.Model):
     year = models.IntegerField()
     time = models.CharField(max_length= 25)
     class Meta:
-        unique_together = ['habitID', 'user']
+        unique_together = ['HabitID', 'user']

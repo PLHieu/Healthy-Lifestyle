@@ -48,8 +48,10 @@ INSTALLED_APPS = [
     'run.apps.RunConfig',
     'sleep.apps.SleepConfig',
     'dailymeal.apps.DailymealConfig',
+    'customhb.apps.CustomhbConfig',
     'dailycthb.apps.DailycthbConfig',
     'goal.apps.GoalConfig',
+    'sync.apps.SyncConfig',
 ]
 
 MIDDLEWARE = [
