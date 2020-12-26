@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('myuser/',include('myuser.urls')),
+    path('sync/', include('sync.urls'))
 ]
