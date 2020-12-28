@@ -1,6 +1,7 @@
 package com.example.awesomehabit;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
@@ -47,6 +50,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder: " + String.valueOf(viewType));
         switch (viewType){
             case viewCardType.RUN: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_card, parent, false);
@@ -68,12 +72,16 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticking_card, parent, false);
                 return new TickViewHolder(view);
             }
+            case viewCardType.TIME:
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timing_card, parent, false);
+                return new TimeViewHolder(view);
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: " + String.valueOf(position));
         switch (holder.getItemViewType()){
             case viewCardType.RUN:
                 RunViewHolder runViewHolder=(RunViewHolder)holder;
@@ -234,5 +242,11 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
         int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
         totalSleepdurationString=String.valueOf(hours)+":"+String.valueOf(minutes)+"/";
+    }
+
+    private class TimeViewHolder extends RecyclerView.ViewHolder {
+        public TimeViewHolder(View view) {
+            super(view);
+        }
     }
 }

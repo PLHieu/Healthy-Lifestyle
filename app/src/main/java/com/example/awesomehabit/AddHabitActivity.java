@@ -76,7 +76,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private void initHabitTypeSpinner() {
         Spinner spinner = findViewById(R.id.spinnerHabitType);
-        String[] habitTypeArray = new String[]{"Count", "Tick", "Time"};
+        String[] habitTypeArray = new String[]{"Count", "Time", "Tick"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, habitTypeArray);
         spinner.setAdapter(adapter);
         spinner.setSelection(0);

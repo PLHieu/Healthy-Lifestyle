@@ -87,4 +87,6 @@
     <string name="dialogTickType">
         You can tick when you do something in a day (like reading a book, doing homework, etc).
     </string>
+    <string name="WarningInAddHabit">You haven\'t named your habit.</string>
+    <string name="timing_habit_name">Yoga</string>
 </resources>
