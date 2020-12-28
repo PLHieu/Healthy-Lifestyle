@@ -12,6 +12,7 @@ import com.example.awesomehabit.database.Converters;
 import com.example.awesomehabit.database.HabitDao;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Dao
 public interface DailyMealDao extends HabitDao {
@@ -27,4 +28,8 @@ public interface DailyMealDao extends HabitDao {
     @TypeConverters(Converters.class)
     @Query("select * from dailymeal where day=:day and month=:month and year=:year limit 1")
     LiveData<DailyMeal> getHabitFrom(int day, int month, int year);
+
+    @Query("select * from dailymeal")
+    List<DailyMeal> getAllDailyMeal();
+
 }

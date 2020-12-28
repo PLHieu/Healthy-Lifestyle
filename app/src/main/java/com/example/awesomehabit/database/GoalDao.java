@@ -22,4 +22,7 @@ public interface GoalDao {
 
     @Query("SELECT * from goal where type=:t limit 1")
     Goal getGoal(int t);
+
+    @Query("SELECT * from goal")
+    List<Goal> getAllGoal();
 }

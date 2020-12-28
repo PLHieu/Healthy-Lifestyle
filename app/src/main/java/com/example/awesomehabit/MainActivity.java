@@ -1,107 +1,87 @@
 package com.example.awesomehabit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
-import com.example.awesomehabit.database.AppDatabase;
-import com.example.awesomehabit.statistic.StatisticActivity;
-import com.example.awesomehabit.statistic.WeekSummaryActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
 
-public class MainActivity extends AppCompatActivity implements CustomCalendarView.CustomCalendarViewInterface {
-    CustomCalendarView customCalendarView;
-    ActionBar actionBar;
-    ViewPager viewPager;
-    AppDatabase db;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_navigation);
 
-        actionBar=getSupportActionBar();
-        actionBar.setElevation(0);
 
-        customCalendarView=(CustomCalendarView) findViewById(R.id.customCalendar);
-        customCalendarView.setResponder(this);//For onclick
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        db = AppDatabase.getDatabase(this);
-        viewPager=(ViewPager)findViewById(R.id.pager);
-        CustomPageAdapter customPageAdapter=new CustomPageAdapter(this,db);
-        viewPager.setAdapter(customPageAdapter);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-        viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-        viewPager.setPageTransformer(true,new DepthPageTransformer());
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-               customCalendarView.smoothScrollTo(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fabAddHabit);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setActionForFAB();
-            }
-        });
-    }
-
-    void setActionForFAB(){
-        Intent intent = new Intent(this, AddHabitActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onDaySelected(int position) {
-        viewPager.setCurrentItem(position, true);
-    }
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_statistic:
-                //startActivity(new Intent(this, MainActivity2.class));
-                //customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                //viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                //startActivity(new Intent(this, WeekSummaryActivity.class));
-                return true;
-            case R.id.actionSetGoal:
-                startActivity(new Intent(this, SetGoal.class));
-                break;
-            case R.id.actionGoToToday:
-                //Nhảy tới ngày hôm nay
-                customCalendarView.smoothScrollTo(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
-                viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2,true);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(R.id.action_home);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else if (navigationView.getCheckedItem().getItemId() != R.id.action_home) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(R.id.action_home);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_home:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                break;
+            case R.id.action_statistic:
+                return false;
+            case R.id.action_set_goal:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
+                break;
+            case R.id.action_sync:
+                startActivity(new Intent(this, test_sync_data.class));
+                break;
+
+            case R.id.action_login:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

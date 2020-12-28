@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/action_statistic"
+            android:icon="@drawable/ic_statistic"
+            android:title="Statistics" />
+
+        <item
+            android:id="@+id/action_set_goal"
+            android:icon="@drawable/ic_edit"
+            android:title="Goals editing" />
+
+        <item
+            android:id="@+id/action_login"
+            android:icon="@drawable/ic_edit"
+            android:title="Login" />
+        <item
+            android:id="@+id/action_sync"
+            android:icon="@drawable/ic_edit"
+            android:title="Sync" />
+    </group>
+</menu>

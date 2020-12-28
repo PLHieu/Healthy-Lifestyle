@@ -51,22 +51,6 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.card_list, collection, false);
 
-        /*
-        Button btnRun=(Button)layout.findViewById(R.id.startRunning);
-        Button btnSleep=(Button)layout.findViewById(R.id.startSleeping);
-        Button btnMeal=(Button)layout.findViewById(R.id.btnMeal);
-
-        TextView distance=layout.findViewById(R.id.runDistance);
-        TextView sleepTime=layout.findViewById(R.id.sleepTime);
-        TextView tvWater=layout.findViewById(R.id.tvCountCurrent);
-        TextView sleepTimeGoal=layout.findViewById(R.id.sleepTimeGoal);
-        TextView tvWaterGoal=layout.findViewById(R.id.tvCountGoal);
-        TextView distanceGoal=layout.findViewById(R.id.runDistanceGoal);
-
-        Button btnAddWater=layout.findViewById(R.id.btn_countAdd);
-        Button btnMinusWater=layout.findViewById(R.id.btn_countMinus);
-*/
-
         RecyclerView recyclerView=layout.findViewById(R.id.rvCards);
         CardAdapter cardAdapter=new CardAdapter();
         cardAdapter.setmContext(mContext);
@@ -104,10 +88,6 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 }
                 else{
                 }
-                //int seconds = (int) (totalSleepDuration / 1000) % 60 ;
-                //int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
-                //int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
-                //sleepTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes)+"/");
                 cardAdapter.updateSleep(totalSleepDuration);
 
             }

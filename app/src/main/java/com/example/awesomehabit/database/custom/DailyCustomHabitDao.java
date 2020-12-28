@@ -3,6 +3,7 @@ package com.example.awesomehabit.database.custom;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -11,7 +12,8 @@ import java.util.List;
 
 @Dao
 public interface DailyCustomHabitDao {
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(DailyCustomHabit dailyCustomHabit);
     @Update
     void update(DailyCustomHabit dailyCustomHabit);
