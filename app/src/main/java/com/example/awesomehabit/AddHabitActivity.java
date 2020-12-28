@@ -1,95 +1,96 @@
 package com.example.awesomehabit;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.custom.CustomHabit;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddHabitActivity extends AppCompatActivity {
 
-    static int GALLERY_REQUEST = 3004;
     ArrayList<Integer> listIcon = new ArrayList<>(Arrays.asList(R.drawable.sleep, R.drawable.run, R.drawable.water, R.drawable.waterbottle, R.drawable.bed));
 
     Dialog dialog;
+    int iconID = 0;
+    int habitType = CustomHabit.TYPE_COUNT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
-
-        ImageButton imageButton = (ImageButton) findViewById(R.id.imgButtonIcon);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //setActionForImageChoosing();
-                showGridToChooseIcon();
-            }
-        });
-
-        Button button = (Button)findViewById(R.id.btnAddHabit);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setActionForBtnAdd();
-            }
-        });
-
-        Button buttonCount = (Button)findViewById(R.id.btnCountType);
-        buttonCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setDialog(getString(R.string.dialogCountType));
-                setActionForHabitTypeButton(buttonCount);
-            }
-        });
-
-        Button buttonTime = (Button)findViewById(R.id.btnTimeType);
-        buttonTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setDialog(getString(R.string.dialogTimeType));
-                setActionForHabitTypeButton(buttonTime);
-            }
-        });
-
-        Button buttonTick = (Button)findViewById(R.id.btnTickType);
-        buttonTick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setDialog(getString(R.string.dialogTickType));
-                setActionForHabitTypeButton(buttonTick);
-            }
-        });
-
+        setActionForButton();
+        initHabitTypeSpinner();
         createGridLayoutIcon();
+    }
+
+    private void setActionForButton() {
+        ImageButton imageButton = findViewById(R.id.imgButtonIcon);
+        imageButton.setOnClickListener(v -> {
+            showGridToChooseIcon();
+        });
+
+        Button button = findViewById(R.id.btnAddHabit);
+        button.setOnClickListener(v -> {
+            setActionForBtnAdd();
+            finish();
+        });
+
+        button = findViewById(R.id.btnHabitTypeInfo);
+        button.setOnClickListener(v -> setActionForBtnHabitTypeInfo());
+    }
+
+    private void setActionForBtnHabitTypeInfo() {
+        switch (habitType){
+            case CustomHabit.TYPE_COUNT:
+                setDialog(getString(R.string.dialogCountType));
+                break;
+            case CustomHabit.TYPE_TICK:
+                setDialog(getString(R.string.dialogTickType));
+                break;
+            case CustomHabit.TYPE_TIME:
+                setDialog(getString(R.string.dialogTimeType));
+                break;
+        }
+        dialog.show();
+    }
+
+    private void initHabitTypeSpinner() {
+        Spinner spinner = findViewById(R.id.spinnerHabitType);
+        String[] habitTypeArray = new String[]{"Count", "Tick", "Time"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, habitTypeArray);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                habitType = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void setDialog(String content) {
@@ -130,62 +131,23 @@ public class AddHabitActivity extends AppCompatActivity {
         ViewGroup.LayoutParams layoutParams = new AbsListView.LayoutParams(300,300);
         imageButton.setLayoutParams(layoutParams);
         imageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImageButton imageButton1 = findViewById(R.id.imgButtonIcon);
-                imageButton1.setImageResource(id);
-                gridLayout.setVisibility(View.GONE);
-            }
+        imageButton.setOnClickListener(v -> {
+            ImageButton imageButton1 = findViewById(R.id.imgButtonIcon);
+            imageButton1.setImageResource(id);
+            gridLayout.setVisibility(View.GONE);
+            iconID = id;
         });
         gridLayout.addView(imageButton);
     }
 
-    public void setActionForHabitTypeButton(Button button) {
-        Button buttonCount = (Button)findViewById(R.id.btnCountType);
-        Button buttonTime = (Button)findViewById(R.id.btnTimeType);
-        Button buttonTick = (Button)findViewById(R.id.btnTickType);
-
-        buttonCount.setBackgroundResource(R.color.teal_700);
-        buttonTick.setBackgroundResource(R.color.teal_700);
-        buttonTime.setBackgroundResource(R.color.teal_700);
-
-        button.setBackgroundResource(R.color.teal_200);
-        dialog.show();
-    }
-
-
     private void setActionForBtnAdd() {
-        EditText editText = (EditText) findViewById(R.id.edtHabitName);
+        EditText editText = findViewById(R.id.edtHabitName);
         String habitName = editText.getText().toString();
         if (habitName.matches("")) {
-            Toast.makeText(this, "You did not enter a name for your habit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.WarningInAddHabit, Toast.LENGTH_SHORT).show();
             return;
         }
         AppDatabase appDatabase=AppDatabase.getDatabase(this);
-        appDatabase.customHabitDao().insert(new CustomHabit(habitName,CustomHabit.TYPE_COUNT));
-    }
-
-    private void setActionForImageChoosing() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, GALLERY_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == GALLERY_REQUEST)
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                ((ImageButton) findViewById(R.id.imgButtonIcon)).setBackground(new BitmapDrawable(getResources(), selectedImage));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        appDatabase.customHabitDao().insert(new CustomHabit(habitName, habitType, iconID));
     }
 }

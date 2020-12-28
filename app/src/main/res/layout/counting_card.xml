@@ -42,6 +42,7 @@
             android:src="@drawable/water"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:scaleType="fitCenter"
             android:contentDescription="TODO" />
         <Button
             android:layout_width="40dp"
@@ -66,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="10 cups"
+            android:text="10"
             android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/tvCountGoal"/>

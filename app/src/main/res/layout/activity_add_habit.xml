@@ -30,29 +30,17 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
+        <Spinner
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            android:text="COUNT"
-            android:id="@+id/btnCountType"
-            android:layout_weight="1"
-            android:background="@color/teal_700"
-            android:layout_marginRight="10dp"/>
+            android:spinnerMode="dropdown"
+            android:id="@+id/spinnerHabitType"/>
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TIME"
-            android:id="@+id/btnTimeType"
-            android:layout_weight="1"
-            android:background="@color/teal_200"
-            android:layout_marginRight="10dp"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TICK"
-            android:layout_weight="1"
-            android:background="@color/teal_700"
-            android:id="@+id/btnTickType"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/btnHabitTypeInfo"
+            android:background="@drawable/ic_info"/>
     </LinearLayout>
 
     <Button

@@ -146,9 +146,8 @@ public class StatisticActivity extends AppCompatActivity {
     private void getSleepData() {
         AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
         List<SleepNight> nights = database.sleepDao().getAllNightsNonLive();
-
         for (int i = 0; i < nights.size(); i++) {
-            listData.add((float) nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli());
+            listData.add(((float) nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli())/3600000);
             listTime.add(nights.get(i).getStartTimeMilli());
             listSleepQuality.add(nights.get(i).getSleepQuality());
             listTimeLength.add(nights.get(i).getEndTimeMilli() - nights.get(i).getStartTimeMilli());

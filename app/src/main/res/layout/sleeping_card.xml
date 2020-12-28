@@ -22,9 +22,10 @@
         android:text="@string/sleeping"
         android:textSize="20sp"/>
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/sleep"
+        android:scaleType="fitCenter"
         android:id="@+id/sleepHabitIcon"
         android:contentDescription="TODO" />
     <LinearLayout

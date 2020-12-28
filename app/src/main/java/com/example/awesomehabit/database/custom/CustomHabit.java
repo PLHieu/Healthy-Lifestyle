@@ -13,10 +13,12 @@ public class CustomHabit {
     public int HabitID;
     public String name;
     public int type;
+    public int iconID;
+    //Bitmap
 
-    public CustomHabit(String name,int type) {
+    public CustomHabit(String name,int type, int iconID) {
         this.name = name;
         this.type = type;
+        this.iconID = iconID;
     }
-    //Bitmap
 }

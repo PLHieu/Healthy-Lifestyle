@@ -1,10 +1,12 @@
 package com.example.awesomehabit;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,8 @@ import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
@@ -47,6 +51,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder: " + String.valueOf(viewType) );
         switch (viewType){
             case viewCardType.RUN: {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_card, parent, false);
@@ -74,6 +79,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: " + String.valueOf(position));
         switch (holder.getItemViewType()){
             case viewCardType.RUN:
                 RunViewHolder runViewHolder=(RunViewHolder)holder;
@@ -87,10 +93,16 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
                 break;
+            case viewCardType.TICK:
+                TickViewHolder tickViewHolder =(TickViewHolder)holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit tick_pair=habit_pairs.get(position-3);
+                tickViewHolder.imageView.setImageResource(tick_pair.customHabit_.iconID);
+                break;
             case viewCardType.COUNT:
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
+                countViewHolder.imageView.setImageResource(pair.customHabit_.iconID);
                 if(pair.dailyCustomHabit_!=null)
                     countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
                 else
@@ -194,16 +206,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         Button btnMinus;
         TextView current;
         TextView tvName;
+        ImageView imageView;
         public CountViewHolder(@NonNull View itemView) {
             super(itemView);
             current=itemView.findViewById(R.id.tvCountCurrent);
             tvName=itemView.findViewById(R.id.countingHabitName);
+            imageView = itemView.findViewById(R.id.countingHabitIcon);
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
-
+        ImageView imageView;
         public TickViewHolder(@NonNull View itemView) {
             super(itemView);
+            imageView = itemView.findViewById(R.id.tickingHabitIcon);
         }
     }
 
