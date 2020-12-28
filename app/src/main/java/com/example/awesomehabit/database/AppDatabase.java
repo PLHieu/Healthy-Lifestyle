@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
@@ -80,8 +79,10 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE.goalDao().insert(sleepGoal);
 
                     // init dump data
-                    INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT, R.drawable.statistic_icon));
-                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK, R.drawable.water));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
                     INSTANCE.dailyCustomHabitDao().insert(new DailyCustomHabit(1,2,3,22,11,2020));
 
                     // in tracking running for 1 month from 1/11 - 30/11/2020

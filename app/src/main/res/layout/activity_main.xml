@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment"
     android:orientation="vertical"
-    android:background="#cccccc"
+    android:background="@color/grayBackground"
     android:gravity="center_horizontal">
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddHabit"

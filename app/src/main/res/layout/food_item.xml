@@ -1,29 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/habit_card"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-<ImageView
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:src="@drawable/shoes"
-    android:id="@+id/foodItem_image" />
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginTop="7dp"
+    card_view:cardCornerRadius="5dp">
     <LinearLayout
-        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:padding="3dp">
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Food name"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:id="@+id/foodItem_name"/>
-        <TextView
+            android:src="@drawable/no_image"
+            android:id="@+id/foodItem_image"
+            android:layout_weight="3"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="300 calories"
-            android:layout_gravity="right"
-            android:id="@+id/foodItem_calo"/>
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:layout_weight="6">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:id="@+id/foodItem_name"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="300 calories"
+                android:textSize="15sp"
+                android:id="@+id/foodItem_calo"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_close_24"
+                android:background="#ff6565"
+                android:id="@+id/btn_removeMeal"
+                android:layout_gravity="right"
+                />
+        </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+</androidx.cardview.widget.CardView>

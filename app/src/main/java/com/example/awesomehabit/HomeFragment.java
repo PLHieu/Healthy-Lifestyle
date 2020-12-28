@@ -26,7 +26,6 @@ import java.util.zip.Inflater;
 
 public class HomeFragment extends Fragment implements CustomCalendarView.CustomCalendarViewInterface {
     CustomCalendarView customCalendarView;
-    ActionBar actionBar;
     ViewPager viewPager;
     AppDatabase db;
 //    @Override

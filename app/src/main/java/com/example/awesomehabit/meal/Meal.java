@@ -5,8 +5,9 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 
-public class Meal {
+public class Meal implements Serializable {
     String name;
     int calories;
 
@@ -59,4 +60,5 @@ public class Meal {
         }
        return null;
     }
+
 }
