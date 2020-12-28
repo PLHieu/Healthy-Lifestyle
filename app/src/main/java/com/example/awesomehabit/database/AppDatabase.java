@@ -79,11 +79,10 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE.goalDao().insert(sleepGoal);
 
                     // init dump data
-                    INSTANCE.customHabitDao().insert(new CustomHabit("water",CustomHabit.TYPE_COUNT));
-                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
-                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
-                    INSTANCE.customHabitDao().insert(new CustomHabit("Book",CustomHabit.TYPE_TICK));
-                    INSTANCE.dailyCustomHabitDao().insert(new DailyCustomHabit(1,2,3,22,11,2020));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("DRINK WATER MAN",CustomHabit.TYPE_COUNT));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("GO TO THE CHURCH MAN",CustomHabit.TYPE_TICK));
+                    INSTANCE.customHabitDao().insert(new CustomHabit("Read for 10 mins",CustomHabit.TYPE_TIME));
+                    //INSTANCE.dailyCustomHabitDao().insert(new DailyCustomHabit(1,2,3,22,11,2020));
 
                     // in tracking running for 1 month from 1/11 - 30/11/2020
                     Random rand = new Random();

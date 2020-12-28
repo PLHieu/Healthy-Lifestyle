@@ -68,6 +68,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticking_card, parent, false);
                 return new TickViewHolder(view);
             }
+            case viewCardType.TIME:{
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timing_card, parent, false);
+                return new TimeViewHolder(view);
+            }
         }
         return null;
     }
@@ -87,15 +91,28 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
                 break;
-            case viewCardType.COUNT:
-                CountViewHolder countViewHolder=(CountViewHolder)holder;
-                CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
+            case viewCardType.COUNT: {
+                CountViewHolder countViewHolder = (CountViewHolder) holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit pair = habit_pairs.get(position - 3);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
-                if(pair.dailyCustomHabit_!=null)
-                    countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
+                if (pair.dailyCustomHabit_ != null)
+                    countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current) + "/");
                 else
                     countViewHolder.current.setText("NULL /");
                 break;
+            }
+            case viewCardType.TICK: {
+                TickViewHolder tickViewHolder = (TickViewHolder) holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit pair = habit_pairs.get(position - 3);
+                tickViewHolder.tvTickName.setText(pair.customHabit_.name);
+                break;
+            }
+            case viewCardType.TIME:{
+                TimeViewHolder timeViewHolder=(TimeViewHolder)holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit pair = habit_pairs.get(position - 3);
+                timeViewHolder.tvTimingName.setText(pair.customHabit_.name);
+                break;
+            }
         }
     }
 
@@ -201,9 +218,17 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
-
+        TextView tvTickName;
         public TickViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvTickName=itemView.findViewById(R.id.tvTickName);
+        }
+    }
+    public class TimeViewHolder extends RecyclerView.ViewHolder{
+        TextView tvTimingName;
+        public TimeViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTimingName=itemView.findViewById(R.id.timingHabitName);
         }
     }
 
