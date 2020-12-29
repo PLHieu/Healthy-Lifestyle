@@ -33,6 +33,8 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
@@ -94,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         jsonObject.put("email", email);
         jsonObject.put("password", password);
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,"http://192.168.178.35:8000/myuser/signin/",jsonObject, r -> {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,DOMAIN +  "myuser/signin/",jsonObject, r -> {
             SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
             try {
                 preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();

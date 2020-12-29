@@ -69,6 +69,8 @@ public class test_sync_data extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     static int RC_SIGN_IN = 23;
     private final String TAG = "test_sync_data";
+    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,7 @@ public class test_sync_data extends AppCompatActivity {
         });
         btnPush.setOnClickListener(v -> {
             try {
+
                 pushDB();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -147,7 +150,7 @@ public class test_sync_data extends AppCompatActivity {
         jsonObject.put("goal", goaljson);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   "http://192.168.178.35:8000/sync/push/",jsonObject,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   DOMAIN + "sync/push/",jsonObject,
             response -> {
                 Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
                 Log.d("sync", "Response is: " + response);
@@ -155,13 +158,21 @@ public class test_sync_data extends AppCompatActivity {
             error -> {
                 Log.d("sync", error.toString());
                 Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
-            });
+            }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
         queue.add(request);
     }
 
     private void pullDB(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,  "http://192.168.178.35:8000/sync/pull/", null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,   DOMAIN + "sync/pull/", null,
                 response -> {
                     Log.d("sync", "Response is: " + response);
                     try {
@@ -321,7 +332,7 @@ public class test_sync_data extends AppCompatActivity {
                 +"goal=%s&";
         String urlRun = String.format(urlRunTemplate, "1", run.timeStart, run.distance, run.runningTime, run.routeID, run.target);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "http://192.168.178.35:8000/run/add/", new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,  "https://sheltered-castle-82570.herokuapp.com/run/add/", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("sync", "Response is: " + response);
