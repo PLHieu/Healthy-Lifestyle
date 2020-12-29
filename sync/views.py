@@ -27,6 +27,7 @@ class MySync(APIView):
     permission_classes = (IsAuthenticated,)
 
     def put(self, request):
+        print(request)
         # tu dong parse request duoi dang json
         parser_classes = [JSONParser]
         user = request.user
