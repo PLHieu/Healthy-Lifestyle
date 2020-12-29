@@ -12,3 +12,4 @@ requests-unixsocket==0.2.0
 SecretStorage==2.3.1
 sqlparse==0.4.1
 psycopg2==2.8.6
+dj-database-url==0.5.0
