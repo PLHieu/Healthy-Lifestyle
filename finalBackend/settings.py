@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'myuser.MyUser'
-ALLOWED_HOSTS = ['192.168.178.35', '127.0.0.1', '0.0.0.0', '127.0.0.2', 'fast-savannah-02929.herokuapp.com']
+ALLOWED_HOSTS = ['192.168.178.35', '127.0.0.1', '0.0.0.0', '127.0.0.2', 'fast-savannah-02929.herokuapp.com', 'sheltered-castle-82570.herokuapp.com']
 
 
 SIMPLE_JWT = {
