@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -99,11 +100,22 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
+                countViewHolder.imageView.setImageResource(pair.customHabit_.iconID);
                 if(pair.dailyCustomHabit_!=null)
                     countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
                 else
                     countViewHolder.current.setText("NULL /");
                 break;
+            case viewCardType.TIME:
+                TimeViewHolder timeViewHolder = (TimeViewHolder)holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit timePair = habit_pairs.get(position - 3);
+                timeViewHolder.txtViewTimeName.setText(timePair.customHabit_.name);
+                timeViewHolder.imageViewTimeIcon.setImageResource(timePair.customHabit_.iconID);
+                break;
+            case viewCardType.TICK:
+                TickViewHolder tickViewHolder = (TickViewHolder)holder;
+                CustomHabitDao.CustomHabit_DailyCustomHabit tickPair = habit_pairs.get(position - 3);
+                tickViewHolder.textView.setText(tickPair.customHabit_.name);
         }
     }
 
@@ -202,16 +214,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         Button btnMinus;
         TextView current;
         TextView tvName;
+        ImageView imageView;
         public CountViewHolder(@NonNull View itemView) {
             super(itemView);
             current=itemView.findViewById(R.id.tvCountCurrent);
             tvName=itemView.findViewById(R.id.countingHabitName);
+            imageView = itemView.findViewById(R.id.countingHabitIcon);
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
-
+        TextView textView;
         public TickViewHolder(@NonNull View itemView) {
             super(itemView);
+            textView = itemView.findViewById(R.id.txtViewTickName);
         }
     }
 
@@ -245,8 +260,12 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     private class TimeViewHolder extends RecyclerView.ViewHolder {
+        TextView txtViewTimeName;
+        ImageView imageViewTimeIcon;
         public TimeViewHolder(View view) {
             super(view);
+            txtViewTimeName = itemView.findViewById(R.id.timingHabitName);
+            imageViewTimeIcon = itemView.findViewById(R.id.timingHabitIcon);
         }
     }
 }

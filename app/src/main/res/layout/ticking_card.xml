@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Go to the church"
+            android:id="@+id/txtViewTickName"
             android:textSize="20sp"/></LinearLayout>
 
 

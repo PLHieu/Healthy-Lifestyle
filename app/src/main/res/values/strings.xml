@@ -89,4 +89,5 @@
     </string>
     <string name="WarningInAddHabit">You haven\'t named your habit.</string>
     <string name="timing_habit_name">Yoga</string>
+    <string name="record_timing">Record Timing</string>
 </resources>
