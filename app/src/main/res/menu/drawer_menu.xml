@@ -17,14 +17,18 @@
             android:id="@+id/action_set_goal"
             android:icon="@drawable/ic_edit"
             android:title="Goals editing" />
-
-        <item
-            android:id="@+id/action_login"
-            android:icon="@drawable/ic_edit"
-            android:title="Login" />
-        <item
-            android:id="@+id/action_sync"
-            android:icon="@drawable/ic_edit"
-            android:title="Sync" />
     </group>
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/action_login"
+                android:icon="@drawable/ic_account"
+                android:title="Login" />
+
+            <item
+                android:id="@+id/action_sync"
+                android:icon="@drawable/ic_sync"
+                android:title="Sync" />
+        </menu>
+    </item>
 </menu>
