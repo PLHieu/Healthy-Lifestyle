@@ -136,16 +136,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 TickViewHolder tickViewHolder = (TickViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit tickPair = habit_pairs.get(position - 3);
                 tickViewHolder.textView.setText(tickPair.customHabit_.name);
-                if (tickPair.dailyCustomHabit_.current == 1)
-                    tickViewHolder.checkBox.setChecked(true);
-                else
-                    tickViewHolder.checkBox.setChecked(false);
+                if (tickPair.dailyCustomHabit_ != null) {
+                    if (tickPair.dailyCustomHabit_.current == 1)
+                        tickViewHolder.checkBox.setChecked(true);
+                    else
+                        tickViewHolder.checkBox.setChecked(false);
+                }
                 tickViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         setTickChanged(tickPair);
                     }
                 });
+                break;
         }
     }
 
