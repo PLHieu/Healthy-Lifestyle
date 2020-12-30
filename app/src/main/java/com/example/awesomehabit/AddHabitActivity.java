@@ -3,6 +3,7 @@ package com.example.awesomehabit;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,7 +129,10 @@ public class AddHabitActivity extends AppCompatActivity {
         GridLayout gridLayout = findViewById(R.id.gridLayoutIcon);
         ImageButton imageButton = new ImageButton(this);
         imageButton.setImageResource(id);
-        ViewGroup.LayoutParams layoutParams = new AbsListView.LayoutParams(300,300);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        ViewGroup.LayoutParams layoutParams = new AbsListView.LayoutParams((int)(width / 3.5), (int)(width / 3.5));
         imageButton.setLayoutParams(layoutParams);
         imageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageButton.setOnClickListener(v -> {
