@@ -31,6 +31,7 @@ class MySync(APIView):
         # tu dong parse request duoi dang json
         parser_classes = [JSONParser]
         user = request.user
+        print(user)
 
         runjs = json.loads(request.data.get("run"))
         sleepjs = json.loads(request.data.get("sleep"))
