@@ -27,7 +27,7 @@ class MySync(APIView):
     permission_classes = (IsAuthenticated,)
 
     def put(self, request):
-        print(request)
+        # print(request)
         # tu dong parse request duoi dang json
         parser_classes = [JSONParser]
         user = request.user
@@ -44,15 +44,25 @@ class MySync(APIView):
         meals = DailyMealSerializer(data=mealjs, many=True, context= {"owner": user})
         hbs = CTHBSerializer(data=customhbjs, many=True, context= {"owner": user})
         dailyhbs = DailyCTHBSerializer(data=dailycustomhbjs, many=True, context= {"owner": user})
-        print(dailycustomhbjs)
-
+        # print(dailycustomhbjs)
+        # print(dailyhbs.is_valid(raise_exception=True))
+        # print(dailyhbs.errors)
+        # a = runs.is_valid()
+        # b = sleeps.is_valid()
+        # c = meals.is_valid()
+        # d = hbs.is_valid()
+        # e = dailyhbs.is_valid()
+        # print(a,b,c,d,e)
+        # print(meals.errors)
         if(
-            runs.is_valid(raise_exception=True)
-            and sleeps.is_valid(raise_exception=True)
-            and meals.is_valid(raise_exception=True)
+            runs.is_valid()
+            and sleeps.is_valid()
+            and meals.is_valid()
             and hbs.is_valid()
-            and dailyhbs.is_valid(raise_exception=True)\
+            and dailyhbs.is_valid()\
         ):
+            print("tag")
+
             with transaction.atomic():
                 runs.save()
                 sleeps.save()
@@ -60,6 +70,7 @@ class MySync(APIView):
                 hbs.save()
                 dailyhbs.save()
         else:
+            # print(dailyhbs.is_valid(raise_exception=True))
             print(dailyhbs.errors)
             return JsonResponse({"Error": "Error when parse data"}, status = status.HTTP_400_BAD_REQUEST)
 

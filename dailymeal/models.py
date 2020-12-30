@@ -7,7 +7,7 @@ class DailyMeal(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
     target = models.FloatField()
-    calo = models.FloatField()
+    calo = models.FloatField(null = True)
 
     class Meta:
         unique_together = ['user', 'day', 'month', 'year']

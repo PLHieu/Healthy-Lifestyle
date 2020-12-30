@@ -6,24 +6,23 @@ class DailyCTHBSerializer(serializers.ModelSerializer):
     HabitID_ = serializers.IntegerField(source='HabitID')
 
     def update(self, instance, validated_data):
-        # MANIPULATE DATA HERE BEFORE INSERTION
+        print("onupdate")
         instance = super(DailyCTHBSerializer, self).update(instance, validated_data)
-        # ADD CODE HERE THAT YOU WANT TO VIEW
         if("owner" in self.context):
             instance.user = self.context["owner"]
-            print("hieu map")
+            print("add user attr")
         else:
-            print("ngay xua co co be treo cay me")
+            print("cannot add user attr")
         instance.save()
         return instance
 
     def create(self, validated_data):
-
+        
+        print("oncreate")
         obj = DailyCustomHabit.objects.create(**validated_data)
 
         if ("owner" in self.context):
             obj.user = self.context["owner"]
-            print("hieu map")
         else:
             print("ngay xua co co be treo cay me")
         obj.save()
