@@ -6,13 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.meal.MealActivity;
 import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
@@ -36,6 +43,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     String totalDistanceString ="no data";
     String totalSleepdurationString ="no data";
     Context mContext;
+    AppDatabase db;
 
     public void setHabitPairs(List<CustomHabitDao.CustomHabit_DailyCustomHabit> habit_pairs) {
         this.habit_pairs = habit_pairs;
@@ -105,6 +113,18 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
                 else
                     countViewHolder.current.setText("NULL /");
+                countViewHolder.btnAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setActionForBtnCountAdd(pair);
+                    }
+                });
+                countViewHolder.btnMinus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setActionForBtnCountMinus(pair);
+                    }
+                });
                 break;
             case viewCardType.TIME:
                 TimeViewHolder timeViewHolder = (TimeViewHolder)holder;
@@ -116,6 +136,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 TickViewHolder tickViewHolder = (TickViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit tickPair = habit_pairs.get(position - 3);
                 tickViewHolder.textView.setText(tickPair.customHabit_.name);
+                if (tickPair.dailyCustomHabit_ != null) {
+                    if (tickPair.dailyCustomHabit_.current == 1)
+                        tickViewHolder.checkBox.setChecked(true);
+                    else
+                        tickViewHolder.checkBox.setChecked(false);
+                }
+                tickViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        setTickChanged(tickPair);
+                    }
+                });
+                break;
         }
     }
 
@@ -220,13 +253,18 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             current=itemView.findViewById(R.id.tvCountCurrent);
             tvName=itemView.findViewById(R.id.countingHabitName);
             imageView = itemView.findViewById(R.id.countingHabitIcon);
+            btnAdd = itemView.findViewById(R.id.btn_countAdd);
+            btnMinus = itemView.findViewById(R.id.btn_countMinus);
+
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
+        AppCompatCheckBox checkBox;
         public TickViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.txtViewTickName);
+            checkBox = itemView.findViewById(R.id.checkboxTicking);
         }
     }
 
@@ -267,5 +305,68 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             txtViewTimeName = itemView.findViewById(R.id.timingHabitName);
             imageViewTimeIcon = itemView.findViewById(R.id.timingHabitIcon);
         }
+    }
+
+    private void setActionForBtnCountAdd(CustomHabitDao.CustomHabit_DailyCustomHabit pair) {
+        db = AppDatabase.getDatabase(mContext);
+        LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(pair.customHabit_.HabitID, CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+        Observer observer=new Observer<DailyCustomHabit>() {
+            @Override
+            public void onChanged(DailyCustomHabit dailyCustom) {
+                LDdailyCustom.removeObserver(this);
+                if(dailyCustom!=null){
+                    dailyCustom.current++;
+                    db.dailyCustomHabitDao().update(dailyCustom);
+                }
+                else{
+                    DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(pair.customHabit_.HabitID,1,10,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+                    db.dailyCustomHabitDao().insert(dailyCustomHabit);
+                }
+            }
+        };
+        LDdailyCustom.observe((AppCompatActivity)mContext, observer);
+    }
+
+    private void setActionForBtnCountMinus(CustomHabitDao.CustomHabit_DailyCustomHabit pair) {
+        db = AppDatabase.getDatabase(mContext);
+        LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(pair.customHabit_.HabitID, CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+        Observer observer=new Observer<DailyCustomHabit>() {
+            @Override
+            public void onChanged(DailyCustomHabit dailyCustom) {
+                LDdailyCustom.removeObserver(this);
+                if(dailyCustom!=null){
+                    dailyCustom.current--;
+                    db.dailyCustomHabitDao().update(dailyCustom);
+                }
+                else{
+                    DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(pair.customHabit_.HabitID,0,10,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+                    db.dailyCustomHabitDao().insert(dailyCustomHabit);
+                }
+            }
+        };
+        LDdailyCustom.observe((AppCompatActivity)mContext, observer);
+    }
+
+    private void setTickChanged(CustomHabitDao.CustomHabit_DailyCustomHabit tickPair) {
+        db = AppDatabase.getDatabase(mContext);
+        LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(tickPair.customHabit_.HabitID, CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+        Observer observer=new Observer<DailyCustomHabit>() {
+            @Override
+            public void onChanged(DailyCustomHabit dailyCustom) {
+                LDdailyCustom.removeObserver(this);
+                if(dailyCustom!=null){
+                    if (dailyCustom.current == 0)
+                        dailyCustom.current++;
+                    else
+                        dailyCustom.current--;
+                    db.dailyCustomHabitDao().update(dailyCustom);
+                }
+                else{
+                    DailyCustomHabit dailyCustomHabit=new DailyCustomHabit(tickPair.customHabit_.HabitID,0,10,CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
+                    db.dailyCustomHabitDao().insert(dailyCustomHabit);
+                }
+            }
+        };
+        LDdailyCustom.observe((AppCompatActivity)mContext, observer);
     }
 }
