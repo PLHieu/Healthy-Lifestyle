@@ -53,7 +53,6 @@ class MySync(APIView):
             and hbs.is_valid()
             and dailyhbs.is_valid()\
         ):
-            print(dailyhbs.errors)
             with transaction.atomic():
                 runs.save()
                 sleeps.save()
@@ -61,10 +60,10 @@ class MySync(APIView):
                 hbs.save()
                 dailyhbs.save()
         else:
-            # print(dailyhbs.errors)
+            print(dailyhbs.errors)
             return JsonResponse({"Error": "Error when parse data"}, status = status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({"hieu" : "cc"}, status = status.HTTP_200_OK)
+        return JsonResponse({"Push sucessfully" : "HieuPL"}, status = status.HTTP_200_OK)
 
     def get(self, request):
         user = request.user
