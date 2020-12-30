@@ -17,36 +17,43 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".test_sync_data">
-        </activity>
+        <activity android:name=".AccountInfo"></activity>
+        <activity android:name=".test_sync_data"></activity>
+        <activity
+            android:name=".LoginActivity"
+            android:noHistory="true">
 
-        <activity android:name=".LoginActivity" android:noHistory="true">
-           <!-- <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
-
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".running.RunningTracking"
             android:noHistory="true" />
-        <activity android:name=".SignupActivity" android:noHistory="true"/>
+        <activity
+            android:name=".SignupActivity"
+            android:noHistory="true" />
+
         <service android:name=".running.RunningService" /> <!-- android:stopWithTask="true" -->
         <activity android:name=".sleeping.SleepTracker" />
         <activity android:name=".meal.MealActivity" />
-        <activity android:name=".AddHabitActivity"/>
+        <activity android:name=".AddHabitActivity" />
         <activity android:name=".statistic.StatisticActivity" />
         <activity android:name=".statistic.WeekSummaryActivity" />
-        <activity android:name=".meal.MealConfirmActivity"/>
+        <activity android:name=".meal.MealConfirmActivity" />
     </application>
 
 </manifest>

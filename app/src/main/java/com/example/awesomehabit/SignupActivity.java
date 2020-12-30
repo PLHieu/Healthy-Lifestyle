@@ -33,6 +33,8 @@ import butterknife.ButterKnife;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
     private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+//    private static final String DOMAIN = "http://192.168.178.35:8000/";
+
 
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.input_name) EditText _nameText;
@@ -100,8 +102,13 @@ public class SignupActivity extends AppCompatActivity {
              Log.d(TAG, r.toString());
             SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
             try {
+                preferences.edit().putString("name", name).apply();
+                preferences.edit().putString("email", email).apply();
                 preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
                 preferences.edit().putString("access_token", r.getString("access_token")).apply();
+                preferences.edit().putLong("access_expires", Long.parseLong(r.getString("access_expires"))).apply();
+                preferences.edit().putLong("refresh_expires", Long.parseLong(r.getString("refresh_expires"))).apply();
+                preferences.edit().putLong("lastloggedin", Long.parseLong(String.valueOf(System.currentTimeMillis()/1000))).apply();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -127,7 +134,7 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(this, test_sync_data.class);
+        Intent intent = new Intent(this, AccountInfo.class);
         startActivity(intent);
     }
 

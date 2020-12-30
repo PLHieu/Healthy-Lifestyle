@@ -34,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+//    private static final String DOMAIN = "http://192.168.178.35:8000/";
+
 
 
     @BindView(R.id.input_email) EditText _emailText;
@@ -101,6 +103,9 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
                 preferences.edit().putString("access_token", r.getString("access_token")).apply();
+                preferences.edit().putLong("access_expires", Long.parseLong(r.getString("access_expires"))).apply();
+                preferences.edit().putLong("refresh_expires", Long.parseLong(r.getString("refresh_expires"))).apply();
+                preferences.edit().putLong("lastloggedin", Long.parseLong(String.valueOf(System.currentTimeMillis()/1000))).apply();
                 onLoginSuccess();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -127,9 +132,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
         }
