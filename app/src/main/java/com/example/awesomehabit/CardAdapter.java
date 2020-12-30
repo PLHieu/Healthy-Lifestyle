@@ -356,9 +356,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 LDdailyCustom.removeObserver(this);
                 if(dailyCustom!=null){
                     if (dailyCustom.current == 0)
-                        dailyCustom.current++;
+                        dailyCustom.current=1;
                     else
-                        dailyCustom.current--;
+                        dailyCustom.current=0;
                     db.dailyCustomHabitDao().update(dailyCustom);
                 }
                 else{
