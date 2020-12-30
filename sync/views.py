@@ -51,7 +51,7 @@ class MySync(APIView):
             and sleeps.is_valid(raise_exception=True)
             and meals.is_valid(raise_exception=True)
             and hbs.is_valid()
-            and dailyhbs.is_valid()\
+            and dailyhbs.is_valid(raise_exception=True)\
         ):
             with transaction.atomic():
                 runs.save()
