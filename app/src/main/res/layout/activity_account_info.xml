@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AccountInfo">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="181dp"
+        android:layout_height="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.059"
+        app:srcCompat="@drawable/ic_sleep_5" />
+
+    <TextView
+        android:id="@+id/info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Phan Long Hieu"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/info_followed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="80dp"
+        android:text="1.7k"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toStartOf="@+id/info_following"
+        app:layout_constraintTop_toBottomOf="@+id/info_name" />
+
+    <TextView
+        android:id="@+id/info_following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:text="1.7k"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="@+id/info_name"
+        app:layout_constraintStart_toStartOf="@+id/info_name"
+        app:layout_constraintTop_toBottomOf="@+id/info_name" />
+
+    <TextView
+        android:id="@+id/info_post_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="68dp"
+        android:text="307"
+        android:textSize="25dp"
+        app:layout_constraintStart_toEndOf="@+id/info_following"
+        app:layout_constraintTop_toBottomOf="@+id/info_name" />
+
+    <TextView
+        android:layout_width="66dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="24dp"
+        android:text="Followed"
+        app:layout_constraintStart_toStartOf="@+id/info_followed"
+        app:layout_constraintTop_toBottomOf="@+id/info_followed" />
+
+    <TextView
+        android:layout_width="66dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="24dp"
+        android:text="Following"
+        app:layout_constraintStart_toStartOf="@+id/info_following"
+        app:layout_constraintTop_toBottomOf="@+id/info_following" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Habit"
+        app:layout_constraintEnd_toEndOf="@+id/info_post_num"
+        app:layout_constraintTop_toBottomOf="@+id/info_post_num" />
+
+    <TextView
+        android:id="@+id/info_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="longhieu4820001@gmail.com"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/info_location"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/info_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:text="Ho Chi Minh City VietNam"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        android:textSize="17dp"/>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="256dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_email_24" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="41dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="84dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:srcCompat="@drawable/ic_baseline_home_24" />
+
+    <Button
+        android:id="@+id/info_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:text="Logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
