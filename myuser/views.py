@@ -39,7 +39,7 @@ class UserLoginView(APIView):
         if serializer.is_valid():
             user = authenticate(
                 request,
-                username=serializer.validated_data['email'],
+                username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
             if user:

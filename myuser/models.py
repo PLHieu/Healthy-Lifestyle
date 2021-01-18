@@ -5,17 +5,20 @@ from .managers import MyUserManager
 
 class MyUser(AbstractUser):
     
-    # Delete not use field
-    username = None
+    username = models.CharField(max_length=10, unique=True)
     password = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100,null=True)
+    name = models.CharField(max_length=50,default=None,null=True)
+    tuoi = models.IntegerField(default=None, null=True)
+    diachi = models.CharField(max_length = 100, default=None, null = True)
 
-    USERNAME_FIELD = 'email'
+
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
-    objects = MyUserManager() 
+    # objects = MyUserManager() 
 
     def __str__(self):
-        return self.email
+        return self.username
 
 # Create your models here.
 class Doctor(models.Model):
