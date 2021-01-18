@@ -98,7 +98,11 @@ DATABASES = {
         'PASSWORD': 'myuser',
         'HOST': 'localhost',
         'PORT': '5432',
-    }
+    }, 
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'db.sqlite3',
+    # }
 }
 
 import dj_database_url
@@ -147,6 +151,8 @@ USE_TZ = True
 # tu them vo
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 
 REST_FRAMEWORK = {
@@ -156,7 +162,7 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'myuser.MyUser'
-ALLOWED_HOSTS = ['192.168.178.35', '127.0.0.1', '0.0.0.0', '127.0.0.2', 'fast-savannah-02929.herokuapp.com', 'sheltered-castle-82570.herokuapp.com']
+ALLOWED_HOSTS = ['192.168.178.35', '127.0.0.1', '0.0.0.0', '127.0.0.2', 'fast-savannah-02929.herokuapp.com', 'sheltered-castle-82570.herokuapp.com', '*']
 
 
 SIMPLE_JWT = {
