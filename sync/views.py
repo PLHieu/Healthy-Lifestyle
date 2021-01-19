@@ -22,6 +22,7 @@ from dailymeal.serializers import DailyMealSerializer
 from customhb.serializers import CTHBSerializer
 from dailycthb.serializes import DailyCTHBSerializer
 from myuser.serializers import NewPatientSerializer
+from goal.serializers import GoalSerializer
 
 class SyncListPatient(APIView):
     permission_classes = (IsAuthenticated,)
@@ -81,24 +82,24 @@ class PatientPostData(APIView):
     def put(self, request):
         # lay thong tin benh nhan
         user = request.user
-
         # print(request)
         # tu dong parse request duoi dang json
         # parser_classes = [JSONParser]
-        
         # print(user)
         runjs = json.loads(request.data.get("run"))
         sleepjs = json.loads(request.data.get("sleep"))
         mealjs = json.loads(request.data.get("dailymeal"))
         customhbjs = json.loads(request.data.get("customHB"))
         dailycustomhbjs = json.loads(request.data.get("dailycustomHB"))
-        # goalsjs = json.loads(request.get("goal"))
+        goalsjs = json.loads(request.data.get("goal"))
 
         runs = RunSerializer(data=runjs, many=True, context= {"owner": user})
         sleeps = SleepSerializer(data=sleepjs, many=True, context= {"owner": user})
         meals = DailyMealSerializer(data=mealjs, many=True, context= {"owner": user})
         hbs = CTHBSerializer(data=customhbjs, many=True, context= {"owner": user})
         dailyhbs = DailyCTHBSerializer(data=dailycustomhbjs, many=True, context= {"owner": user})
+        goals = GoalSerializer(data = goalsjs, many = True, context={"owner": user})
+
         # print(dailycustomhbjs)
         # print(dailyhbs.is_valid(raise_exception=True))
         # print(dailyhbs.errors)
@@ -108,22 +109,31 @@ class PatientPostData(APIView):
         # d = hbs.is_valid()
         # e = dailyhbs.is_valid()
         # print(a,b,c,d,e)
-        # print(meals.errors)
+        print(meals)
+        print(runs)
         if(
             runs.is_valid()
             and sleeps.is_valid()
             and meals.is_valid()
             and hbs.is_valid()
-            and dailyhbs.is_valid()\
+            and dailyhbs.is_valid()
+            and goals.is_valid()\
         ):
-            print("tag")
+            
 
             with transaction.atomic():
                 runs.save()
+                print("push runs")
                 sleeps.save()
+                print("push sleep")
                 meals.save()
+                print("push meal")
                 hbs.save()
+                print("push hbs")
                 dailyhbs.save()
+                print("push dailyhb")
+                goals.save()
+                print("push goal")
         else:
             # print(dailyhbs.is_valid(raise_exception=True))
             print(runs.errors)
