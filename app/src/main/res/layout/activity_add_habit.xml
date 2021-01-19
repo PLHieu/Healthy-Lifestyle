@@ -29,16 +29,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="3">
+
         <Spinner
-            android:layout_width="330dp"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"
             android:id="@+id/spinnerHabitType"/>
 
         <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/btnHabitTypeInfo"
             android:background="@drawable/ic_info"/>
     </LinearLayout>
