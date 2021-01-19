@@ -18,7 +18,7 @@ public class DoctorOrPatientActivity extends AppCompatActivity {
         findViewById(R.id.iamdoctor).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(DoctorOrPatientActivity.this, LoginActivity.class);
+                Intent i=new Intent(DoctorOrPatientActivity.this, com.example.awesomehabit.doctor.MainActivity.class);
 startActivity(i);
             }
         });

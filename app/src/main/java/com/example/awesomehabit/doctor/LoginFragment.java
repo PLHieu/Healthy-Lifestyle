@@ -1,5 +1,6 @@
 package com.example.awesomehabit.doctor;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,7 +42,7 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-
+    ProgressDialog progressDialog;
     @BindView(R.id.loginName) EditText _emailText;
     @BindView(R.id.loginPassword) EditText _passwordText;
     @BindView(R.id.LoginButton) Button _loginButton;
@@ -104,14 +105,15 @@ public class LoginFragment extends Fragment {
     }
 
     private void login() throws JSONException{
+        progressDialog = new ProgressDialog(this.getContext());
         if (!validate()) {
-            onLoginFailed();
+            onLoginFailed(progressDialog);
             return;
         }
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(this.getContext());
+
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
@@ -138,25 +140,37 @@ public class LoginFragment extends Fragment {
 
         }, e-> {
             // Log.d(TAG, e.toString());
-            onLoginFailed();
+            onLoginFailed(progressDialog);
         });
         queue.add(jsonObjectRequest);
-
+/*
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 3000);*/
+    }
+
+    /**
+     * Called when the fragment is no longer in use.  This is called
+     * after {@link #onStop()} and before {@link #onDetach()}.
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
     }
 
     private void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        Intent intent = new Intent(this.getContext(), MainActivity.class);
-        startActivity(intent);
+
+        Intent returnIntent = new Intent();
+        getActivity().setResult(Activity.RESULT_OK, returnIntent);
+        getActivity().finish();
     }
 
-    public void onLoginFailed() {
+    public void onLoginFailed(ProgressDialog progressDialog) {
         Toast.makeText(this.getContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }

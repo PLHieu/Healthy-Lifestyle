@@ -1,11 +1,4 @@
-package com.example.awesomehabit;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+package com.example.awesomehabit.doctor;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,21 +7,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.awesomehabit.AddHabitActivity;
+import com.example.awesomehabit.CustomCalendarView;
+import com.example.awesomehabit.CustomPageAdapter;
+import com.example.awesomehabit.DepthPageTransformer;
+import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
-import com.example.awesomehabit.statistic.StatisticActivity;
-import com.example.awesomehabit.statistic.WeekSummaryActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mapbox.mapboxsdk.Mapbox;
 
-import java.util.zip.Inflater;
-
-public class HomeFragment extends Fragment implements CustomCalendarView.CustomCalendarViewInterface {
+public class HomeFragment_Doctor extends Fragment implements CustomCalendarView.CustomCalendarViewInterface {
     CustomCalendarView customCalendarView;
     ViewPager viewPager;
-    LinearLayout userBar;
     AppDatabase db;
     @Nullable
     @Override
@@ -37,21 +33,16 @@ public class HomeFragment extends Fragment implements CustomCalendarView.CustomC
         customCalendarView=(CustomCalendarView) view.findViewById(R.id.customCalendar);
         customCalendarView.setResponder(this);//For onclick
 
-        userBar=(LinearLayout)view.findViewById(R.id.userBar);
-
-        ViewGroup.LayoutParams params = userBar.getLayoutParams();
-        params.height = 0;
-        params.width = 0;
-        userBar.setLayoutParams(params);
-
 
         db = AppDatabase.getDatabase(view.getContext());
         viewPager=(ViewPager)view.findViewById(R.id.pager);
-        CustomPageAdapter customPageAdapter=new CustomPageAdapter(view.getContext(), db,false);
+        CustomPageAdapter customPageAdapter=new CustomPageAdapter(view.getContext(), db,true);
         viewPager.setAdapter(customPageAdapter);
 
         viewPager.setCurrentItem(CustomCalendarView.NUMBER_OF_DAY_BUTTONS/2);
         viewPager.setPageTransformer(true,new DepthPageTransformer());
+
+
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
