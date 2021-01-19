@@ -5,7 +5,6 @@ from django.http import HttpResponse, JsonResponse
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -134,15 +133,3 @@ class PatientUpdate(APIView):
                 'error_message': 'Update Patient Failed',
                 'error_code': 400
             }, status=status.HTTP_400_BAD_REQUEST)
-
-class UpdateProfilePic(CreateAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = serializers.ProfilePictureSerializer
-    def post(self, request):
-        currentUser = request.user 
-        serializer = serializers.ProfilePictureSerializer(currentUser, data=request.data)
-        if (serializer.is_valid()):
-            serializer.save()
-            return Response({"profile_pic": str(currentUser.profile_pic)}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error_code': 400, 'error_message': 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
