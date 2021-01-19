@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    private static final int RESULT_CHANGE_PROFILE = 1001;
     private DrawerLayout drawer;
 
     private NavigationView navigationView;
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 password = data.getStringExtra("passWord");
                 init();
             }
+        }
+        if(requestCode == RESULT_CHANGE_PROFILE){
+            password = data.getStringExtra("password");
         }
     }
 
@@ -173,7 +177,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.imgViewUserIcon){
-            startActivity(new Intent(_context, ProfileActivity.class));
+            Intent intent = new Intent(_context, ProfileActivity.class);
+            intent.putExtra("userName", userName);
+            intent.putExtra("password", password);
+            startActivityForResult(intent, RESULT_CHANGE_PROFILE);
         }
     }
 }
