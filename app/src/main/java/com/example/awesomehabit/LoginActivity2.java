@@ -3,14 +3,26 @@ package com.example.awesomehabit;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginActivity2 extends AppCompatActivity {
+    private static final String DOMAIN = "http://10.0.2.2:8000/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,28 +30,52 @@ public class LoginActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_login2);
 
         Button button = findViewById(R.id.btnLogin);
-        button.setOnClickListener(v -> setActionForLoginButton());
+        button.setOnClickListener(v -> {
+            try {
+                setActionForLoginButton();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private void setActionForLoginButton() {
+    private void setActionForLoginButton() throws JSONException {
         EditText edtUserName = findViewById(R.id.edtUserName);
         EditText edtPassWord = findViewById(R.id.edtPassword);
 
         String userName = edtUserName.getText().toString();
         String passWord = edtPassWord.getText().toString();
 
-        if(checkUserNameAndPassword(userName, passWord)){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", userName);
+        jsonObject.put("password", passWord);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,DOMAIN +  "myuser/signin/",jsonObject, r -> {
+            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+            try {
+                preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
+                preferences.edit().putString("access_token", r.getString("access_token")).apply();
+                preferences.edit().putLong("access_expires", Long.parseLong(r.getString("access_expires"))).apply();
+                preferences.edit().putLong("refresh_expires", Long.parseLong(r.getString("refresh_expires"))).apply();
+                preferences.edit().putLong("lastloggedin", Long.parseLong(String.valueOf(System.currentTimeMillis()/1000))).apply();
+                Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("Login", r.toString());
             Intent returnIntent = new Intent();
             returnIntent.putExtra("userName", userName);
             returnIntent.putExtra("passWord", passWord);
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
-        }
-        else
-            Toast.makeText(getBaseContext(), "Wrong username or password", Toast.LENGTH_LONG);
+
+        }, e-> {
+            // Log.d(TAG, e.toString());
+            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        });
+        queue.add(jsonObjectRequest);
     }
 
-    private boolean checkUserNameAndPassword(String userName, String passWord) {
-        return true;
-    }
+
+
 }
