@@ -56,9 +56,8 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     private void initSpinner() {
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, temp);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.spinner_text_view_item, temp);
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_text_view_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
