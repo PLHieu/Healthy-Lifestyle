@@ -33,8 +33,6 @@
         <activity
             android:name=".LoginActivity2"
             android:theme="@style/Theme.Design.Light.NoActionBar"></activity>
-        <activity android:name=".AccountInfo" />
-        <activity android:name=".test_sync_data" />
         <activity
             android:name=".LoginActivity"
             android:noHistory="true">
