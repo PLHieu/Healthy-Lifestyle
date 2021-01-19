@@ -30,3 +30,9 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ('tenbenh', 'thoigiandieutri')
+
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    profile_pic = serializers.ImageField(allow_null=True)
+    class Meta:
+        model = MyUser
+        fields = ['profile_pic']
