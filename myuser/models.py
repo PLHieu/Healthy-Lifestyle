@@ -7,10 +7,10 @@ class MyUser(AbstractUser):
     
     username = models.CharField(max_length=10, unique=True)
     password = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100,null=True)
-    name = models.CharField(max_length=50,default=None,null=True)
-    tuoi = models.IntegerField(default=None, null=True)
-    diachi = models.CharField(max_length = 100, default=None, null = True)
+    email = models.EmailField(max_length=100,default='',null=True)
+    name = models.CharField(max_length=50,default='',null=True)
+    tuoi = models.IntegerField(default=0, null=True)
+    diachi = models.CharField(max_length = 100, default='', null = True)
     profile_pic = models.ImageField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
@@ -23,18 +23,18 @@ class MyUser(AbstractUser):
 # Create your models here.
 class Doctor(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, primary_key = True)
-    benhvien = models.CharField(max_length=100, null = True)
-    chuyennganh = models.CharField(max_length = 100, null = True)
-    sonamcongtac = models.IntegerField(null = True)
-    trinhdo = models.CharField(max_length=50, null = True)
+    benhvien = models.CharField(max_length=100,default='', null = True)
+    chuyennganh = models.CharField(max_length = 100, default='',null = True)
+    sonamcongtac = models.IntegerField(default=0, null = True)
+    trinhdo = models.CharField(max_length=50,default='', null = True)
     def __str__(self):
         return self.user
 
 # Create your models here.
 class Patient(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='%(class)s_bn', primary_key = True)
-    tenbenh = models.CharField(max_length = 100, null = True)
-    thoigiandieutri = models.IntegerField( null = True)
+    tenbenh = models.CharField(max_length = 100,default='', null = True)
+    thoigiandieutri = models.IntegerField(default=0, null = True)
     bacsiquanly = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='%(class)s_bsql') # related name de cho tranh bi xung dot
     def __str__(self):
         return self.user

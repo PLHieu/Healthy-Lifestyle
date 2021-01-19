@@ -42,6 +42,7 @@ class DoctorRegisterView(APIView):
 
 class PatientRegisterView(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # lay thogn tin bac si
         bacsiquanly = request.user
@@ -52,7 +53,13 @@ class PatientRegisterView(APIView):
             seri.validated_data['password'] = make_password(seri.validated_data['password'])
             new_user = seri.save() # tao user
             Patient.objects.create(user = new_user, bacsiquanly = bacsiquanly) # tao benh nhan tuong ung
-            return Response("Create Patient Successfully",status=status.HTTP_201_CREATED)
+            
+            # tra ve danh sach cac benh nhan
+            patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
+            patientsSeri = serializers.NewPatientSerializer(patients, many = True)
+
+
+            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
         else:
             print(seri.errors)
             return JsonResponse({
@@ -115,13 +122,15 @@ class PatientUpdate(APIView):
         currentPatient = Patient.objects.get(user = currentUser)
         seriUser  = serializers.UserSerializer(currentUser, data = request.data)
         seriPatient = serializers.PatientSerializer(currentPatient, data = request.data)
-        if(seriUser.is_valid() and seriPatient.is_valid()):
+        if(seriPatient.is_valid() and seriUser.is_valid()  ):
             seriUser.save()
             seriPatient.save()
             return Response("Update Patient Sucessfully", status=status.HTTP_200_OK)
         else :
-            print(seri.errors)
+            print(seriUser.errors)
+            print(seriPatient.errors)
             return Response({
                 'error_message': 'Update Patient Failed',
                 'error_code': 400
             }, status=status.HTTP_400_BAD_REQUEST)
+

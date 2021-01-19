@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 
-from myuser.models import MyUser
+from myuser.models import MyUser, Patient
 from run.models import Run
 from sleep.models import Sleep
 from dailymeal.models import DailyMeal
@@ -21,6 +21,7 @@ from sleep.serializes import SleepSerializer
 from dailymeal.serializers import DailyMealSerializer
 from customhb.serializers import CTHBSerializer
 from dailycthb.serializes import DailyCTHBSerializer
+from myuser.serializers import NewPatientSerializer
 
 
 class MySync(APIView):
@@ -99,6 +100,28 @@ class MySync(APIView):
             'customhb' : hbSeri.data,
             'DLcustomhb' : dlhbSeri.data
         }, status=status.HTTP_200_OK)
-
-
 #todo: time cua daily customhabit, chua xu li unique
+
+class SyncListPatient(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        # lay thong tin bac si
+        bacsiquanly = request.user
+
+        # tra ve danh sach cac benh nhan
+        patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
+        patientsSeri = NewPatientSerializer(patients, many = True)
+
+        try:
+            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
+        except:
+            print(patientsSeri.errors)
+            return JsonResponse({
+                'error_message': 'Error Serialize Patient',
+                'errors_code': 400,
+            }, status=status.HTTP_400_BAD_REQUEST) 
+
+
+
+
