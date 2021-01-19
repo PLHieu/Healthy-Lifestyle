@@ -31,10 +31,11 @@ import java.util.List;
 public class CustomPageAdapter extends PagerAdapter implements View.OnClickListener {
     private Context mContext;
     AppDatabase db;
-
-    public CustomPageAdapter(Context mContext,AppDatabase db) {
+    Boolean doctorMode;
+    public CustomPageAdapter(Context mContext,AppDatabase db,Boolean doctormode) {
         this.mContext = mContext;
         this.db=db;
+        this.doctorMode=doctormode;
     }
     @Override
     public int getCount() {
@@ -52,7 +53,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.card_list, collection, false);
 
         RecyclerView recyclerView=layout.findViewById(R.id.rvCards);
-        CardAdapter cardAdapter=new CardAdapter();
+        CardAdapter cardAdapter=new CardAdapter(doctorMode);
         cardAdapter.setmContext(mContext);
         recyclerView.setAdapter(cardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -62,6 +63,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         int day=pageDay.get(Calendar.DAY_OF_MONTH);
         int month=pageDay.get(Calendar.MONTH);
         int year=pageDay.get(Calendar.YEAR);
+
+
 
         db.runDao().getHabitFrom(day,month,year).observe((AppCompatActivity) mContext, new Observer<List<Run>>() {
             @Override
@@ -99,43 +102,12 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 Log.d("@@@",String.valueOf(customHabit_dailyCustomHabits.size()));
             }
         });
-        db.dailyCustomHabitDao().getHabit(1,day,month,year).observe((AppCompatActivity) mContext, new Observer<DailyCustomHabit>() {
-            @Override
-            public void onChanged(DailyCustomHabit dailyCustomHabit) {
-                /*if(dailyCustomHabit!=null){
-                    tvWater.setText(String.valueOf(dailyCustomHabit.current)+" / ");
-                    if(dailyCustomHabit.current>0)
-                        btnMinusWater.setVisibility(View.VISIBLE);
-                    else
-                        btnMinusWater.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    tvWater.setText("Found nothing today");
-                    btnMinusWater.setVisibility(View.INVISIBLE);
-                }*/
-            }
-        });
 
-        db.goalDao().getTargets().observe((AppCompatActivity) mContext, new Observer<List<Integer>>() {
-            @Override
-            public void onChanged(List<Integer> targets) {
-                if(targets!=null && targets.size() > 2) {
-                    //distanceGoal.setText(String.valueOf((float) targets.get(Habit.TYPE_RUN) / 1000) + " KM");
-                    //sleepTimeGoal.setText(String.valueOf(targets.get(Habit.TYPE_SLEEP)));
-                    //tvWaterGoal.setText(String.valueOf(targets.get(Habit.TYPE_COUNT)));
-                }
-            }
-        });
+        if(layout.findViewById(R.id.btnMeal)!=null){
+            layout.findViewById(R.id.btnMeal).setVisibility(View.GONE);
+        }
 
 
-/*
-        btnRun.setOnClickListener(this);
-        btnSleep.setOnClickListener(this);
-        btnMeal.setOnClickListener(this);
-        btnAddWater.setOnClickListener(this);
-        btnMinusWater.setOnClickListener(this);
-        ((Button)layout.findViewById(R.id.btnRunStatistic)).setOnClickListener(this);
-        ((Button)layout.findViewById(R.id.btnSleepStatistic)).setOnClickListener(this);*/
         collection.addView(layout);
         return layout;
     }

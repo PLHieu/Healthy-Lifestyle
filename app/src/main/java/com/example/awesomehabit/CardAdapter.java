@@ -31,6 +31,13 @@ import static android.content.ContentValues.TAG;
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
+    public CardAdapter(Boolean hideButton) {
+        this.hideButton = hideButton;
+    }
+
+    public CardAdapter() {
+    }
+
     public class viewCardType {
         public final static int RUN=0;
         public final static int SLEEP=1;
@@ -43,6 +50,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     String totalDistanceString ="no data";
     String totalSleepdurationString ="no data";
     Context mContext;
+    Boolean hideButton=false;
     AppDatabase db;
 
     public void setHabitPairs(List<CustomHabitDao.CustomHabit_DailyCustomHabit> habit_pairs) {
@@ -96,19 +104,36 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 RunViewHolder runViewHolder=(RunViewHolder)holder;
                 runViewHolder.distance.setText(totalDistanceString);
                 runViewHolder.distanceGoal.setText("99.99km");
+                if(hideButton){
+                    runViewHolder.btnRunStat.setVisibility(View.GONE);
+                    runViewHolder.btnRun.setVisibility(View.GONE);
+                }
             break;
             case viewCardType.SLEEP:
                 SleepViewHolder sleepViewHolder=(SleepViewHolder)holder;
                 sleepViewHolder.sleepTime.setText(totalSleepdurationString);
+                if(hideButton)
+                {
+                    sleepViewHolder.btnSleep.setVisibility(View.GONE);
+                    sleepViewHolder.btnSleepStat.setVisibility(View.GONE);
+                }
+
                 break;
             case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
+                if(hideButton)
+                    foodViewHolder.btnMeal.setVisibility(View.GONE);
                 break;
             case viewCardType.COUNT:
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
                 CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
                 countViewHolder.imageView.setImageResource(pair.customHabit_.iconID);
+                if(hideButton)
+                {
+                    countViewHolder.btnAdd.setVisibility(View.GONE);
+                    countViewHolder.btnMinus.setVisibility(View.GONE);
+                }
                 if(pair.dailyCustomHabit_!=null)
                     countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
                 else
