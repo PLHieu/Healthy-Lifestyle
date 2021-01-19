@@ -19,6 +19,16 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".AccountInfo"></activity>
         <activity android:name=".test_sync_data"></activity>
+        <activity android:name=".DoctorOrPatientActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".doctor.login.LoginActivity"></activity>
+        <activity android:name=".doctor.MainActivity"></activity>
+        <activity android:name=".doctor.AddUserActivity"></activity>
         <activity
             android:name=".LoginActivity"
             android:noHistory="true">
@@ -34,11 +44,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".running.RunningTracking"

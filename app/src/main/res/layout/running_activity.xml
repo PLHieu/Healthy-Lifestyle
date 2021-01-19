@@ -22,7 +22,7 @@
         android:id="@+id/imgView"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/circle"
+        android:src="@drawable/circlexml"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.498"
