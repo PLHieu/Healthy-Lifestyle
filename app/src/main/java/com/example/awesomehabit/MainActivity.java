@@ -1,6 +1,7 @@
 package com.example.awesomehabit;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,10 +34,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
     private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
 
+    String userName = "";
+    String password = "";
+
+    static int LOGIN_CODE = 1;
+    Bundle bundle;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle = savedInstanceState;
 
+        Intent intent = new Intent(this, LoginActivity2.class);
+        startActivityForResult(intent, LOGIN_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == LOGIN_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                userName = data.getStringExtra("userName");
+                password = data.getStringExtra("passWord");
+                init();
+            }
+        }
+    }
+
+    private void init() {
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         setContentView(R.layout.activity_main_navigation);
@@ -52,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (savedInstanceState == null) {
+        if (bundle == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.action_home);
         }
