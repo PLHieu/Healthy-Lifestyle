@@ -23,17 +23,70 @@ from customhb.serializers import CTHBSerializer
 from dailycthb.serializes import DailyCTHBSerializer
 from myuser.serializers import NewPatientSerializer
 
+class SyncListPatient(APIView):
+    permission_classes = (IsAuthenticated,)
 
-class MySync(APIView):
+    def get(self, request):
+        # lay thong tin bac si
+        bacsiquanly = request.user
+
+        # tra ve danh sach cac benh nhan
+        patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
+        patientsSeri = NewPatientSerializer(patients, many = True)
+
+        try:
+            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
+        except:
+            print(patientsSeri.errors)
+            return JsonResponse({
+                'error_message': 'Error Serialize Patient',
+                'errors_code': 400,
+            }, status=status.HTTP_400_BAD_REQUEST) 
+
+
+class DoctorGetHabit(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        # lay username benh nhan
+        patient_username = request.data.get('username')
+        user = MyUser.objects.filter(username = patient_username)
+
+        # lay habit cua benh nhan
+        runs = Run.objects.filter(user=user)
+        sleeps = Sleep.objects.filter(user = user)
+        meals = DailyMeal.objects.filter(user = user)
+        habits = CustomHabit.objects.filter(user = user)
+        dlhabits = DailyCustomHabit.objects.filter(user = user)
+        # goals = Goal.filter(user = user)
+
+        runSeri = RunSerializer(runs, many=True)
+        sleepSeri = SleepSerializer(sleeps, many=True)
+        mealSeri = DailyMealSerializer(meals, many=True)
+        hbSeri = CTHBSerializer(habits, many=True)
+        dlhbSeri = DailyCTHBSerializer(dlhabits, many=True)
+
+        return JsonResponse({
+            'run' : runSeri.data,
+            'sleep' : sleepSeri.data,
+            'dailymeal' : mealSeri.data,
+            'customhb' : hbSeri.data,
+            'DLcustomhb' : dlhbSeri.data
+        }, status=status.HTTP_200_OK)
+        #todo: time cua daily customhabit, chua xu li unique    
+
+class PatientPostData(APIView):
     permission_classes = (IsAuthenticated,)
 
     def put(self, request):
+        # lay thong tin benh nhan
+        user = request.user
+
         # print(request)
         # tu dong parse request duoi dang json
-        parser_classes = [JSONParser]
-        user = request.user
-        print(user)
-
+        # parser_classes = [JSONParser]
+        
+        # print(user)
         runjs = json.loads(request.data.get("run"))
         sleepjs = json.loads(request.data.get("sleep"))
         mealjs = json.loads(request.data.get("dailymeal"))
@@ -73,55 +126,11 @@ class MySync(APIView):
                 dailyhbs.save()
         else:
             # print(dailyhbs.is_valid(raise_exception=True))
+            print(runs.errors)
+            print(sleeps.errors)
+            print(meals.errors)
+            print(hbs.errors)
             print(dailyhbs.errors)
-            return JsonResponse({"Error": "Error when parse data"}, status = status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"Error": "Error Serialize Data"}, status = status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse({"Push sucessfully" : "HieuPL"}, status = status.HTTP_200_OK)
-
-    def get(self, request):
-        user = request.user
-        runs = Run.objects.filter(user=user)
-        sleeps = Sleep.objects.filter(user = user)
-        meals = DailyMeal.objects.filter(user = user)
-        habits = CustomHabit.objects.filter(user = user)
-        dlhabits = DailyCustomHabit.objects.filter(user = user)
-        # goals = Goal.filter(user = user)
-
-        runSeri = RunSerializer(runs, many=True)
-        sleepSeri = SleepSerializer(sleeps, many=True)
-        mealSeri = DailyMealSerializer(meals, many=True)
-        hbSeri = CTHBSerializer(habits, many=True)
-        dlhbSeri = DailyCTHBSerializer(dlhabits, many=True)
-
-        return JsonResponse({
-            'run' : runSeri.data,
-            'sleep' : sleepSeri.data,
-            'dailymeal' : mealSeri.data,
-            'customhb' : hbSeri.data,
-            'DLcustomhb' : dlhbSeri.data
-        }, status=status.HTTP_200_OK)
-#todo: time cua daily customhabit, chua xu li unique
-
-class SyncListPatient(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        # lay thong tin bac si
-        bacsiquanly = request.user
-
-        # tra ve danh sach cac benh nhan
-        patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
-        patientsSeri = NewPatientSerializer(patients, many = True)
-
-        try:
-            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
-        except:
-            print(patientsSeri.errors)
-            return JsonResponse({
-                'error_message': 'Error Serialize Patient',
-                'errors_code': 400,
-            }, status=status.HTTP_400_BAD_REQUEST) 
-
-
-
-
