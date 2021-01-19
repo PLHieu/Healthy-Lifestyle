@@ -29,6 +29,12 @@
         <activity android:name=".doctor.login.LoginActivity"></activity>
         <activity android:name=".doctor.MainActivity"></activity>
         <activity android:name=".doctor.AddUserActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity
+            android:name=".LoginActivity2"
+            android:theme="@style/Theme.Design.Light.NoActionBar"></activity>
+        <activity android:name=".AccountInfo" />
+        <activity android:name=".test_sync_data" />
         <activity
             android:name=".LoginActivity"
             android:noHistory="true">
