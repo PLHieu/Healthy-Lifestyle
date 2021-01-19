@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         fields = ('username', 'password', 'email', 'name', 'tuoi', 'diachi')
+        read_only_fields = ('profile_pic', )
         extra_kwargs = {'password': {'write_only': True}}
     def update(self, instance, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
@@ -35,3 +36,8 @@ class NewPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ('user','tenbenh', 'thoigiandieutri')
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    profile_pic = serializers.ImageField(allow_null=True)
+    class Meta:
+        model = MyUser
+        fields = ['profile_pic']
