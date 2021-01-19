@@ -51,7 +51,7 @@ class DoctorGetHabit(APIView):
     def get(self, request):
         # lay username benh nhan
         patient_username = request.data.get('username')
-        user = MyUser.objects.filter(username = patient_username)
+        user = MyUser.objects.get(username = patient_username)
 
         # lay habit cua benh nhan
         runs = Run.objects.filter(user=user)
@@ -59,20 +59,22 @@ class DoctorGetHabit(APIView):
         meals = DailyMeal.objects.filter(user = user)
         habits = CustomHabit.objects.filter(user = user)
         dlhabits = DailyCustomHabit.objects.filter(user = user)
-        # goals = Goal.filter(user = user)
+        goals = Goal.objects.filter(user = user)
 
         runSeri = RunSerializer(runs, many=True)
         sleepSeri = SleepSerializer(sleeps, many=True)
         mealSeri = DailyMealSerializer(meals, many=True)
         hbSeri = CTHBSerializer(habits, many=True)
         dlhbSeri = DailyCTHBSerializer(dlhabits, many=True)
+        goalseri = GoalSerializer(goals, many=True)
 
         return JsonResponse({
             'run' : runSeri.data,
             'sleep' : sleepSeri.data,
             'dailymeal' : mealSeri.data,
             'customhb' : hbSeri.data,
-            'DLcustomhb' : dlhbSeri.data
+            'DLcustomhb' : dlhbSeri.data,
+            'goal': goalseri.data,
         }, status=status.HTTP_200_OK)
         #todo: time cua daily customhabit, chua xu li unique    
 
