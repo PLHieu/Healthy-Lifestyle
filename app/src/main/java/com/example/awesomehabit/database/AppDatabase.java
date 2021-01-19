@@ -20,6 +20,8 @@ import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.running.RunDao;
 import com.example.awesomehabit.database.sleeping.SleepDatabaseDao;
 import com.example.awesomehabit.database.sleeping.SleepNight;
+import com.example.awesomehabit.database.user.User;
+import com.example.awesomehabit.database.user.UserDao;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,7 +32,7 @@ import java.util.concurrent.Executors;
 
 import static androidx.room.RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING;
 
-@Database(entities = {Run.class, SleepNight.class,Goal.class, CustomHabit.class, DailyCustomHabit.class, DailyMeal.class}, version = 1, exportSchema = false)
+@Database(entities = {Run.class, User.class, SleepNight.class,Goal.class, CustomHabit.class, DailyCustomHabit.class, DailyMeal.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     //public abstract HabitDao habitDao();
@@ -40,6 +42,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CustomHabitDao customHabitDao();
     public abstract DailyCustomHabitDao dailyCustomHabitDao();
     public abstract DailyMealDao dailyMealDao();
+    public abstract UserDao userDao();
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
