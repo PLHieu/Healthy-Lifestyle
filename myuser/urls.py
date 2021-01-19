@@ -10,5 +10,4 @@ urlpatterns = [
     path('signin/', views.UserLoginView.as_view(), name='login'),
     path('update/patient/', views.PatientUpdate.as_view(), name='patientupdate'),
     path('update/doctor/', views.DoctorUpdate.as_view(), name='doctorupdate'),
-    path('update_pic/', views.UpdateProfilePic.as_view(), name='updatepic')
 ]
