@@ -136,6 +136,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
                 break;
+            case R.id.action_logout:
+                deleteData();
+                finish();
+                break;
             case R.id.action_statistic:
                 return false;
             case R.id.action_set_goal:
@@ -190,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void deleteData() {
+        preferences.edit().clear().commit();
     }
 
     @Override

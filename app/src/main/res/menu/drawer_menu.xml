@@ -7,11 +7,11 @@
             android:id="@+id/action_home"
             android:icon="@drawable/ic_home"
             android:title="Home" />
-
         <item
-            android:id="@+id/action_statistic"
-            android:icon="@drawable/ic_statistic"
-            android:title="Statistics" />
+            android:id="@+id/action_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Sign out"/>
+
 
 <!--        <item-->
 <!--            android:id="@+id/action_set_goal"-->

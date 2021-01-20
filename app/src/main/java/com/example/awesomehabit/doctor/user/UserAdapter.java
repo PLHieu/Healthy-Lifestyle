@@ -41,7 +41,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return holder;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         TextView tvName;
         TextView tvAddress;
         ImageView ivAvatar;
