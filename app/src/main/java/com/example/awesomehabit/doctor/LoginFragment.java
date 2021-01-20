@@ -191,7 +191,6 @@ public class LoginFragment extends Fragment {
                 response -> {
 
                     Log.d("sync", "Response is: " + response);
-                    Toast.makeText(getContext(), "pull danh sach benh nhan Sucessfully", Toast.LENGTH_LONG).show();
 
                     // lay respone va dong bo
                     String patientsjson = null;
