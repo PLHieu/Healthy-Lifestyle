@@ -45,7 +45,7 @@ public class AddUserActivity extends AppCompatActivity {
     EditText editTextAddress;
     Button buttonAdd;
     Bitmap imageBitmap;
-    private final String DOMAIN = getString(R.string.server_domain);
+    private  String DOMAIN ;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -62,6 +62,8 @@ public class AddUserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_user);
+
+        DOMAIN = getApplicationContext().getString(R.string.server_domain);
 
         ivAvatar=findViewById(R.id.ivAvatar);
         ivAvatar.setImageResource(R.drawable.ic_baseline_image_not_supported_24);

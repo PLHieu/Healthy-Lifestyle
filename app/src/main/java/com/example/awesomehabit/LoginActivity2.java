@@ -22,7 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity2 extends AppCompatActivity {
-    private final String DOMAIN = getString(R.string.server_domain);
+    private  String DOMAIN;
 
     SharedPreferences preferences;
     @Override
@@ -36,6 +36,8 @@ public class LoginActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+
+        DOMAIN = getString(R.string.server_domain);
 
         preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         String userName1 = preferences.getString("username",null);

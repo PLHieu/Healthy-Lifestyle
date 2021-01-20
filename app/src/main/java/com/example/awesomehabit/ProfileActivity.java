@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -104,6 +113,27 @@ public class ProfileActivity extends AppCompatActivity {
         preferences.edit().putInt("gioitinh", Profile.gender).apply();
         preferences.edit().putString("diachi", edtAddress.getText().toString()).apply();
         preferences.edit().putString("avatar", Profile.avatar).apply();
+
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", preferences.getString("name","null"));
+            jsonObject.put("email", preferences.getString("email","null"));
+            jsonObject.put("ngaysinh", preferences.getString("ngaysinh","null"));
+            jsonObject.put("gioitinh", preferences.getInt("gioitinh",0));
+            jsonObject.put("avatar", preferences.getString("avatar","null"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestQueue queue = Volley.newRequestQueue(this.getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getApplicationContext().getString(R.string.server_domain) +  "update/patient/",jsonObject, r -> {
+
+        }, e-> {
+
+        });
+        queue.add(jsonObjectRequest);
+
     }
 
     public static String BitMapToString(Bitmap bitmap) {
