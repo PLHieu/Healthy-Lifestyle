@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.action_statistic:
                 return false;
-            case R.id.action_set_goal:
+            /*case R.id.action_set_goal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
-                break;
+                break;*/
             case R.id.action_sync_patient:
                 try {
                     pushDB();
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
 
-            case R.id.action_login:
+            /*case R.id.action_login:
                 SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
                 String token = preferences.getString("access_token",null);
                 long access_expires = preferences.getLong("access_expires",0);
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
 
-                break;
+                break;*/
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

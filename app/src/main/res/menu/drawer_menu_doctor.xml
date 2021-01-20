@@ -13,17 +13,17 @@
             android:icon="@drawable/ic_statistic"
             android:title="Statistics" />
 
-        <item
+        <!--<item
             android:id="@+id/action_set_goal"
             android:icon="@drawable/ic_edit"
-            android:title="Goals editing" />
+            android:title="Goals editing" />-->
     </group>
     <item android:title="Account">
         <menu>
             <item
-                android:id="@+id/action_login"
+                android:id="@+id/action_logout"
                 android:icon="@drawable/ic_account"
-                android:title="Login" />
+                android:title="Logout" />
 
             <item
                 android:id="@+id/action_sync"

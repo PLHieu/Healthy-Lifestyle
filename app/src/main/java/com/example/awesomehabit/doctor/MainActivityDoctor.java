@@ -38,6 +38,7 @@ import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.meal.DailyMeal;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
+import com.example.awesomehabit.statistic.StatisticFragment;
 import com.example.awesomehabit.test_sync_data;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -61,7 +62,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
     String userName = "";
     String password = "";
     Context _context;
-
+    SharedPreferences preferences;
     static int LOGIN_CODE = 1;
     Bundle bundle;
     @Override
@@ -135,10 +136,11 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment_Doctor()).commit();
                 break;
             case R.id.action_statistic:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StatisticFragment()).commit();
                 return false;
-            case R.id.action_set_goal:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
-                break;
+            //case R.id.action_set_goal:
+             //   getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
+             //   break;
             case R.id.action_sync:
                 try {
                     doctorpushDB();
@@ -147,47 +149,9 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                 }
                 break;
 
-            case R.id.action_login:
-                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-                String token = preferences.getString("access_token",null);
-                long access_expires = preferences.getLong("access_expires",0);
-                long refresh_expires = preferences.getLong("refresh_expires",0);
-                long lastloggedin = preferences.getLong("lastloggedin",0);
-                long currentime = System.currentTimeMillis()/1000;
-
-                if(token == null ||token.equals("null")){
-                    startActivity(new Intent(this, LoginActivity.class));
-                }else if( access_expires + lastloggedin > currentime ){
-                    startActivity(new Intent(this, AccountInfo.class));
-
-                }else if(refresh_expires + lastloggedin > currentime ){
-
-                    startActivity(new Intent(this, AccountInfo.class));
-                    RequestQueue queue = Volley.newRequestQueue(this);
-                    JSONObject object = new JSONObject();
-                    try {
-                        object.put("refresh", preferences.getString("refresh_token", "null"));
-                    } catch (JSONException e) { e.printStackTrace(); }
-
-                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,DOMAIN +  "api/token/refresh/",object, r -> {
-                        Log.d("MainActivity", r.toString());
-                        try {
-                            preferences.edit().putString("access_token", r.getString("access")).apply(); } catch (JSONException e) { e.printStackTrace(); }
-                    }, e-> {
-                        Log.d("MainActivity", e.toString());
-                    });
-
-                    queue.add(request);
-
-
-                }else if (refresh_expires + lastloggedin <= currentime ){
-                    // todo khoi dong login nhung ban qua account voi mot flag
-                    Intent intent = new Intent(this, AccountInfo.class);
-                    intent.putExtra("expired", true);
-                    startActivity(intent);
-
-                }
-
+            case R.id.action_logout:
+                deleteData();
+                finish();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -203,7 +167,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
 
     private void doctorpushDB() throws JSONException {
 
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
         String username = preferences.getString("onOpeningPatient", null);
 
         if(username == null){
@@ -273,5 +237,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
         queue.add(request);
     }
 
-
+    private void deleteData() {
+        preferences.edit().clear().commit();
+    }
 }

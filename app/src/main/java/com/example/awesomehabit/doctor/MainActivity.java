@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(newUserIntent,REQUEST_NEW_USER);
             }
         });
+
+
     }
 
     @Override

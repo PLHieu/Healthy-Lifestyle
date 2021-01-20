@@ -53,8 +53,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(_context, MainActivityDoctor.class);
-                    _context.startActivity(i);
+                    userInterface.onUserClick(getAdapterPosition());
+                    //Intent i = new Intent(_context, MainActivityDoctor.class);
+                    //_context.startActivity(i);
                 }
             });
 

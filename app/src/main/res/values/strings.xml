@@ -109,7 +109,7 @@
 
 
 
-    <string name="server_domain">http://10.0.2.2:8000/</string>
+    <string name="server_domain">http://192.168.1.23:8000/</string>
 
 
 </resources>
