@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -28,12 +30,27 @@ import com.example.awesomehabit.LoginActivity2;
 import com.example.awesomehabit.ProfileActivity;
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.SetGoalFragment;
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Goal;
+import com.example.awesomehabit.database.Habit;
+import com.example.awesomehabit.database.custom.CustomHabit;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
+import com.example.awesomehabit.database.meal.DailyMeal;
+import com.example.awesomehabit.database.running.Run;
+import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.test_sync_data;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mapbox.mapboxsdk.Mapbox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivityDoctor extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private DrawerLayout drawer;
@@ -123,7 +140,11 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
                 break;
             case R.id.action_sync:
-                startActivity(new Intent(this, test_sync_data.class));
+                try {
+                    doctorpushDB();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.action_login:
@@ -179,4 +200,78 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
             startActivity(new Intent(_context, ProfileActivity.class));
         }
     }
+
+    private void doctorpushDB() throws JSONException {
+
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String username = preferences.getString("onOpeningPatient", null);
+
+        if(username == null){
+            Toast.makeText(this, "Ban chua cho mot benh nhan cu the", Toast.LENGTH_LONG).show();
+        }
+
+        List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getOutdated();
+        List<SleepNight> sleepNights = AppDatabase.getDatabase(getApplicationContext()).sleepDao().getOutdated();
+        List<DailyMeal> meals = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().getOutdated();
+        List<CustomHabit> customHabits = AppDatabase.getDatabase(getApplicationContext()).customHabitDao().getOutdated();
+        List<DailyCustomHabit> dailyCustomHabits = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().getOutdated();
+        List<Goal> goals = AppDatabase.getDatabase(getApplicationContext()).goalDao().getAllGoal();
+
+        Gson gson = new Gson();
+        Type typeRun = new TypeToken<List<Run>>(){}.getType();
+        Type typeSleep = new TypeToken<List<SleepNight>>(){}.getType();
+        Type typeDailyMeal = new TypeToken<List<DailyMeal>>(){}.getType();
+        Type typeCustomHB = new TypeToken<List<CustomHabit>>(){}.getType();
+        Type typeDailyCustomHB = new TypeToken<List<DailyCustomHabit>>(){}.getType();
+        Type typeGoal = new TypeToken<List<Goal>>(){}.getType();
+
+        String runjson = gson.toJson(runs, typeRun);
+        String sleepjson = gson.toJson(sleepNights, typeSleep);
+        String dailymealjson = gson.toJson(meals, typeDailyMeal);
+        String customhbjson = gson.toJson(customHabits, typeCustomHB);
+        String dlcustomhbjson = gson.toJson(dailyCustomHabits, typeDailyCustomHB);
+        String goaljson = gson.toJson(goals, typeGoal);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("run", runjson);
+        jsonObject.put("sleep", sleepjson);
+        jsonObject.put("dailymeal", dailymealjson);
+        jsonObject.put("customHB", customhbjson);
+        jsonObject.put("dailycustomHB", dlcustomhbjson);
+        jsonObject.put("goal", goaljson);
+        jsonObject.put("username", username);
+        jsonObject.put("visiRun", Habit.RUN_AVAILABLE);
+        jsonObject.put("visiSleep", Habit.SLEEP_AVAILABLE);
+        jsonObject.put("visiMeal", Habit.MEAL_AVAILABLE);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   DOMAIN + "sync/doctorpush/",jsonObject,
+                response -> {
+
+                    // push thanh cong thi bat cac truong da push len 1
+                    AppDatabase.getDatabase(getApplicationContext()).runDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).sleepDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).customHabitDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().updateAll();
+
+                    Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
+                    Log.d("sync", "Response is: " + response);
+                },
+                error -> {
+                    Log.d("sync", error.toString());
+                    Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
+        queue.add(request);
+    }
+
+
 }

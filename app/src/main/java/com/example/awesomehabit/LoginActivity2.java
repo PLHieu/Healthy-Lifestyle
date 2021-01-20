@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.Goal;
 import com.example.awesomehabit.database.GoalDao;
+import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
@@ -162,6 +163,15 @@ public class LoginActivity2 extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,   DOMAIN + "sync/pull/", jsonObject,
                 response -> {
                     Log.d("sync", "Response is: " + response);
+
+                    // Lay cac visible roi update vao cac bien
+                    try {
+                        Habit.RUN_AVAILABLE =  Integer.parseInt( response.getString("visiRun"));
+                        Habit.SLEEP_AVAILABLE =  Integer.parseInt( response.getString("visiRun"));
+                        Habit.MEAL_AVAILABLE =  Integer.parseInt( response.getString("visiMeal"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     // truoc khi pull ve phai clear het table
                     RunDao runDao = AppDatabase.getDatabase(getApplicationContext()).runDao();

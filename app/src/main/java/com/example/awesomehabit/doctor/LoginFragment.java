@@ -18,14 +18,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.awesomehabit.R;
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.user.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,6 +151,10 @@ public class LoginFragment extends Fragment {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
+
+                // dang nhap thanh cong thi pull ve danh sach benh nhan
+                pulldanhsachbenhnhan();
+
                 onLoginSuccess();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -159,6 +173,48 @@ public class LoginFragment extends Fragment {
                         progressDialog.dismiss();
                     }
                 }, 3000);*/
+    }
+
+    private void updatePatient(List<User> patients) {
+        for(User u : patients){
+            AppDatabase.getDatabase(getContext()).userDao().insert(u);
+        }
+    }
+
+    private void pulldanhsachbenhnhan() {
+        // Gui request them benh nhan
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,   DOMAIN + "sync/listpatient/", null,
+                response -> {
+
+                    Log.d("sync", "Response is: " + response);
+                    Toast.makeText(getContext(), "pull danh sach benh nhan Sucessfully", Toast.LENGTH_LONG).show();
+
+                    // lay respone va dong bo
+                    String patientsjson = null;
+                    try {
+                        patientsjson = response.getString("data" );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Gson gson = new Gson();
+                    Type typeRun = new TypeToken<List<User>>(){}.getType();
+                    List<User> patients = gson.fromJson(patientsjson, typeRun);
+                    updatePatient(patients);
+
+                },
+                error -> Log.d("sync", error.toString())){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
+        queue.add(jsonObjectRequest);
     }
 
     /**

@@ -105,6 +105,9 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
         Log.d("sync", "Vao Click");
 
         String username  = users.get(position).username;
+        SharedPreferences preferences = getContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        preferences.edit().putString("onOpeningPatient", username).apply();
+
         try {
             Log.d("sync", "Vao pull");
             pullDB(username);

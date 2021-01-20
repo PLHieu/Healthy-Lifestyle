@@ -13,6 +13,12 @@
             android:title="Sign out"/>
 
 
+        <item
+            android:id="@+id/action_sync_patient"
+            android:icon="@drawable/ic_sync"
+            android:title="Sync" />
+
+
 <!--        <item-->
 <!--            android:id="@+id/action_set_goal"-->
 <!--            android:icon="@drawable/ic_edit"-->
@@ -25,10 +31,7 @@
 <!--                android:icon="@drawable/ic_account"-->
 <!--                android:title="Login" />-->
 
-<!--            <item-->
-<!--                android:id="@+id/action_sync"-->
-<!--                android:icon="@drawable/ic_sync"-->
-<!--                android:title="Sync" />-->
+
 <!--        </menu>-->
 <!--    </item>-->
 </menu>

@@ -23,16 +23,31 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Goal;
+import com.example.awesomehabit.database.custom.CustomHabit;
+import com.example.awesomehabit.database.custom.DailyCustomHabit;
+import com.example.awesomehabit.database.meal.DailyMeal;
+import com.example.awesomehabit.database.running.Run;
+import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mapbox.mapboxsdk.Mapbox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private static final int RESULT_CHANGE_PROFILE = 1001;
@@ -149,8 +164,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_set_goal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
                 break;
-            case R.id.action_sync:
-                startActivity(new Intent(this, test_sync_data.class));
+            case R.id.action_sync_patient:
+                try {
+                    pushDB();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.action_login:
@@ -211,4 +230,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivityForResult(intent, RESULT_CHANGE_PROFILE);
         }
     }
+
+
+    private void pushDB() throws JSONException {
+        List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getOutdated();
+        List<SleepNight> sleepNights = AppDatabase.getDatabase(getApplicationContext()).sleepDao().getOutdated();
+        List<DailyMeal> meals = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().getOutdated();
+        List<CustomHabit> customHabits = AppDatabase.getDatabase(getApplicationContext()).customHabitDao().getOutdated();
+        List<DailyCustomHabit> dailyCustomHabits = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().getOutdated();
+        List<Goal> goals = AppDatabase.getDatabase(getApplicationContext()).goalDao().getAllGoal();
+
+        Gson gson = new Gson();
+        Type typeRun = new TypeToken<List<Run>>(){}.getType();
+        Type typeSleep = new TypeToken<List<SleepNight>>(){}.getType();
+        Type typeDailyMeal = new TypeToken<List<DailyMeal>>(){}.getType();
+        Type typeCustomHB = new TypeToken<List<CustomHabit>>(){}.getType();
+        Type typeDailyCustomHB = new TypeToken<List<DailyCustomHabit>>(){}.getType();
+        Type typeGoal = new TypeToken<List<Goal>>(){}.getType();
+
+        String runjson = gson.toJson(runs, typeRun);
+        String sleepjson = gson.toJson(sleepNights, typeSleep);
+        String dailymealjson = gson.toJson(meals, typeDailyMeal);
+        String customhbjson = gson.toJson(customHabits, typeCustomHB);
+        String dlcustomhbjson = gson.toJson(dailyCustomHabits, typeDailyCustomHB);
+        String goaljson = gson.toJson(goals, typeGoal);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("run", runjson);
+        jsonObject.put("sleep", sleepjson);
+        jsonObject.put("dailymeal", dailymealjson);
+        jsonObject.put("customHB", customhbjson);
+        jsonObject.put("dailycustomHB", dlcustomhbjson);
+        jsonObject.put("goal", goaljson);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   DOMAIN + "sync/push/",jsonObject,
+                response -> {
+
+                    // push thanh cong thi bat cac truong da push len 1
+                    AppDatabase.getDatabase(getApplicationContext()).runDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).sleepDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).customHabitDao().updateAll();
+                    AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().updateAll();
+
+                    Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
+                    Log.d("sync", "Response is: " + response);
+                },
+                error -> {
+                    Log.d("sync", error.toString());
+                    Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
+        queue.add(request);
+    }
+
 }
