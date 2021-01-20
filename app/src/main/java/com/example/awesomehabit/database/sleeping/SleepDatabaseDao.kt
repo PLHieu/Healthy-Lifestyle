@@ -3,8 +3,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.awesomehabit.database.Converters
 import com.example.awesomehabit.database.HabitDao
-import com.example.awesomehabit.database.running.Run
-import java.util.*
 
 @Dao
 interface SleepDatabaseDao : HabitDao {
@@ -39,5 +37,8 @@ interface SleepDatabaseDao : HabitDao {
     @TypeConverters(Converters::class)
     @Query("SELECT * from daily_sleep_quality_table where day=:day and month=:month and year=:year limit 1")
     override fun getHabitFrom(day: Int, month: Int, year: Int): LiveData<List<SleepNight>>;
+
+    @Query("DELETE FROM daily_sleep_quality_table")
+    fun deleteTable()
 
 }

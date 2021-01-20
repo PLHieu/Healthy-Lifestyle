@@ -31,4 +31,7 @@ public interface CustomHabitDao {
         @Embedded
         public DailyCustomHabit dailyCustomHabit_;
     }
+
+    @Query("delete from customhabit")
+    public void  deleteTable();
 }

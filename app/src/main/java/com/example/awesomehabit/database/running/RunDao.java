@@ -56,4 +56,7 @@ public interface RunDao extends HabitDao {
 
     @Query("SELECT * FROM running_table where id = '1'")
     Run gettestRun();
+
+    @Query("DELETE FROM running_table")
+    public void deleteTable();
 }

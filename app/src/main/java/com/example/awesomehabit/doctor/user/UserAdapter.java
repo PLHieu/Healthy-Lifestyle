@@ -50,9 +50,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tvName.setText(users.get(position).name);
-        holder.tvAddress.setText(users.get(position).address);
-        if(users.get(position).avatarBitmap!=null && users.get(position).avatarBitmap.length()>20)
-            holder.ivAvatar.setImageBitmap(Ults.getBitmapFromString(users.get(position).avatarBitmap) );
+        holder.tvAddress.setText(users.get(position).diachi);
+        if(users.get(position).profile_pic!=null && users.get(position).profile_pic.length()>20)
+            holder.ivAvatar.setImageBitmap(Ults.getBitmapFromString(users.get(position).profile_pic) );
 
     }
 
