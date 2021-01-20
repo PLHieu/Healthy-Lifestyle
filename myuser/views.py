@@ -16,6 +16,7 @@ from .models import Doctor, Patient
 
 class DoctorRegisterView(APIView):
     def post(self, request):
+        
         # seri data 
         seri = serializers.UserSerializer(data=request.data)
         if seri.is_valid():
@@ -44,6 +45,7 @@ class PatientRegisterView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
+        print(request.data)
         # lay thogn tin bac si
         bacsiquanly = request.user
 
@@ -62,7 +64,7 @@ class PatientRegisterView(APIView):
             patientsSeri = serializers.UserSerializer(patients_user, many = True)
 
 
-            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
+            return JsonResponse({'data': patientsSeri.data},status=status.HTTP_201_CREATED, safe = False)
         else:
             print(seri.errors)
             return JsonResponse({
