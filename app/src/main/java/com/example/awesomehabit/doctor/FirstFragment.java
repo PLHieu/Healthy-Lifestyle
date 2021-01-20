@@ -115,10 +115,11 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
         String username  = users.get(position).username;
         SharedPreferences preferences = getContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         preferences.edit().putString("onOpeningPatient", username).apply();
-
         try {
             Log.d("sync", "Vao pull");
             pullDB(username);
+            Intent i = new Intent(getContext(),MainActivityDoctor.class);
+            startActivityForResult(i,REQUEST_LOGOUT);
         } catch (JSONException e) {
             e.printStackTrace();
         }
