@@ -167,7 +167,7 @@ public class LoginActivity2 extends AppCompatActivity {
                     // Lay cac visible roi update vao cac bien
                     try {
                         Habit.RUN_AVAILABLE =  Integer.parseInt( response.getString("visiRun"));
-                        Habit.SLEEP_AVAILABLE =  Integer.parseInt( response.getString("visiRun"));
+                        Habit.SLEEP_AVAILABLE =  Integer.parseInt( response.getString("visiSleep"));
                         Habit.MEAL_AVAILABLE =  Integer.parseInt( response.getString("visiMeal"));
                     } catch (JSONException e) {
                         e.printStackTrace();
