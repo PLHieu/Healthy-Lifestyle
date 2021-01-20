@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.meal.DailyMeal;
@@ -71,9 +72,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             @Override
             public void onChanged(List<Run> runList) {
                 int totalRunDistance=0;
-                int isVisible = 0;
+                int isVisible = Habit.RUN_AVAILABLE;
                 if (runList != null && runList.size()>0){
-                    isVisible = runList.get(0).isVisible;
                     for(int i=0;i<runList.size();i++){
                         totalRunDistance+=runList.get(i).distance;
                     }
@@ -87,9 +87,8 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
                 int totalSleepDuration=0;
-                int isVisible = 0;
+                int isVisible = Habit.SLEEP_AVAILABLE;
                 if (sleepNights!=null && sleepNights.size()>0){
-                    isVisible = sleepNights.get(0).isVisible;
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
                     }
@@ -103,9 +102,7 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
         db.dailyMealDao().getHabitFrom(day,month,year).observe((AppCompatActivity) mContext, new Observer<DailyMeal>() {
             @Override
             public void onChanged(DailyMeal dailyMeal) {
-                int isVisible = 0;
-                if(dailyMeal != null)
-                    isVisible = dailyMeal.isVisible;
+                int isVisible = Habit.MEAL_AVAILABLE;
                 cardAdapter.updateMealVisible(isVisible);
             }
         });

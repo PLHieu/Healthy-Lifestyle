@@ -62,6 +62,7 @@ public class HomeFragment_Doctor extends Fragment implements CustomCalendarView.
         });
 
         FloatingActionButton fab = view.findViewById(R.id.fabAddHabit);
+        fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
