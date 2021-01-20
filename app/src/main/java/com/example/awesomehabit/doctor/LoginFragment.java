@@ -152,7 +152,8 @@ public class LoginFragment extends Fragment {
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
 
-                // dang nhap thanh cong thi pull ve danh sach benh nhan
+                // dang nhap thanh cong thi xoa db user roi  pull ve danh sach benh nhan
+                AppDatabase.getDatabase(getContext()).userDao().deleteAll();
                 pulldanhsachbenhnhan();
 
                 onLoginSuccess();
