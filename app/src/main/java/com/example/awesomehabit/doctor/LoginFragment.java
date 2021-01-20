@@ -35,7 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
     private static final int REQUEST_SIGNUP = 0;
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private final String DOMAIN = getString(R.string.server_domain);
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

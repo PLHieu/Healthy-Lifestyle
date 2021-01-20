@@ -38,7 +38,7 @@ public class RegisterFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private final String DOMAIN = getString(R.string.server_domain);
     private static final String TAG = "RegisterFragment";
     // TODO: Rename and change types of parameters
     private String mParam1;
