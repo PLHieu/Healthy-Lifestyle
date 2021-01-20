@@ -24,6 +24,7 @@ import org.json.JSONObject;
 public class LoginActivity2 extends AppCompatActivity {
     private static final String DOMAIN = "http://10.0.2.2:8000/";
 
+    SharedPreferences preferences;
     @Override
     public void onBackPressed() {
         Intent returnIntent = new Intent();
@@ -35,6 +36,14 @@ public class LoginActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+
+        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String userName1 = preferences.getString("username",null);
+        if(userName1 != null) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
 
         Button button = findViewById(R.id.btnLogin);
         button.setOnClickListener(v -> {
@@ -51,8 +60,16 @@ public class LoginActivity2 extends AppCompatActivity {
 
             String userName = edtUserName.getText().toString();
             String passWord = edtPassWord.getText().toString();
-            returnIntent.putExtra("userName", userName);
-            returnIntent.putExtra("passWord", passWord);
+
+            //test
+            preferences.edit().putString("username", userName).apply();
+            preferences.edit().putString("email","hello@gmail.com").apply();
+            preferences.edit().putString("name", "Tran Tuan Dat").apply();
+            preferences.edit().putString("diachi", "227 Nguyen Van Cu, District 5, HCMC").apply();
+            preferences.edit().putInt("gioitinh", 0).apply();
+            preferences.edit().putString("ngaysinh", "09/08/2000").apply();
+            preferences.edit().putString("avatar", null);
+            //test
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
         });
@@ -90,8 +107,6 @@ public class LoginActivity2 extends AppCompatActivity {
             }
             Log.d("Login", r.toString());
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("userName", userName);
-            returnIntent.putExtra("passWord", passWord);
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
 

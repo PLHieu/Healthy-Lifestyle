@@ -5,29 +5,30 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity {
 
     final ArrayList<String> temp = new ArrayList<>(Arrays.asList("Male", "Female", "Other"));
     Spinner spinner;
@@ -35,17 +36,33 @@ public class ProfileActivity extends AppCompatActivity{
     ImageView imgViewIcon;
     TextView txtViewChangePass;
     TextView txtViewUser;
+    TextView txtViewUserName;
+    EditText edtName;
+    EditText edtMail;
+    EditText edtAddress;
 
-    String userName = "";
+    TextView txtViewSave;
+    TextView txtViewExit;
+
+    public static class Profile{
+        public static String userName = "";
+        public static String name = "";
+        public static String mail = "";
+        public static String address = "";
+        public static int gender = 0;
+        public static String birthday = "";
+        public static String avatar = "";
+    }
 
     final int RESULT_LOAD_IMG = 1000;
     final int RESULT_CHANGE_PASS = 1001;
+
+    SharedPreferences preferences;
 
     @Override
     public void onBackPressed() {
         Intent returnIntent = new Intent();
         setResult(RESULT_OK, returnIntent);
-        finish();
         super.onBackPressed();
     }
 
@@ -54,19 +71,79 @@ public class ProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        Intent intent = getIntent();
-
         spinner = findViewById(R.id.spinnerUserSex);
         txtViewBirthday = findViewById(R.id.txtViewUserBirthday);
         imgViewIcon = findViewById(R.id.imgViewUserIcon);
         txtViewChangePass = findViewById(R.id.txtViewChangePass);
+        txtViewUserName = findViewById(R.id.txtViewUserName);
         txtViewUser = findViewById(R.id.txtViewUser);
+        edtName = findViewById(R.id.edtName);
+        edtAddress = findViewById(R.id.edtUserAddress);
+        edtMail = findViewById(R.id.edtUserMail);
+        txtViewSave = findViewById(R.id.txtViewSave);
+        txtViewExit = findViewById(R.id.txtViewExit);
 
         initSpinner();
         txtViewBirthday.setOnClickListener(v -> setActionForTxtCalendar());
         imgViewIcon.setOnClickListener(v -> setImage());
         txtViewChangePass.setOnClickListener(v -> changePassword());
-        txtViewUser.setText(userName);
+        txtViewSave.setOnClickListener(v -> {
+            updateData();
+            onBackPressed();
+        });
+        txtViewExit.setOnClickListener(v -> onBackPressed());
+
+        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        getData();
+    }
+
+    private void updateData() {
+        preferences.edit().putString("name", edtName.getText().toString()).apply();
+        preferences.edit().putString("email", edtMail.getText().toString()).apply();
+        preferences.edit().putString("ngaysinh", txtViewBirthday.getText().toString()).apply();
+        preferences.edit().putInt("gioitinh", Profile.gender).apply();
+        preferences.edit().putString("diachi", edtAddress.getText().toString()).apply();
+        preferences.edit().putString("avatar", Profile.avatar).apply();
+    }
+
+    public static String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public static Bitmap StringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
+                    encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    private void getData() {
+        Profile.userName = preferences.getString("username", "guest");
+        Profile.name = preferences.getString("name", "guest");
+        Profile.mail = preferences.getString("email", "");
+        Profile.address = preferences.getString("diachi", "");
+        Profile.gender = preferences.getInt("gioitinh", 0);
+        Profile.birthday = preferences.getString("ngaysinh", "");
+        Profile.avatar = preferences.getString("avatar", null);
+
+        txtViewUser.setText(Profile.userName);
+        txtViewUserName.setText(Profile.name);
+        txtViewBirthday.setText(Profile.birthday);
+        edtName.setText(Profile.name, TextView.BufferType.EDITABLE);
+        edtMail.setText(Profile.mail, TextView.BufferType.EDITABLE);
+        edtAddress.setText(Profile.address, TextView.BufferType.EDITABLE);
+        spinner.setSelection(Profile.gender);
+        if(Profile.avatar != null)
+            imgViewIcon.setImageBitmap(StringToBitMap(Profile.avatar));
     }
 
     private void changePassword() {
@@ -90,6 +167,7 @@ public class ProfileActivity extends AppCompatActivity{
                     final Uri imageUri = data.getData();
                     final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    Profile.avatar = BitMapToString(selectedImage);
                     imgViewIcon.setImageBitmap(selectedImage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -130,7 +208,7 @@ public class ProfileActivity extends AppCompatActivity{
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                Profile.gender = position;
             }
 
             @Override

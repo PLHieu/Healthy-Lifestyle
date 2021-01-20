@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,12 +39,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
 
     private NavigationView navigationView;
+    ImageView imageView;
+    TextView txtViewName;
+    TextView txtViewMail;
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
     private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
 
     String userName = "";
-    String password = "";
     Context _context;
+    SharedPreferences preferences;
 
     static int LOGIN_CODE = 1;
     Bundle bundle;
@@ -62,19 +67,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(requestCode == LOGIN_CODE){
             if(resultCode == Activity.RESULT_OK){
-                userName = data.getStringExtra("userName");
-                password = data.getStringExtra("passWord");
                 init();
             }
             if(resultCode == Activity.RESULT_CANCELED)
                 finish();
         }
         if(requestCode == RESULT_CHANGE_PROFILE){
-            password = data.getStringExtra("password");
+            updateData();
         }
     }
 
     private void init() {
+        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         setContentView(R.layout.activity_main_navigation);
@@ -83,11 +88,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View view = navigationView.getHeaderView(0);
+        imageView = view.findViewById(R.id.imgViewUserIcon);
+        txtViewMail = view.findViewById(R.id.txtViewUserMail);
+        txtViewName = view.findViewById(R.id.txtViewUserName);
+
+        updateData();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
         drawer.addDrawerListener(toggle);
@@ -97,6 +106,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.action_home);
         }
+    }
+
+    private void updateData() {
+        if(preferences.getString("avatar", null) != null)
+            imageView.setImageBitmap(ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
+        txtViewName.setText(preferences.getString("username", "guest"));
+        txtViewMail.setText(preferences.getString("email", "guest@gmail.com"));
     }
 
     @Override
@@ -180,8 +196,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         if(v.getId() == R.id.imgViewUserIcon){
             Intent intent = new Intent(_context, ProfileActivity.class);
-            intent.putExtra("userName", userName);
-            intent.putExtra("password", password);
             startActivityForResult(intent, RESULT_CHANGE_PROFILE);
         }
     }
