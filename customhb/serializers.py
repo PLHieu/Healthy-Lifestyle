@@ -14,6 +14,7 @@ class CTHBSerializer(serializers.ModelSerializer):
         obj = CustomHabit.objects.create(**validated_data)
         if ("owner" in self.context):
             obj.user = self.context["owner"]
+        obj.CHupdated =1
         obj.save()
         return obj
 

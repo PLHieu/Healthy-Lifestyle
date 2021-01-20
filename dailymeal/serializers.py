@@ -22,6 +22,7 @@ class DailyMealSerializer(serializers.ModelSerializer):
         obj = DailyMeal.objects.create(**validated_data)
         if ("owner" in self.context):
             obj.user = self.context["owner"]
+            obj.updated =1
             obj.save()
         for mealdata in meallistdata:
             Meal.objects.create(dailymeal = obj, **mealdata)
