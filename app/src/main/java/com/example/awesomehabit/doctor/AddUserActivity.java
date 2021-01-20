@@ -41,8 +41,12 @@ import java.util.Map;
 
 public class AddUserActivity extends AppCompatActivity {
     ImageView ivAvatar;
-    EditText editTextName;
-    EditText editTextAddress;
+    EditText editTextUserName;
+    EditText editTextPassword;
+EditText editTextName;
+EditText editTextEmail;
+EditText editTextAddress;
+EditText editTextBirth;
     Button buttonAdd;
     Bitmap imageBitmap;
     private  String DOMAIN ;
@@ -67,8 +71,13 @@ public class AddUserActivity extends AppCompatActivity {
 
         ivAvatar=findViewById(R.id.ivAvatar);
         ivAvatar.setImageResource(R.drawable.ic_baseline_image_not_supported_24);
-        editTextName=findViewById(R.id.editTextTextPersonName);
-        editTextAddress=findViewById(R.id.editTextTextPersonName2);
+        editTextUserName =findViewById(R.id.editTextUserName);
+        editTextPassword =findViewById(R.id.editTextPassword);
+
+        editTextAddress=findViewById(R.id.editTextAddress);
+        editTextBirth=findViewById(R.id.editTextBirth);
+        editTextEmail=findViewById(R.id.editTextEmail);
+        editTextName=findViewById(R.id.editTextName);
         imageBitmap=null;
         ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +104,14 @@ public class AddUserActivity extends AppCompatActivity {
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                     JSONObject jsonObject = new JSONObject();
                     try {
-                        jsonObject.put("username" , editTextName.getText().toString());
-                        jsonObject.put("password", editTextAddress.getText().toString());
+                        jsonObject.put("username" , editTextUserName.getText().toString());
+                        jsonObject.put("password", editTextPassword.getText().toString());
+
+                        jsonObject.put("diachi" , editTextAddress.getText().toString());
+                        jsonObject.put("ngaysinh", editTextBirth.getText().toString());
+                        jsonObject.put("email" , editTextEmail.getText().toString());
+                        jsonObject.put("name", editTextName.getText().toString());
+
                         jsonObject.put("profile_pic", getStringFromBitmap(imageBitmap));
 
                     } catch (JSONException e) {

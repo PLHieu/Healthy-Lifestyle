@@ -1,6 +1,7 @@
 package com.example.awesomehabit.doctor;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,9 +24,12 @@ import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class HomeFragment_Doctor extends Fragment implements CustomCalendarView.CustomCalendarViewInterface {
     CustomCalendarView customCalendarView;
     ViewPager viewPager;
+    TextView txtName;
     AppDatabase db;
     @Nullable
     @Override
@@ -33,6 +38,13 @@ public class HomeFragment_Doctor extends Fragment implements CustomCalendarView.
         customCalendarView=(CustomCalendarView) view.findViewById(R.id.customCalendar);
         customCalendarView.setResponder(this);//For onclick
 
+        txtName=view.findViewById(R.id.userBarName);
+        SharedPreferences preferences;
+        preferences = getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        if(preferences.getString("name", null) != null)
+        {
+            txtName.setText(preferences.getString("name", "guest"));
+        }
 
         db = AppDatabase.getDatabase(view.getContext());
         viewPager=(ViewPager)view.findViewById(R.id.pager);
