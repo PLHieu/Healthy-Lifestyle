@@ -176,6 +176,7 @@ class DoctorPostData(APIView):
             visi.visiRun = visiRun
             visi.visiSleep = visiSleep
             visi.visiMeal = visiMeal
+            visi.save()
 
         except Visible.DoesNotExist:
             Visible.objects.create(username = patient_username,visiRun = visiRun ,visiSleep = visiSleep, visiMeal = visiMeal)
