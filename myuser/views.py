@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from finalBackend import settings
 from . import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Doctor, Patient
+from .models import Doctor, Patient, Visible
+
 
 
 class DoctorRegisterView(APIView):
