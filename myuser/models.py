@@ -12,6 +12,8 @@ class MyUser(AbstractUser):
     tuoi = models.IntegerField(default=0, null=True)
     diachi = models.CharField(max_length = 100, default='', null = True)
     profile_pic = models.TextField(null=True, blank=True)
+    gioitinh = models.IntegerField(default = '0')
+    ngaysinh = models.CharField(max_length = 20, default = '' )
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

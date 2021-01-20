@@ -21,7 +21,7 @@ from sleep.serializes import SleepSerializer
 from dailymeal.serializers import DailyMealSerializer
 from customhb.serializers import CTHBSerializer
 from dailycthb.serializes import DailyCTHBSerializer
-from myuser.serializers import NewPatientSerializer
+from myuser.serializers import UserSerializer
 from goal.serializers import GoalSerializer
 
 class SyncListPatient(APIView):
@@ -33,7 +33,10 @@ class SyncListPatient(APIView):
 
         # tra ve danh sach cac benh nhan
         patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
-        patientsSeri = NewPatientSerializer(patients, many = True)
+        patients_user = [p.user for p in patients]
+
+        # Thay ve tra ve benh nhan thi se tra ve user
+        patientsSeri = UserSerializer(patients_user, many = True)
 
         try:
             return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)

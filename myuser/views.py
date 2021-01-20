@@ -56,7 +56,10 @@ class PatientRegisterView(APIView):
             
             # tra ve danh sach cac benh nhan
             patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
-            patientsSeri = serializers.NewPatientSerializer(patients, many = True)
+            patients_user = [p.user for p in patients]
+
+            # Thay ve tra ve benh nhan thi se tra ve user
+            patientsSeri = serializers.UserSerializer(patients_user, many = True)
 
 
             return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)

@@ -7,7 +7,7 @@ from .models import MyUser, Doctor, Patient
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('username', 'password', 'email', 'name', 'tuoi', 'diachi', 'profile_pic')
+        fields = ('username', 'password', 'email', 'name', 'tuoi', 'diachi', 'profile_pic', 'gioitinh', 'ngaysinh')
         extra_kwargs = {'password': {'write_only': True}}
         
     def update(self, instance, validated_data):
@@ -36,3 +36,5 @@ class NewPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ('user','tenbenh', 'thoigiandieutri')
+
+
