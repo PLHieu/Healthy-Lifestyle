@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,12 +21,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==REQUEST_NEW_USER && requestCode==RESULT_OK){
+        if(requestCode==REQUEST_NEW_USER && resultCode==RESULT_OK){
 
         }
 
-        if(requestCode==REQUEST_LOGIN && requestCode==RESULT_OK){
+        if(requestCode==REQUEST_LOGIN && resultCode==RESULT_OK){
 
+        }
+        if(requestCode==REQUEST_LOGIN && resultCode==RESULT_CANCELED){
+            finish();
         }
     }
 
@@ -34,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_doctor);
 
-//        Intent login=new Intent(MainActivity.this, LoginActivity.class);
-//        startActivityForResult(login,REQUEST_LOGIN);
+        Intent login=new Intent(MainActivity.this, LoginActivity.class);
+        startActivityForResult(login,REQUEST_LOGIN);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
