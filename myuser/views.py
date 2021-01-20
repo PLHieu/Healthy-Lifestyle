@@ -87,7 +87,14 @@ class UserLoginView(APIView):
                     'refresh_token': str(refresh),
                     'access_token': str(refresh.access_token),
                     'access_expires': int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()),
-                    'refresh_expires': int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                    'refresh_expires': int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
+                    'username': user.username,
+                    'email': user.email,
+                    'name': user.name,
+                    'tuoi': user.tuoi,
+                    'diachi': user.diachi,
+                    'gioitinh': user.gioitinh,
+                    'ngaysinh': user.ngaysinh
                 }
                 return Response(data, status=status.HTTP_200_OK)
 
