@@ -57,13 +57,13 @@ public class StatisticFragment extends Fragment {
 
     public static String RUN_UNIT = "km";
     public static String SLEEP_UNIT = "hour";
-    RecyclerView recyclerView;
+
     public static int RUN_TYPE = 0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.activity_statistic,container,false);
-        recyclerView = view.findViewById(R.id.recyclerViewDetail);
+
         //LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false );
         //RecyclerView r=view.findViewById(R.id.recyclerViewDetail);
         //r.setLayoutManager(layoutManager);
@@ -74,7 +74,11 @@ public class StatisticFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        handleIntent(view);
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false );
+        //RecyclerView r=view.findViewById(R.id.recyclerViewDetail);
+        //r.setLayoutManager(layoutManager);
+
+        handleIntent();
         initSpinner(view);
     }
 
@@ -90,8 +94,8 @@ public class StatisticFragment extends Fragment {
         arrayListTimeLength = new ArrayList<>();
     }
 
-    private void initSpinner(View view) {
-        Spinner spinner = view.findViewById(R.id.dropdownList);
+    private void initSpinner(View views) {
+        Spinner spinner = views.findViewById(R.id.dropdownList);
         final ArrayList<String> temp = new ArrayList<>(Arrays.asList(this.getResources().getString(R.string.weekLabel),
                 this.getResources().getString(R.string.monthLabel),
                 this.getResources().getString(R.string.yearLabel)));
@@ -105,7 +109,7 @@ public class StatisticFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 initArrayList();
                 handleView(position);
-                initRecyclerViewForMePlease(position,view);
+                initRecyclerViewForMePlease(position,views);
             }
 
             @Override
@@ -129,7 +133,7 @@ public class StatisticFragment extends Fragment {
             generateIfNotExisted(calendar, 0f, 0l, 0, mode);
     }
 
-    private void handleIntent(View view) {
+    private void handleIntent() {
         Intent intent = getActivity().getIntent();
         listTime = new ArrayList<>();
         listData = new ArrayList<>();
@@ -298,7 +302,7 @@ public class StatisticFragment extends Fragment {
 
     private void initRecyclerViewForMePlease(int mode,View view) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false );
-
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewDetail);
         recyclerView.setLayoutManager(layoutManager);
 
         MyStatisticViewAdapter myStatisticViewAdapter;
