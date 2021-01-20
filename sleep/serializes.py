@@ -19,4 +19,4 @@ class SleepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sleep
-        fields = ['type', 'day', 'month', 'year', 'target', 'startTimeMilli', 'endTimeMilli', 'sleepQuality']
+        fields = ['type', 'day', 'month', 'year', 'target', 'startTimeMilli', 'endTimeMilli', 'sleepQuality', 'updated']

@@ -32,5 +32,5 @@ class DailyMealSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyMeal
         
-        fields = ['type', 'day', 'month', 'year', 'target', 'mealList']
+        fields = ['type', 'day', 'month', 'year', 'target', 'mealList', 'updated']
 

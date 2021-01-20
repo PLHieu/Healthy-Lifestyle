@@ -19,5 +19,5 @@ class CTHBSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomHabit
-        fields = ['HabitID', 'name', 'type','iconID']
+        fields = ['HabitID', 'name', 'type','iconID', 'CHupdated']
 
