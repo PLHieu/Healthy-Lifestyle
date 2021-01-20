@@ -23,7 +23,7 @@ public class DailyCustomHabit {
     int day;
     int month;
     int year;
-    public Calendar time=Calendar.getInstance();//Please remove me
+//    public Calendar time=Calendar.getInstance();//Please remove me
     boolean updated;
 
     public DailyCustomHabit(int HabitID_, int current, int target,int day,int month,int year) {
