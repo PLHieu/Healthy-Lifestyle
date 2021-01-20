@@ -25,4 +25,7 @@ public interface GoalDao {
 
     @Query("SELECT * from goal")
     List<Goal> getAllGoal();
+
+    @Query("DELETE FROM goal")
+    public void deleteTable();
 }

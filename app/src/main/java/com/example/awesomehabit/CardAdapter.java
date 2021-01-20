@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
@@ -25,6 +27,7 @@ import com.example.awesomehabit.running.RunningTracking;
 import com.example.awesomehabit.sleeping.SleepTracker;
 import com.example.awesomehabit.statistic.StatisticActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -51,6 +54,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     String totalSleepdurationString ="no data";
     Context mContext;
     Boolean hideButton=false;
+    int runVisible = 1;
+    int foodVisible = 1;
+    int sleepVisible = 1;
     AppDatabase db;
 
     public void setHabitPairs(List<CustomHabitDao.CustomHabit_DailyCustomHabit> habit_pairs) {
@@ -98,6 +104,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        int staticPos = runVisible + foodVisible + sleepVisible;
         Log.d(TAG, "onBindViewHolder: " + String.valueOf(position));
         switch (holder.getItemViewType()){
             case viewCardType.RUN:
@@ -126,7 +133,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 break;
             case viewCardType.COUNT:
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
-                CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-3);
+                CustomHabitDao.CustomHabit_DailyCustomHabit pair=habit_pairs.get(position-staticPos);
                 countViewHolder.tvName.setText(pair.customHabit_.name);
                 countViewHolder.imageView.setImageResource(pair.customHabit_.iconID);
                 if(hideButton)
@@ -153,13 +160,13 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 break;
             case viewCardType.TIME:
                 TimeViewHolder timeViewHolder = (TimeViewHolder)holder;
-                CustomHabitDao.CustomHabit_DailyCustomHabit timePair = habit_pairs.get(position - 3);
+                CustomHabitDao.CustomHabit_DailyCustomHabit timePair = habit_pairs.get(position - staticPos);
                 timeViewHolder.txtViewTimeName.setText(timePair.customHabit_.name);
                 timeViewHolder.imageViewTimeIcon.setImageResource(timePair.customHabit_.iconID);
                 break;
             case viewCardType.TICK:
                 TickViewHolder tickViewHolder = (TickViewHolder)holder;
-                CustomHabitDao.CustomHabit_DailyCustomHabit tickPair = habit_pairs.get(position - 3);
+                CustomHabitDao.CustomHabit_DailyCustomHabit tickPair = habit_pairs.get(position - staticPos);
                 tickViewHolder.textView.setText(tickPair.customHabit_.name);
                 if (tickPair.dailyCustomHabit_ != null) {
                     if (tickPair.dailyCustomHabit_.current == 1)
@@ -179,9 +186,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public int getItemCount() {
+        int staticPos = runVisible + foodVisible + sleepVisible;
         if(habit_pairs!=null)
-            return 3+habit_pairs.size();
-        else return 3;
+            return staticPos+habit_pairs.size();
+        else return staticPos;
     }
 
     @Override
@@ -230,6 +238,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         TextView distance;
         TextView distanceGoal;
         Button btnRunStat;
+        CheckBox checkBoxAvailable;
         public RunViewHolder(@NonNull View itemView) {
             super(itemView);
             btnRun=itemView.findViewById(R.id.startRunning);
@@ -238,6 +247,20 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             btnRunStat=itemView.findViewById(R.id.btnRunStatistic);
             btnRun.setOnClickListener(CardAdapter.this);
             btnRunStat.setOnClickListener(CardAdapter.this);
+            checkBoxAvailable = itemView.findViewById(R.id.checkboxRun);
+            if(Habit.RUN_AVAILABLE == 1)
+                checkBoxAvailable.setChecked(true);
+            checkBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(checkBoxAvailable.isChecked())
+                        Habit.RUN_AVAILABLE = 1;
+                    else
+                        Habit.RUN_AVAILABLE = 0;
+                }
+            });
+            if(!hideButton)
+                checkBoxAvailable.setVisibility(View.GONE);
         }
     }
     public class SleepViewHolder extends RecyclerView.ViewHolder{
@@ -245,12 +268,27 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         TextView sleepTime;
         TextView sleepTimeGoal;
         Button btnSleepStat;
+        CheckBox checkBoxAvailable;
         public SleepViewHolder(@NonNull View itemView) {
             super(itemView);
             btnSleep=itemView.findViewById(R.id.startSleeping);
             sleepTime=itemView.findViewById(R.id.sleepTime);
             sleepTimeGoal=itemView.findViewById(R.id.sleepTimeGoal);
             btnSleepStat=itemView.findViewById(R.id.btnSleepStatistic);
+            checkBoxAvailable = itemView.findViewById(R.id.checkboxSleep);
+            if(Habit.SLEEP_AVAILABLE == 1)
+                checkBoxAvailable.setChecked(true);
+            checkBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(checkBoxAvailable.isChecked())
+                        Habit.SLEEP_AVAILABLE = 1;
+                    else
+                        Habit.SLEEP_AVAILABLE = 0;
+                }
+            });
+            if(!hideButton)
+                checkBoxAvailable.setVisibility(View.GONE);
             btnSleepStat.setOnClickListener(CardAdapter.this);
             btnSleep.setOnClickListener(CardAdapter.this);
         }
@@ -259,12 +297,26 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         Button btnMeal;
         TextView calo;
         TextView caloGoal;
-
+        CheckBox checkBoxAvailable;
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             btnMeal=itemView.findViewById(R.id.btnMeal);
 
             btnMeal.setOnClickListener(CardAdapter.this);
+            checkBoxAvailable = itemView.findViewById(R.id.checkboxMeal);
+            if(Habit.MEAL_AVAILABLE == 1)
+                checkBoxAvailable.setChecked(true);
+            checkBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(checkBoxAvailable.isChecked())
+                        Habit.MEAL_AVAILABLE = 1;
+                    else
+                        Habit.MEAL_AVAILABLE = 0;
+                }
+            });
+            if(!hideButton)
+                checkBoxAvailable.setVisibility(View.GONE);
         }
     }
     public class CountViewHolder extends RecyclerView.ViewHolder{
@@ -280,7 +332,6 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             imageView = itemView.findViewById(R.id.countingHabitIcon);
             btnAdd = itemView.findViewById(R.id.btn_countAdd);
             btnMinus = itemView.findViewById(R.id.btn_countMinus);
-
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
@@ -295,11 +346,21 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public int getItemViewType(int position) {
-        if(position<=2)//3 habit dau la default
-            return position;
-        else
+        ArrayList<Integer> listStaticAct = new ArrayList<>();
+        if(runVisible == 1)
+            listStaticAct.add(viewCardType.RUN);
+        if(sleepVisible == 1)
+            listStaticAct.add(viewCardType.SLEEP);
+        if(foodVisible == 1)
+            listStaticAct.add(viewCardType.FOOD);
+        int staticPos = listStaticAct.size();
+
+        if (position < staticPos)//3 habit dau la default
         {
-            switch (habit_pairs.get(position-3).customHabit_.type){
+            return listStaticAct.get(position);
+        }
+        else {
+            switch (habit_pairs.get(position - staticPos).customHabit_.type) {
                 case CustomHabit.TYPE_COUNT:
                     return viewCardType.COUNT;
                 case CustomHabit.TYPE_TICK:
@@ -311,15 +372,31 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         return -1;
     }
 
+    public void updateRunVisible(int isVisible) {
+        if(!hideButton)
+            runVisible = isVisible;
+    }
+
     public void updateRun(int totalDistance){
         totalDistanceString =String.valueOf((float)totalDistance/1000)+"/";
         notifyDataSetChanged();
     }
+
+    public void updateSleepVisible(int isVisible) {
+        if (!hideButton)
+            sleepVisible = isVisible;
+    }
+
     public void updateSleep(int totalSleepDuration){
         int seconds = (int) (totalSleepDuration / 1000) % 60 ;
         int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
         int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
         totalSleepdurationString=String.valueOf(hours)+":"+String.valueOf(minutes)+"/";
+    }
+
+    public void updateMealVisible(int isVisible) {
+        if (!hideButton)
+            foodVisible = isVisible;
     }
 
     private class TimeViewHolder extends RecyclerView.ViewHolder {

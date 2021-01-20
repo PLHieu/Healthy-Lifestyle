@@ -23,4 +23,7 @@ public interface DailyCustomHabitDao {
     @Query("select * from dailycustomhabit ")
     List<DailyCustomHabit> getAllHabitNone();
 
+    @Query("delete from dailycustomhabit")
+    public void  deleteTable();
+
 }
