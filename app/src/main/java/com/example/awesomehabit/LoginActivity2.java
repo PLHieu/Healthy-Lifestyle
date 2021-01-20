@@ -25,6 +25,13 @@ public class LoginActivity2 extends AppCompatActivity {
     private final String DOMAIN = getString(R.string.server_domain);
 
     @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
@@ -37,18 +44,18 @@ public class LoginActivity2 extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-        button.setOnClickListener(v -> {
-            Intent returnIntent = new Intent();
-            EditText edtUserName = findViewById(R.id.edtUserName);
-            EditText edtPassWord = findViewById(R.id.edtPassword);
-
-            String userName = edtUserName.getText().toString();
-            String passWord = edtPassWord.getText().toString();
-            returnIntent.putExtra("userName", userName);
-            returnIntent.putExtra("passWord", passWord);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
-        });
+//        button.setOnClickListener(v -> {
+//            Intent returnIntent = new Intent();
+//            EditText edtUserName = findViewById(R.id.edtUserName);
+//            EditText edtPassWord = findViewById(R.id.edtPassword);
+//
+//            String userName = edtUserName.getText().toString();
+//            String passWord = edtPassWord.getText().toString();
+//            returnIntent.putExtra("userName", userName);
+//            returnIntent.putExtra("passWord", passWord);
+//            setResult(Activity.RESULT_OK, returnIntent);
+//            finish();
+//        });
     }
 
     private void setActionForLoginButton() throws JSONException {

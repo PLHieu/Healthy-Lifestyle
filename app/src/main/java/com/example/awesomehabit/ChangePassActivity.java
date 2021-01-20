@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class ChangePassActivity extends AppCompatActivity {
-
     String password = "";
 
     EditText edtCurPass;
@@ -23,7 +22,6 @@ public class ChangePassActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("password", password);
         setResult(RESULT_OK, returnIntent);
         super.onBackPressed();
     }
@@ -35,7 +33,6 @@ public class ChangePassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        password = intent.getStringExtra("password");
         _context = getBaseContext();
 
         setContentView(R.layout.activity_change_pass);
@@ -83,8 +80,9 @@ public class ChangePassActivity extends AppCompatActivity {
     }
 
     private boolean checkCurPassword() {
-        if(edtCurPass.getText().toString().equals(password))
-            return true;
-        return false;
+        return true;
+//        if(edtCurPass.getText().toString().equals(password))
+//            return true;
+//        return false;
     }
 }
