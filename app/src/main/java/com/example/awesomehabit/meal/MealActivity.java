@@ -50,31 +50,6 @@ public class MealActivity extends AppCompatActivity implements MealAdapter.OnMea
                     }
                 }
             });
-
-            /*
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            if(imageBitmap!=null) {
-                Meal meal = new Meal("Bun dau", 69);
-
-                meal.setBitmap(imageBitmap);
-                LiveData<DailyMeal> dailyMealLiveData = db.dailyMealDao().getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
-
-                dailyMealLiveData.observe(this, new Observer<DailyMeal>() {
-                    @Override
-                    public void onChanged(DailyMeal dailyMeal) {
-                        dailyMealLiveData.removeObserver(this);
-                        if (dailyMeal != null) {
-                            dailyMeal.mealList.add(meal);
-                            db.dailyMealDao().update(dailyMeal);
-                        } else {
-                            DailyMeal dailyMeal1 = new DailyMeal(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
-                            dailyMeal1.mealList = new ArrayList<>();
-                            dailyMeal1.mealList.add(meal);
-                            db.dailyMealDao().insert(dailyMeal1);
-                        }
-                    }
-                });
-            }*/
         }
     }
 
@@ -107,13 +82,6 @@ public class MealActivity extends AppCompatActivity implements MealAdapter.OnMea
             public void onClick(View v) {
                 Intent mealConfirmIntent=new Intent(MealActivity.this,MealConfirmActivity.class);
                startActivityForResult(mealConfirmIntent, MEAL_CONFIRM_REQUEST);
-                //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //try {
-                    //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                //    startActivity(takePictureIntent);
-                //} catch (ActivityNotFoundException e) {
-                //    // display error state to the user
-                //}
             }
         });
     }
