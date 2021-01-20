@@ -128,8 +128,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 break;
             case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
-                if(hideButton)
-                    foodViewHolder.btnMeal.setVisibility(View.GONE);
+                //if(hideButton)
+                //    foodViewHolder.btnMeal.setVisibility(View.GONE);
                 break;
             case viewCardType.COUNT:
                 CountViewHolder countViewHolder=(CountViewHolder)holder;
