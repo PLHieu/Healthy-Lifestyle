@@ -25,6 +25,13 @@ public class LoginActivity2 extends AppCompatActivity {
     private static final String DOMAIN = "http://10.0.2.2:8000/";
 
     @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
