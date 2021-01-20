@@ -59,4 +59,7 @@ public interface RunDao extends HabitDao {
 
     @Query("DELETE FROM running_table")
     public void deleteTable();
+
+    @Query("SELECT * FROM running_table where updated = 0 ")
+    public  List<Run>  getOutdatedRun();
 }

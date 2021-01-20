@@ -18,12 +18,13 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     List<User> users;
-
+    UserInterface userInterface;
     public void setUsers(List<User> users){
         this.users=users;
         notifyDataSetChanged();
     }
-    public UserAdapter(ArrayList<User> users) {
+    public UserAdapter(List<User> users,UserInterface userInterface) {
+        this.userInterface=userInterface;
         this.users = users;
     }
 
@@ -35,7 +36,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return holder;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvName;
         TextView tvAddress;
         ImageView ivAvatar;
@@ -44,6 +45,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             tvName=itemView.findViewById(R.id.tvUserName);
             tvAddress=itemView.findViewById(R.id.tvUserAddress);
             ivAvatar=itemView.findViewById(R.id.imageViewAvatar);
+
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            userInterface.onUserClick(getAdapterPosition());
         }
     }
 
@@ -61,5 +70,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return users.size();
     }
 
+    public interface UserInterface{
+        void onUserClick(int position);
+    }
 
 }

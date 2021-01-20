@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.FactoryConfigurationError;
+
 @Entity(tableName = "running_table")
 public class Run extends Habit {
 
@@ -47,6 +49,9 @@ public class Run extends Habit {
     @ColumnInfo(name = "runningTime")
     public long runningTime;
 
+    @ColumnInfo(name = "updated")
+    public boolean updated;
+
     public Run(int distance, String timeStart,int day,int month,int year, long runningTime, String routeID) {
         super(Habit.TYPE_RUN);
         this.distance = distance;
@@ -57,6 +62,7 @@ public class Run extends Habit {
         this.month=month;
         this.year=year;
         //this.time = time;
+        this.updated = false;
     }
 
 
