@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -36,6 +37,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -127,11 +130,19 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getApplicationContext().getString(R.string.server_domain) +  "update/patient/",jsonObject, r -> {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getApplicationContext().getString(R.string.server_domain) +  "myuser/update/patient/",jsonObject, r -> {
 
         }, e-> {
 
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
         queue.add(jsonObjectRequest);
 
     }

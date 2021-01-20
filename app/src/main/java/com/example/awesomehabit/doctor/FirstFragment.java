@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.fragment.NavHostFragment;
@@ -56,9 +57,16 @@ import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 public class FirstFragment extends Fragment implements UserAdapter.UserInterface {
 
     private static final String DOMAIN = "http://10.0.2.2:8000/";
-
+    private static final int REQUEST_LOGOUT=999;
     List<User> users=new ArrayList<>();
     UserAdapter userAdapter=new UserAdapter(users,this);
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==REQUEST_LOGOUT && resultCode==getActivity().RESULT_OK){
+            getActivity().finish();
+        }
+    }
 
     @Override
     public View onCreateView(
@@ -93,7 +101,7 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
                 //NavHostFragment.findNavController(FirstFragment.this)
                  //       .navigate(R.id.action_loginFragment_to_registerFragment);
                 Intent i = new Intent(getContext(),MainActivityDoctor.class);
-                startActivity(i);
+                startActivityForResult(i,REQUEST_LOGOUT);
             }
         });
 
