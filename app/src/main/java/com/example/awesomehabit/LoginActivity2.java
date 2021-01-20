@@ -237,11 +237,6 @@ public class LoginActivity2 extends AppCompatActivity {
 //                    Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
                     Log.d("sync", "Pull Sucessfully");
 
-                    // khoi dong main activity sau khi update xong
-                    Intent i = new Intent(getApplicationContext(), MainActivityDoctor.class);
-                    startActivity(i);
-
-
                 },
                 error -> Log.d("sync", error.toString())){
 
