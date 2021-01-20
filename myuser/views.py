@@ -56,6 +56,9 @@ class PatientRegisterView(APIView):
             new_user = seri.save() # tao user
             Patient.objects.create(user = new_user, bacsiquanly = bacsiquanly) # tao benh nhan tuong ung
             
+            # tao visible 
+            Visible.objects.create(username = new_user.username,visiRun = 0 ,visiSleep = 0, visiMeal = 0)
+
             # tra ve danh sach cac benh nhan
             patients = Patient.objects.filter(bacsiquanly = bacsiquanly)
             patients_user = [p.user for p in patients]

@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 
-from myuser.models import MyUser, Patient
+from myuser.models import MyUser, Patient, Visible
 from run.models import Run
 from sleep.models import Sleep
 from dailymeal.models import DailyMeal
@@ -177,8 +177,8 @@ class DoctorPostData(APIView):
             visi.visiSleep = visiSleep
             visi.visiMeal = visiMeal
 
-        except SomeModel.DoesNotExist:
-            Visible.objects.get(username = patient_username,visiRun = visiRun ,visiSleep = visiSleep, visiMeal = visiMeal)
+        except Visible.DoesNotExist:
+            Visible.objects.create(username = patient_username,visiRun = visiRun ,visiSleep = visiSleep, visiMeal = visiMeal)
         
 
         user = MyUser.objects.get(username = patient_username)
