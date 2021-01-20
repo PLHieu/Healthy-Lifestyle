@@ -2,9 +2,7 @@ package com.example.awesomehabit.database.sleeping
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.awesomehabit.database.Habit
-import java.util.*
 
 @Entity(tableName = "daily_sleep_quality_table")
 class SleepNight() : Habit(TYPE_SLEEP) {
@@ -28,6 +26,9 @@ class SleepNight() : Habit(TYPE_SLEEP) {
 
     @ColumnInfo(name = "quality_rating")
     var sleepQuality = -1
+
+    @ColumnInfo(name = "updated")
+    var updated:Boolean = false
 
     fun getSleepDuration(): Long { return endTimeMilli.minus(startTimeMilli) }
 }

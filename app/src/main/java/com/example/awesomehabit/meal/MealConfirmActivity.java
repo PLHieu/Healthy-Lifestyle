@@ -4,23 +4,37 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.Element;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
-import com.example.awesomehabit.CustomCalendarView;
 import com.example.awesomehabit.R;
-import com.example.awesomehabit.database.meal.DailyMeal;
-import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.common.FileUtil;
+import org.tensorflow.lite.support.common.TensorProcessor;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.image.ImageProcessor;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.label.TensorLabel;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 public class MealConfirmActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 111;
@@ -40,6 +54,7 @@ public class MealConfirmActivity extends AppCompatActivity {
                 meal = new Meal("Bun dau", 69);
                 meal.setBitmap(imageBitmap);
                 imageViewFood.setImageBitmap(imageBitmap);
+                Log.d("TFLite",detectImage(imageBitmap)[0]) ;
 
                 btnOk.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -82,5 +97,61 @@ public class MealConfirmActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
             // display error state to the user
         }
+    }
+    Map<String,Float> floatMap;
+    private String[] detectImage(Bitmap imageBitmap){
+        ImageProcessor imageProcessor = new ImageProcessor.Builder()
+                .add(new ResizeOp(416, 416, ResizeOp.ResizeMethod.BILINEAR))
+                .build();
+
+        TensorImage image0 = new TensorImage(DataType.UINT8);
+        image0.load(imageBitmap);
+        TensorImage tImage;
+        tImage = imageProcessor.process(image0);
+        try {
+            MappedByteBuffer tfliteModel = FileUtil.loadMappedFile(this, "yolov4-416.tflite");
+
+            Interpreter tflite = new Interpreter(tfliteModel);
+            TensorBuffer probabilityBuffer = TensorBuffer.createFixedSize(new int[]{1,11}, DataType.UINT8);
+
+            //tflite.run(tImage.getBuffer(), probabilityBuffer);
+
+
+            List<String> associatedAxisLabels = FileUtil.loadLabels(this, "label.txt");
+
+            TensorProcessor probabilityProcessor =
+                    new TensorProcessor.Builder().add(new NormalizeOp(0, 600)).build();
+
+            TensorLabel labels = new TensorLabel(associatedAxisLabels,
+                    probabilityProcessor.process(probabilityBuffer));
+            //this is result of the detection
+            floatMap = labels.getMapWithFloatValue();
+
+            //sort the result
+            //floatMap = sortByValue(floatMap);
+            List<String> keys = Arrays.asList(floatMap.keySet().toArray(new String[0]));
+
+            return new String[]{keys.get(0),keys.get(1),keys.get(2)};
+        } catch (IOException e) {
+            Log.e("TFLite", "run: result notfound.png loadmodel");
+        }
+        return null;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
