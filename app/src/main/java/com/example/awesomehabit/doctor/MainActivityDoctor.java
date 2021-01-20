@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -58,13 +60,15 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         private NavigationView navigationView;
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
     private String DOMAIN ;
-
-    String userName = "";
-    String password = "";
     Context _context;
     SharedPreferences preferences;
     static int LOGIN_CODE = 1;
     Bundle bundle;
+
+    ImageView imageView;
+    TextView txtViewName;
+    TextView txtViewMail;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +88,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
 
         if(requestCode == LOGIN_CODE){
             if(resultCode == Activity.RESULT_OK){
-                userName = data.getStringExtra("userName");
-                password = data.getStringExtra("passWord");
+
                 init();
             }
         }
@@ -96,13 +99,22 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
 
         setContentView(R.layout.activity_main_navigation_doctor);
 
+        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view_doctor);
         navigationView.setNavigationItemSelectedListener(this);
+        View view = navigationView.getHeaderView(0);
+        imageView = view.findViewById(R.id.imgViewUserIcon);
+        txtViewMail = view.findViewById(R.id.txtViewUserMail);
+        txtViewName = view.findViewById(R.id.txtViewUserName);
+
+        updateData();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
         drawer.addDrawerListener(toggle);
@@ -112,6 +124,13 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment_Doctor()).commit();
             navigationView.setCheckedItem(R.id.action_home);
         }
+    }
+
+    private void updateData() {
+        if(preferences.getString("avatar", null) != null)
+            imageView.setImageBitmap(ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
+        txtViewName.setText(preferences.getString("username", "guest"));
+        txtViewMail.setText(preferences.getString("email", "guest@gmail.com"));
     }
 
     @Override
@@ -151,6 +170,8 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
 
             case R.id.action_logout:
                 deleteData();
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
                 break;
         }
@@ -238,7 +259,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
     }
 
     private void deleteData() {
-        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+
         preferences.edit().clear().commit();
     }
 }
