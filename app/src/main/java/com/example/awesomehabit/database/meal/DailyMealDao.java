@@ -32,4 +32,7 @@ public interface DailyMealDao extends HabitDao {
     @Query("select * from dailymeal")
     List<DailyMeal> getAllDailyMeal();
 
+    @Query("DELETE FROM dailymeal")
+    public void deleteTable();
+
 }

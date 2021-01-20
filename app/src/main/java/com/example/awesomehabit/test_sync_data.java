@@ -83,7 +83,11 @@ public class test_sync_data extends AppCompatActivity {
         btnPush = findViewById(R.id.btn_push);
 
         btnPull.setOnClickListener(v -> {
-            pullDB();
+            try {
+                pullDB();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
         btnPush.setOnClickListener(v -> {
             try {
@@ -142,7 +146,6 @@ public class test_sync_data extends AppCompatActivity {
         String goaljson = gson.toJson(goals, typeGoal);
 
         JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("userid", "1");
         jsonObject.put("run", runjson);
         jsonObject.put("sleep", sleepjson);
         jsonObject.put("dailymeal", dailymealjson);
@@ -171,48 +174,92 @@ public class test_sync_data extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void pullDB(){
+
+    private void testCreatPatient() throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", "patient200");
+        jsonObject.put("password", "hieu");
+        jsonObject.put("username", "patient200");
+        jsonObject.put("username", "patient200");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,   DOMAIN + "myuser/signup/patient/", null,
+                response -> {
+                    Log.d("sync", "Response is: " + response);
+
+                    Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
+
+                },
+                error -> Log.d("sync", error.toString())){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
+                return params;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
+
+    private void pullDB() throws JSONException {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", "patient4");
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,   DOMAIN + "sync/pull/", null,
                 response -> {
                     Log.d("sync", "Response is: " + response);
-                    try {
-                        String runjson = response.getString("run");
-                        String sleepjson = response.getString("sleep");
-                        String dailymealjson = response.getString("dailymeal");
-                        String customhbjson = response.getString("customhb");
-                        String dlcustomhbjson = response.getString("DLcustomhb");
+
+                    // truoc khi pull ve phai clear het table
+                    RunDao runDao = AppDatabase.getDatabase(getApplicationContext()).runDao();
+                    DailyMealDao mealDao = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao();
+                    SleepDatabaseDao sleepDatabaseDao = AppDatabase.getDatabase(getApplicationContext()).sleepDao();
+                    CustomHabitDao customHabitDao = AppDatabase.getDatabase(getApplicationContext()).customHabitDao();
+                    DailyCustomHabitDao dailyCustomHabitDao = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao();
+                    GoalDao goalDao = AppDatabase.getDatabase(getApplicationContext()).goalDao();
+
+                    runDao.deleteTable();
+                    mealDao.deleteTable();
+                    sleepDatabaseDao.deleteTable();
+                    customHabitDao.deleteTable();
+                    dailyCustomHabitDao.deleteTable();
+                    goalDao.deleteTable();
+//
+//                        String runjson = response.getString("run");
+//                        String sleepjson = response.getString("sleep");
+//                        String dailymealjson = response.getString("dailymeal");
+//                        String customhbjson = response.getString("customhb");
+//                        String dlcustomhbjson = response.getString("DLcustomhb");
 //                        String goaljson = response.getString("goal");
-
-                        Gson gson = new Gson();
-                        Type typeRun = new TypeToken<List<Run>>(){}.getType();
-                        Type typeSleep = new TypeToken<List<SleepNight>>(){}.getType();
-                        Type typeDailyMeal = new TypeToken<List<DailyMeal>>(){}.getType();
-                        Type typeCustomHB = new TypeToken<List<CustomHabit>>(){}.getType();
-                        Type typeDailyCustomHB = new TypeToken<List<DailyCustomHabit>>(){}.getType();
+//
+//                        Gson gson = new Gson();
+//                        Type typeRun = new TypeToken<List<Run>>(){}.getType();
+//                        Type typeSleep = new TypeToken<List<SleepNight>>(){}.getType();
+//                        Type typeDailyMeal = new TypeToken<List<DailyMeal>>(){}.getType();
+//                        Type typeCustomHB = new TypeToken<List<CustomHabit>>(){}.getType();
+//                        Type typeDailyCustomHB = new TypeToken<List<DailyCustomHabit>>(){}.getType();
 //                        Type typeGoal = new TypeToken<List<Goal>>(){}.getType();
+//
+//                        List<Run> runs = gson.fromJson(runjson, typeRun);
+//                        List<SleepNight> sleepNights = gson.fromJson(sleepjson, typeSleep);
+//                        List<DailyMeal> meals = gson.fromJson(dailymealjson, typeDailyMeal);
+//                        List<CustomHabit> customHabits = gson.fromJson(customhbjson, typeCustomHB);
+//                        List<DailyCustomHabit> dailyCustomHabits = gson.fromJson(dlcustomhbjson, typeDailyCustomHB);
+//                         List<Goal> goals = gson.fromJson(goaljson, typeGoal);
+//
+//                        updateRun(runs);
+//                        updateSleep(sleepNights);
+//                        updateMeal(meals);
+//                        updateCTHB(customHabits);
+//                        updateDLCTHB(dailyCustomHabits);
+//                        updateGoal(goals);
 
-                        List<Run> runs = gson.fromJson(runjson, typeRun);
-                        List<SleepNight> sleepNights = gson.fromJson(sleepjson, typeSleep);
-                        List<DailyMeal> meals = gson.fromJson(dailymealjson, typeDailyMeal);
-                        List<CustomHabit> customHabits = gson.fromJson(customhbjson, typeCustomHB);
-                        List<DailyCustomHabit> dailyCustomHabits = gson.fromJson(dlcustomhbjson, typeDailyCustomHB);
-                        // List<Goal> goals = gson.fromJson(goaljson, typeGoal); //todo: update Goal
+                    Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
 
-                        updateRun(runs);
-                        updateSleep(sleepNights);
-                        updateMeal(meals);
-                        updateCTHB(customHabits);
-//                        updateDLCTHB(dailyCustomHabits); //todo: updateDLCTHB
-                        // updateGoal(goals);
-
-                        Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
-
-                    } catch (JSONException e) {
-//                        Toast.makeText(this, "Error " + e.toString(), Toast.LENGTH_LONG).show();
-                        Log.d(TAG, e.toString());
-                        Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show(); //todo: fix pull with primary key auto increasement
-                    }
                 },
                 error -> Log.d("sync", error.toString())){
 
