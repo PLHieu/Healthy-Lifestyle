@@ -107,6 +107,8 @@ public class LoginActivity2 extends AppCompatActivity {
             }
             Log.d("Login", r.toString());
             Intent returnIntent = new Intent();
+            returnIntent.putExtra("userName", userName);
+            returnIntent.putExtra("passWord", passWord);
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
 
