@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_doctor);
 
-        Intent login=new Intent(MainActivity.this, LoginActivity.class);
-        startActivityForResult(login,REQUEST_LOGIN);
+//        Intent login=new Intent(MainActivity.this, LoginActivity.class);
+//        startActivityForResult(login,REQUEST_LOGIN);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up button, so longq  
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 

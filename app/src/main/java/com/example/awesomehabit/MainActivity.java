@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 password = data.getStringExtra("passWord");
                 init();
             }
+            if(resultCode == Activity.RESULT_CANCELED)
+                finish();
         }
         if(requestCode == RESULT_CHANGE_PROFILE){
             password = data.getStringExtra("password");

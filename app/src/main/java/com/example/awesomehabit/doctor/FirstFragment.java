@@ -92,8 +92,8 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
             public void onClick(View view) {
                 //NavHostFragment.findNavController(FirstFragment.this)
                  //       .navigate(R.id.action_loginFragment_to_registerFragment);
-                Intent i = new Intent(getContext(),MainActivityDoctor.class);
-                startActivity(i);
+//                Intent i = new Intent(getContext(),MainActivityDoctor.class);
+//                startActivity(i);
             }
         });
 
