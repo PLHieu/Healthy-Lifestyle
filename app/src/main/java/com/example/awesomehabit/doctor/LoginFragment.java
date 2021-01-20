@@ -148,17 +148,18 @@ public class LoginFragment extends Fragment {
             Log.d(TAG, r.toString());
 
         }, e-> {
-            // Log.d(TAG, e.toString());
+            Log.d(TAG, e.toString());
             onLoginFailed(progressDialog);
         });
         queue.add(jsonObjectRequest);
-/*
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
+                        if(progressDialog!=null)
                         progressDialog.dismiss();
                     }
-                }, 3000);*/
+                }, 3000);
     }
 
     /**
