@@ -28,7 +28,7 @@ class SleepNight() : Habit(TYPE_SLEEP) {
     var sleepQuality = -1
 
     @ColumnInfo(name = "updated")
-    var updated:Boolean = false
+    var updated:Int = 0
 
     fun getSleepDuration(): Long { return endTimeMilli.minus(startTimeMilli) }
 }

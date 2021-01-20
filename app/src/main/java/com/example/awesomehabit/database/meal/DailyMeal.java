@@ -13,5 +13,5 @@ public class DailyMeal extends Habit {
         super(Habit.TYPE_MEAL,day,month,year);
     }
     public ArrayList<Meal> mealList;
-    public boolean updated = false;
+    public int updated = 0;
 }

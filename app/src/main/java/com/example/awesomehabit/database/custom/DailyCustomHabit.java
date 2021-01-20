@@ -24,7 +24,7 @@ public class DailyCustomHabit {
     int month;
     int year;
 //    public Calendar time=Calendar.getInstance();//Please remove me
-    boolean updated;
+    int updated;
 
     public DailyCustomHabit(int HabitID_, int current, int target,int day,int month,int year) {
         this.HabitID_ = HabitID_;
@@ -33,6 +33,6 @@ public class DailyCustomHabit {
         this.day=day;
         this.month=month;
         this.year=year;
-        this.updated = false;
+        this.updated = 0;
     }
 }
