@@ -11,6 +11,7 @@ import android.renderscript.Element;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -41,7 +42,8 @@ public class MealConfirmActivity extends AppCompatActivity {
     ImageView imageViewFood;
     Button btnOk;
     Button btnCancel;
-
+    EditText foodName;
+    EditText foodCalo;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -51,14 +53,16 @@ public class MealConfirmActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             Meal meal;
             if(imageBitmap!=null) {
-                meal = new Meal("Bun dau", 69);
+                meal = new Meal("No name",0 );
                 meal.setBitmap(imageBitmap);
                 imageViewFood.setImageBitmap(imageBitmap);
-                Log.d("TFLite",detectImage(imageBitmap)[0]) ;
+                //Log.d("TFLite",detectImage(imageBitmap)[0]) ;
 
                 btnOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        meal.setName(foodName.getText().toString());
+                        meal.setCalories(Integer.parseInt( foodCalo.getText().toString()));
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("meal",meal);
                         setResult(Activity.RESULT_OK,returnIntent);
@@ -80,6 +84,9 @@ public class MealConfirmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meal_confirm);
         imageViewFood = (ImageView) findViewById(R.id.imageViewMealConfirm);
         btnOk=findViewById(R.id.mealConfirmOk);
+
+        foodName=findViewById(R.id.tvFoodName);
+        foodCalo=findViewById(R.id.tvCalo);
 
         btnCancel=findViewById(R.id.mealConfirmCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {

@@ -61,8 +61,6 @@ public class LoginActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_login2);
         DOMAIN = getString(R.string.server_domain);
 
-        DOMAIN = getString(R.string.server_domain);
-
         preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         String userName1 = preferences.getString("username",null);
         if(userName1 != null) {
@@ -116,9 +114,10 @@ public class LoginActivity2 extends AppCompatActivity {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", userName);
         jsonObject.put("password", passWord);
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        preferences.edit().putString("password", passWord).apply();
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,DOMAIN +  "myuser/signin/",jsonObject, r -> {
-            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
             try {
                 preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
                 preferences.edit().putString("access_token", r.getString("access_token")).apply();
@@ -132,6 +131,7 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
+                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
                 Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
 
                 pullDB(preferences.getString("username", null));

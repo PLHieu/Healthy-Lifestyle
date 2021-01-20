@@ -56,7 +56,7 @@ import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class FirstFragment extends Fragment implements UserAdapter.UserInterface {
 
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private String DOMAIN;
     private static final int REQUEST_LOGOUT=999;
     List<User> users=new ArrayList<>();
     UserAdapter userAdapter=new UserAdapter(users,this);
@@ -115,16 +115,19 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
         String username  = users.get(position).username;
         SharedPreferences preferences = getContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         preferences.edit().putString("onOpeningPatient", username).apply();
-
         try {
             Log.d("sync", "Vao pull");
             pullDB(username);
+//            Intent i = new Intent(getContext(),MainActivityDoctor.class);
+//            startActivityForResult(i,REQUEST_LOGOUT);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     private void pullDB(String username) throws JSONException {
+        DOMAIN = getString(R.string.server_domain);
+        Log.d("sync", "PULL DATABASE");
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
         JSONObject jsonObject = new JSONObject();

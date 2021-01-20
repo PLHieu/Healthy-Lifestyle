@@ -113,7 +113,6 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
         imageView = view.findViewById(R.id.imgViewUserIcon);
         txtViewMail = view.findViewById(R.id.txtViewUserMail);
         txtViewName = view.findViewById(R.id.txtViewUserName);
-
         updateData();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);

@@ -310,7 +310,4 @@ public class RunningService extends LifecycleService {
         Goal runGoal =AppDatabase.getDatabase(this).goalDao().getGoal(Habit.TYPE_RUN);
         return runGoal.target/1000;
     }
-
-
-
 }

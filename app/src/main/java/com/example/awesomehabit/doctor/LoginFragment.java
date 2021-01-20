@@ -135,9 +135,10 @@ public class LoginFragment extends Fragment {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", email);
         jsonObject.put("password", password);
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        preferences.edit().putString("password", password).apply();
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,DOMAIN +  "myuser/signin/",jsonObject, r -> {
-            SharedPreferences preferences = this.getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
             try {
                 preferences.edit().putString("refresh_token", r.getString("refresh_token")).apply();
                 preferences.edit().putString("access_token", r.getString("access_token")).apply();

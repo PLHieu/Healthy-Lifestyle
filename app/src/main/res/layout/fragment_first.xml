@@ -23,6 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/rvUserList" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/button_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -120,11 +120,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("username", preferences.getString("username","null"));
+            jsonObject.put("password", preferences.getString("password","null"));
+            Log.d("PROFILE", preferences.getString("username","null") + " " + preferences.getString("password","null"));
             jsonObject.put("name", preferences.getString("name","null"));
             jsonObject.put("email", preferences.getString("email","null"));
             jsonObject.put("ngaysinh", preferences.getString("ngaysinh","null"));
             jsonObject.put("gioitinh", preferences.getInt("gioitinh",0));
-            jsonObject.put("avatar", preferences.getString("avatar","null"));
+            jsonObject.put("profile_pic", preferences.getString("avatar","null"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

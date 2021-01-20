@@ -16,9 +16,10 @@
 
 
         <EditText
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/editTextUserName"
             android:inputType="textPersonName"
             android:hint="Username"
             android:layout_marginLeft="30dp"
@@ -28,19 +29,30 @@
             android:layout_marginTop="30dp"
             android:drawableStart="@drawable/ic_baseline_person_24"/>
         <EditText
-            android:id="@+id/editTextTextPersonName2"
+            android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
+            android:inputType="textPassword"
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
-
+            app:layout_constraintTop_toBottomOf="@+id/editTextUserName" />
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:drawableStart="@drawable/ic_baseline_account_box_24"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextUserName" />
+    <EditText
+        android:id="@+id/editTextEmail"
         android:drawableStart="@drawable/ic_baseline_email_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +63,7 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/editTextTextPersonAddress"
+        android:id="@+id/editTextAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -61,10 +73,10 @@
         android:layout_marginRight="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <EditText
-        android:id="@+id/editTextDate"
+        android:id="@+id/editTextBirth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
