@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+    private final String DOMAIN = getString(R.string.server_domain);
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
 
 

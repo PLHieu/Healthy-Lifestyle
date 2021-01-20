@@ -106,4 +106,6 @@
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="healthy_lifestyle">Healthy Lifestyle</string>
+
+    <string name="server_domain">10.10.78.216:8000/</string>
 </resources>

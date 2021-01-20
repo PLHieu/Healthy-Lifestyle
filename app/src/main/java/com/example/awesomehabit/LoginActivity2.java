@@ -22,7 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity2 extends AppCompatActivity {
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private final String DOMAIN = getString(R.string.server_domain);
 
     @Override
     public void onBackPressed() {

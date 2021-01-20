@@ -45,7 +45,7 @@ public class AddUserActivity extends AppCompatActivity {
     EditText editTextAddress;
     Button buttonAdd;
     Bitmap imageBitmap;
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private final String DOMAIN = getString(R.string.server_domain);
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

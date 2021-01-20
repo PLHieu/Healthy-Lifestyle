@@ -35,7 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
     private static final int REQUEST_SIGNUP = 0;
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private  String DOMAIN;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -105,6 +105,8 @@ public class LoginFragment extends Fragment {
     }
 
     private void login() throws JSONException{
+        DOMAIN=getString(R.string.server_domain) ;
+
         progressDialog = new ProgressDialog(this.getContext());
         if (!validate()) {
             onLoginFailed(progressDialog);

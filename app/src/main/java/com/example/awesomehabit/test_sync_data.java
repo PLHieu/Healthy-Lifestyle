@@ -71,7 +71,7 @@ public class test_sync_data extends AppCompatActivity {
     static int RC_SIGN_IN = 23;
     private final String TAG = "test_sync_data";
 //    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
-    private static final String DOMAIN = "http://10.0.2.2:8000/";
+    private final String DOMAIN = getString(R.string.server_domain);
 
 
     @Override
