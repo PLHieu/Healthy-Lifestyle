@@ -11,5 +11,6 @@ class DailyCustomHabit(models.Model):
     year = models.IntegerField()
     # time = models.CharField(max_length= 25)
     isVisible = models.IntegerField(default=0)
+    updated = models.IntegerField(default =1)
     class Meta:
         unique_together = ['HabitID', 'user']

@@ -10,6 +10,7 @@ class DailyMeal(models.Model):
     year = models.IntegerField()
     target = models.IntegerField()
     isVisible = models.IntegerField(default=0)
+    updated = models.IntegerField(default =1)
     class Meta:
         unique_together = ['user', 'day', 'month', 'year']
 
