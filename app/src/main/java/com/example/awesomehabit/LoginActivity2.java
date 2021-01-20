@@ -59,7 +59,7 @@ public class LoginActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
-        DOMAIN = getString(R.string.server_domain);
+        DOMAIN = getApplicationContext().getResources().getString(R.string.server_domain);
 
         preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         String userName1 = preferences.getString("username",null);
@@ -131,8 +131,8 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
-                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
-                Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
+//                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
+//                Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
 
                 pullDB(preferences.getString("username", null));
 
@@ -141,14 +141,14 @@ public class LoginActivity2 extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d("Login", r.toString());
-            Intent returnIntent = new Intent();
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+//            Log.d("Login", r.toString());
+//            Intent returnIntent = new Intent();
+//            setResult(Activity.RESULT_OK, returnIntent);
+//            finish();
 
         }, e-> {
-            // Log.d(TAG, e.toString());
-            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+             Log.d("sync", e.toString());
+//            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         });
         queue.add(jsonObjectRequest);
     }
@@ -156,13 +156,11 @@ public class LoginActivity2 extends AppCompatActivity {
 
     private void pullDB(String username) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,   DOMAIN + "sync/pull/", jsonObject,
                 response -> {
-                    Log.d("sync", "Response is: " + response);
+                    Log.d("sync", "Hello: " + response);
 
                     // Lay cac visible roi update vao cac bien
                     try {
@@ -236,6 +234,11 @@ public class LoginActivity2 extends AppCompatActivity {
 
 //                    Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
                     Log.d("sync", "Pull Sucessfully");
+
+                    Log.d("Login", response.toString());
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
 
                 },
                 error -> Log.d("sync", error.toString())){
