@@ -21,4 +21,4 @@ class DailyCTHBSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DailyCustomHabit
-        fields = ['HabitID_', 'current', 'target', 'day', 'month', 'year', 'time']
+        fields = ['HabitID_', 'current', 'target', 'day', 'month', 'year']

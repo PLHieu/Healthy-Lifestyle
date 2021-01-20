@@ -39,7 +39,7 @@ class SyncListPatient(APIView):
         patientsSeri = UserSerializer(patients_user, many = True)
 
         try:
-            return JsonResponse(patientsSeri.data,status=status.HTTP_201_CREATED, safe = False)
+            return JsonResponse({'data': patientsSeri.data},status=status.HTTP_201_CREATED, safe = False)
         except:
             print(patientsSeri.errors)
             return JsonResponse({
@@ -95,7 +95,7 @@ class PatientPostData(APIView):
     def put(self, request):
         # lay thong tin benh nhan
         user = request.user
-        # print(request)
+        print(request.data)
         # tu dong parse request duoi dang json
         # parser_classes = [JSONParser]
         # print(user)
@@ -122,8 +122,11 @@ class PatientPostData(APIView):
         # d = hbs.is_valid()
         # e = dailyhbs.is_valid()
         # print(a,b,c,d,e)
-        print(meals)
-        print(runs)
+        # print(meals)
+        # print(runs)
+
+
+
         if(
             runs.is_valid()
             and sleeps.is_valid()
