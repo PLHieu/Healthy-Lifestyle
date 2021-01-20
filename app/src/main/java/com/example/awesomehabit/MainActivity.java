@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView txtViewName;
     TextView txtViewMail;
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
-    private final String DOMAIN = getString(R.string.server_domain);
+    private String DOMAIN;
 
     String userName = "";
     Context _context;
@@ -55,8 +55,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
-        _context = getBaseContext();
 
+
+        _context = getBaseContext();
+        DOMAIN = _context.getString(R.string.server_domain);
+
+        DOMAIN = this.getBaseContext().getString(R.string.server_domain);
         Intent intent = new Intent(this, LoginActivity2.class);
         startActivityForResult(intent, LOGIN_CODE);
     }

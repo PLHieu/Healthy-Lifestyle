@@ -108,6 +108,8 @@
     <string name="healthy_lifestyle">Healthy Lifestyle</string>
 
 
-    <string name="server_domain">http://10.10.78.216:8000/</string>
+
+    <string name="server_domain">http://10.0.2.2:8000/</string>
+
 
 </resources>
