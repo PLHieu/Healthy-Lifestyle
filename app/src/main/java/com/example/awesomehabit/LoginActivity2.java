@@ -77,6 +77,13 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putLong("access_expires", Long.parseLong(r.getString("access_expires"))).apply();
                 preferences.edit().putLong("refresh_expires", Long.parseLong(r.getString("refresh_expires"))).apply();
                 preferences.edit().putLong("lastloggedin", Long.parseLong(String.valueOf(System.currentTimeMillis()/1000))).apply();
+                preferences.edit().putString("username", r.getString("username")).apply();
+                preferences.edit().putString("email", r.getString("email")).apply();
+                preferences.edit().putString("name", r.getString("name")).apply();
+                preferences.edit().putInt("tuoi", Integer.parseInt(r.getString("tuoi"))).apply();
+                preferences.edit().putString("diachi", r.getString("diachi")).apply();
+                preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
+                preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
                 Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
             } catch (JSONException e) {
                 e.printStackTrace();
