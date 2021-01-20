@@ -20,4 +20,7 @@ public interface UserDao {
     void update(User person);
     @Query("select * from User")
     LiveData<List<User>> getAllPerson();
+
+    @Query("DELETE from User")
+    public void  deleteAll();
 }
