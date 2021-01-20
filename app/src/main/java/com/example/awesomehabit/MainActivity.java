@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationView navigationView;
 //    private static final String DOMAIN = "http://192.168.178.35:8000/";
-    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
+    private final String DOMAIN = getString(R.string.server_domain);
 
     String userName = "";
     String password = "";
