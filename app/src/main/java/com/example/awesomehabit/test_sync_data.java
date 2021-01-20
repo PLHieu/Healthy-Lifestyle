@@ -66,11 +66,7 @@ import io.reactivex.schedulers.Schedulers;
 public class test_sync_data extends AppCompatActivity {
 
     Button  btnPush, btnPull;
-    SignInButton signInButton;
-    GoogleSignInClient mGoogleSignInClient;
-    static int RC_SIGN_IN = 23;
     private final String TAG = "test_sync_data";
-//    private static final String DOMAIN = "https://sheltered-castle-82570.herokuapp.com/";
     private static final String DOMAIN = "http://10.0.2.2:8000/";
 
 
@@ -79,7 +75,6 @@ public class test_sync_data extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_sync_data);
 
-        signInButton = findViewById(R.id.sign_in_button);
         btnPull = findViewById(R.id.btn_pull);
         btnPush = findViewById(R.id.btn_push);
 
@@ -99,36 +94,15 @@ public class test_sync_data extends AppCompatActivity {
             }
         });
 
-
-        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.server_client_id))
-                .requestEmail()
-                .build();
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account!= null){
-
-        }*/
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Chua update tinh nang nay", Toast.LENGTH_SHORT).show();
-                // signingoogle();
-            }
-        });
     }
 
 
     private void pushDB() throws JSONException {
-        List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getAllRun();
-        List<SleepNight> sleepNights = AppDatabase.getDatabase(getApplicationContext()).sleepDao().getAllNightsNonLive();
-        List<DailyMeal> meals = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().getAllDailyMeal();
-        List<CustomHabit> customHabits = AppDatabase.getDatabase(getApplicationContext()).customHabitDao().getAllNone();
-        List<DailyCustomHabit> dailyCustomHabits = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().getAllHabitNone();
+        List<Run> runs = AppDatabase.getDatabase(getApplicationContext()).runDao().getOutdated();
+        List<SleepNight> sleepNights = AppDatabase.getDatabase(getApplicationContext()).sleepDao().getOutdated();
+        List<DailyMeal> meals = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().getOutdated();
+        List<CustomHabit> customHabits = AppDatabase.getDatabase(getApplicationContext()).customHabitDao().getOutdated();
+        List<DailyCustomHabit> dailyCustomHabits = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().getOutdated();
         List<Goal> goals = AppDatabase.getDatabase(getApplicationContext()).goalDao().getAllGoal();
 
         Gson gson = new Gson();
@@ -157,6 +131,14 @@ public class test_sync_data extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   DOMAIN + "sync/push/",jsonObject,
             response -> {
+
+                // push thanh cong thi bat cac truong da push len 1
+                AppDatabase.getDatabase(getApplicationContext()).runDao().updateAll();
+                AppDatabase.getDatabase(getApplicationContext()).sleepDao().updateAll();
+                AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().updateAll();
+                AppDatabase.getDatabase(getApplicationContext()).customHabitDao().updateAll();
+                AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().updateAll();
+
                 Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
                 Log.d("sync", "Response is: " + response);
             },
@@ -176,34 +158,6 @@ public class test_sync_data extends AppCompatActivity {
     }
 
 
-    private void testCreatPatient() throws JSONException {
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", "patient200");
-        jsonObject.put("password", "hieu");
-        jsonObject.put("username", "patient200");
-        jsonObject.put("username", "patient200");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,   DOMAIN + "myuser/signup/patient/", null,
-                response -> {
-                    Log.d("sync", "Response is: " + response);
-
-                    Toast.makeText(this, "Pull Sucessfully", Toast.LENGTH_LONG).show();
-
-                },
-                error -> Log.d("sync", error.toString())){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer " + preferences.getString("access_token","null"));
-                return params;
-            }
-        };
-        queue.add(jsonObjectRequest);
-    }
 
     private void pullDB(String username) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -348,37 +302,6 @@ public class test_sync_data extends AppCompatActivity {
         }
     }
 
-    private void signingoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-//            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("sync", "signInResult:failed code=" + e.getStatusCode());
-//            updateUI(null);
-        }
-    }
 
 
 }

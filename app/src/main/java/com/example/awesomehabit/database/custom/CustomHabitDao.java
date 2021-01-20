@@ -34,4 +34,10 @@ public interface CustomHabitDao {
 
     @Query("delete from customhabit")
     public void  deleteTable();
+
+    @Query("select * from customhabit where CHupdated = 0")
+    public List<CustomHabit>  getOutdated();
+
+    @Query("update customhabit set CHupdated =1 where CHupdated = 0")
+    public void updateAll();
 }

@@ -41,4 +41,10 @@ interface SleepDatabaseDao : HabitDao {
     @Query("DELETE FROM daily_sleep_quality_table")
     fun deleteTable()
 
+    @Query("select * from daily_sleep_quality_table where updated = 0 ")
+    fun getOutdated(): List<SleepNight>
+
+    @Query("update daily_sleep_quality_table set updated = 1 where updated = 0 ")
+    fun updateAll()
+
 }
