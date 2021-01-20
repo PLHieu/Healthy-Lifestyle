@@ -25,6 +25,13 @@ public class LoginActivity2 extends AppCompatActivity {
     private static final String DOMAIN = "http://10.0.2.2:8000/";
 
     @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
@@ -37,18 +44,18 @@ public class LoginActivity2 extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-        button.setOnClickListener(v -> {
-            Intent returnIntent = new Intent();
-            EditText edtUserName = findViewById(R.id.edtUserName);
-            EditText edtPassWord = findViewById(R.id.edtPassword);
-
-            String userName = edtUserName.getText().toString();
-            String passWord = edtPassWord.getText().toString();
-            returnIntent.putExtra("userName", userName);
-            returnIntent.putExtra("passWord", passWord);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
-        });
+//        button.setOnClickListener(v -> {
+//            Intent returnIntent = new Intent();
+//            EditText edtUserName = findViewById(R.id.edtUserName);
+//            EditText edtPassWord = findViewById(R.id.edtPassword);
+//
+//            String userName = edtUserName.getText().toString();
+//            String passWord = edtPassWord.getText().toString();
+//            returnIntent.putExtra("userName", userName);
+//            returnIntent.putExtra("passWord", passWord);
+//            setResult(Activity.RESULT_OK, returnIntent);
+//            finish();
+//        });
     }
 
     private void setActionForLoginButton() throws JSONException {
@@ -70,6 +77,13 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putLong("access_expires", Long.parseLong(r.getString("access_expires"))).apply();
                 preferences.edit().putLong("refresh_expires", Long.parseLong(r.getString("refresh_expires"))).apply();
                 preferences.edit().putLong("lastloggedin", Long.parseLong(String.valueOf(System.currentTimeMillis()/1000))).apply();
+                preferences.edit().putString("username", r.getString("username")).apply();
+                preferences.edit().putString("email", r.getString("email")).apply();
+                preferences.edit().putString("name", r.getString("name")).apply();
+                preferences.edit().putInt("tuoi", Integer.parseInt(r.getString("tuoi"))).apply();
+                preferences.edit().putString("diachi", r.getString("diachi")).apply();
+                preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
+                preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
                 Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
             } catch (JSONException e) {
                 e.printStackTrace();
