@@ -42,3 +42,13 @@ class Patient(models.Model):
     def __str__(self):
         return self.user
 
+
+class Visible(models.Model):
+    username = models.CharField(max_length = 15, unique = True, default = "")
+    visiRun = models.IntegerField(default = 0)
+    visiSleep = models.IntegerField(default = 0)
+    visiMeal = models.IntegerField(default = 0)
+
+
+
+

@@ -8,4 +8,5 @@ urlpatterns = [
     path('push/', views.PatientPostData.as_view(), name='push'),
     path('pull/', views.DoctorGetHabit.as_view(), name='pull'),
     path('listpatient/', views.SyncListPatient.as_view(), name = "listpatient"),
+    path('doctorpush/', views.DoctorPostData.as_view(), name = 'doctorpush')
 ]

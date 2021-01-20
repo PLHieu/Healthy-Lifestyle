@@ -58,7 +58,8 @@ class DoctorGetHabit(APIView):
         print('hieu map ', patient_username)
 
         user = MyUser.objects.get(username = patient_username)
-
+        
+        visi = Visible.objects.get(username = patient_username)
 
         # lay habit cua benh nhan
         runs = Run.objects.filter(user=user)
@@ -82,6 +83,9 @@ class DoctorGetHabit(APIView):
             'customhb' : hbSeri.data,
             'DLcustomhb' : dlhbSeri.data,
             'goal': goalseri.data,
+            'visiRun' : visi.visiRun,
+            'visiSleep' : visi.visiSleep,
+            'visiMeal' : visi.visiMeal,
         }, status=status.HTTP_200_OK)
         #todo: time cua daily customhabit, chua xu li unique    
 
@@ -120,6 +124,79 @@ class PatientPostData(APIView):
         # print(a,b,c,d,e)
         print(meals)
         print(runs)
+        if(
+            runs.is_valid()
+            and sleeps.is_valid()
+            and meals.is_valid()
+            and hbs.is_valid()
+            and dailyhbs.is_valid()
+            and goals.is_valid()\
+        ):
+            
+
+            with transaction.atomic():
+                runs.save()
+                print("push runs")
+                sleeps.save()
+                print("push sleep")
+                meals.save()
+                print("push meal")
+                hbs.save()
+                print("push hbs")
+                dailyhbs.save()
+                print("push dailyhb")
+                goals.save()
+                print("push goal")
+        else:
+            # print(dailyhbs.is_valid(raise_exception=True))
+            print(runs.errors)
+            print(sleeps.errors)
+            print(meals.errors)
+            print(hbs.errors)
+            print(dailyhbs.errors)
+            return JsonResponse({"Error": "Error Serialize Data"}, status = status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"Push sucessfully" : "HieuPL"}, status = status.HTTP_200_OK)
+
+
+
+class DoctorPostData(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request):
+        # lay thong tin benh nhan
+        patient_username = request.data.get('username')
+
+        # neu nhu trong bang visible khong co thi create, con khong thi se update
+        visiRun = request.data.get('visiRun')
+        visiSleep = request.data.get('visiSleep')
+        visiMeal = request.data.get('visiMeal')
+        try:
+            visi = Visible.objects.get(username = patient_username)
+            visi.visiRun = visiRun
+            visi.visiSleep = visiSleep
+            visi.visiMeal = visiMeal
+
+        except SomeModel.DoesNotExist:
+            Visible.objects.get(username = patient_username,visiRun = visiRun ,visiSleep = visiSleep, visiMeal = visiMeal)
+        
+
+        user = MyUser.objects.get(username = patient_username)
+
+        runjs = json.loads(request.data.get("run"))
+        sleepjs = json.loads(request.data.get("sleep"))
+        mealjs = json.loads(request.data.get("dailymeal"))
+        customhbjs = json.loads(request.data.get("customHB"))
+        dailycustomhbjs = json.loads(request.data.get("dailycustomHB"))
+        goalsjs = json.loads(request.data.get("goal"))
+
+        runs = RunSerializer(data=runjs, many=True, context= {"owner": user})
+        sleeps = SleepSerializer(data=sleepjs, many=True, context= {"owner": user})
+        meals = DailyMealSerializer(data=mealjs, many=True, context= {"owner": user})
+        hbs = CTHBSerializer(data=customhbjs, many=True, context= {"owner": user})
+        dailyhbs = DailyCTHBSerializer(data=dailycustomhbjs, many=True, context= {"owner": user})
+        goals = GoalSerializer(data = goalsjs, many = True, context={"owner": user})
+
         if(
             runs.is_valid()
             and sleeps.is_valid()
