@@ -134,6 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Exit"
+            android:id="@+id/txtViewExit"
             android:textSize="30sp"
             android:textColor="@color/teal_700"
             android:layout_marginRight="100dp"/>
@@ -141,6 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
+            android:id="@+id/txtViewSave"
             android:textSize="30sp"
             android:textColor="@color/teal_700"/>
     </LinearLayout>

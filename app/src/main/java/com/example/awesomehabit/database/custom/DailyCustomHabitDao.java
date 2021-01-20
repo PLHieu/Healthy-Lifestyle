@@ -26,4 +26,9 @@ public interface DailyCustomHabitDao {
     @Query("delete from dailycustomhabit")
     public void  deleteTable();
 
+    @Query("select * from dailycustomhabit where updated =0 ")
+    List<DailyCustomHabit> getOutdated();
+
+    @Query("update dailycustomhabit set updated=1 where updated =0 ")
+    void updateAll();
 }

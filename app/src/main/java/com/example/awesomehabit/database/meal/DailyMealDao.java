@@ -35,4 +35,9 @@ public interface DailyMealDao extends HabitDao {
     @Query("DELETE FROM dailymeal")
     public void deleteTable();
 
+    @Query("select * from dailymeal where updated = 0")
+    List<DailyMeal> getOutdated();
+
+    @Query("update  dailymeal set updated = 1 where updated = 0")
+    void updateAll();
 }

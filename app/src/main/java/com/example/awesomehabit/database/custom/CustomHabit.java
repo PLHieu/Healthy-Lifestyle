@@ -14,11 +14,13 @@ public class CustomHabit {
     public String name;
     public int type;
     public int iconID;
+    public boolean CHupdated;
     //Bitmap
 
     public CustomHabit(String name,int type, int iconID) {
         this.name = name;
         this.type = type;
         this.iconID = iconID;
+        this.CHupdated = false;
     }
 }
