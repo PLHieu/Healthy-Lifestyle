@@ -137,7 +137,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                 break;
             case R.id.action_statistic:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StatisticFragment()).commit();
-                return false;
+                break;
             //case R.id.action_set_goal:
              //   getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
              //   break;
@@ -238,6 +238,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
     }
 
     private void deleteData() {
+        preferences = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         preferences.edit().clear().commit();
     }
 }
