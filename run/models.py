@@ -12,6 +12,7 @@ class Run(models.Model):
     timeStart = models.CharField(max_length=20)
     runningTime = models.IntegerField()
     routeID = models.CharField(max_length=20)
+    isVisible = models.IntegerField(default=0)
 
     def __str__(self):
         return "hieumap"

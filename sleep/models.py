@@ -11,6 +11,7 @@ class Sleep(models.Model):
     startTimeMilli = models.CharField(max_length=20)
     endTimeMilli = models.CharField(max_length=20)
     sleepQuality = models.IntegerField()
+    isVisible = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ['user', 'startTimeMilli']

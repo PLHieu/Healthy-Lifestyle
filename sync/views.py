@@ -51,10 +51,14 @@ class SyncListPatient(APIView):
 class DoctorGetHabit(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):
+    def post(self, request):
+
         # lay username benh nhan
         patient_username = request.data.get('username')
+        print('hieu map ', patient_username)
+
         user = MyUser.objects.get(username = patient_username)
+
 
         # lay habit cua benh nhan
         runs = Run.objects.filter(user=user)

@@ -7,6 +7,7 @@ class CustomHabit(models.Model):
     name = models.CharField(max_length=20)
     type = models.IntegerField()
     iconID = models.CharField(max_length = 20, default = '')
+    isVisible = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ['HabitID', 'user']

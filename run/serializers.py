@@ -20,7 +20,7 @@ class RunSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Run
-        fields = ['type', 'day', 'month', 'year', 'target', 'distance', 'timeStart', 'runningTime', 'routeID']
+        fields = ['type', 'day', 'month', 'year', 'target', 'distance', 'timeStart', 'runningTime', 'routeID', 'isVisible']
         extra_kwargs = {
             'routeID': {
                 'required': False,
