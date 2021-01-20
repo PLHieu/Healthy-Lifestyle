@@ -6,8 +6,8 @@ import androidx.room.TypeConverters;
 import java.util.Calendar;
 
 public class Habit {
-    public static int RUN_AVAILABLE = 0;
-    public static int SLEEP_AVAILABLE = 0;
+    public static int RUN_AVAILABLE = 1;
+    public static int SLEEP_AVAILABLE = 1;
     public static int MEAL_AVAILABLE = 1;
 
     @ColumnInfo(name = "isVisible")

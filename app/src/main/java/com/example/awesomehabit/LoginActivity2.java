@@ -132,6 +132,7 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
+                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
                 Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
 
                 pullDB(preferences.getString("username", null));

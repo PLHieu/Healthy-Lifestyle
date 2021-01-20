@@ -124,7 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
             jsonObject.put("email", preferences.getString("email","null"));
             jsonObject.put("ngaysinh", preferences.getString("ngaysinh","null"));
             jsonObject.put("gioitinh", preferences.getInt("gioitinh",0));
-            jsonObject.put("avatar", preferences.getString("avatar","null"));
+            jsonObject.put("profile_pic", preferences.getString("avatar","null"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
