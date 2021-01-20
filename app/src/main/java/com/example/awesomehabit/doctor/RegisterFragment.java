@@ -155,7 +155,8 @@ public class RegisterFragment extends Fragment {
                         // depending on success
 //                        onSignupSuccess();
                         // onSignupFailed();
-                        progressDialog.dismiss();
+                        if(progressDialog!=null)
+                            progressDialog.dismiss();
                     }
                 }, 3000);
     }
