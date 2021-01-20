@@ -33,19 +33,50 @@ public class ProfileActivity extends AppCompatActivity{
     Spinner spinner;
     TextView txtViewBirthday;
     ImageView imgViewIcon;
+    TextView txtViewChangePass;
+    TextView txtViewUser;
+
+    String userName = "";
+    String password = "";
 
     final int RESULT_LOAD_IMG = 1000;
+    final int RESULT_CHANGE_PASS = 1001;
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("password", password);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+        super.onBackPressed();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
+        password = intent.getStringExtra("password");
+
         spinner = findViewById(R.id.spinnerUserSex);
         txtViewBirthday = findViewById(R.id.txtViewUserBirthday);
         imgViewIcon = findViewById(R.id.imgViewUserIcon);
+        txtViewChangePass = findViewById(R.id.txtViewChangePass);
+        txtViewUser = findViewById(R.id.txtViewUser);
 
         initSpinner();
         txtViewBirthday.setOnClickListener(v -> setActionForTxtCalendar());
         imgViewIcon.setOnClickListener(v -> setImage());
+        txtViewChangePass.setOnClickListener(v -> changePassword());
+        txtViewUser.setText(userName);
+    }
+
+    private void changePassword() {
+        Intent intent = new Intent(ProfileActivity.this, ChangePassActivity.class);
+        intent.putExtra("password", password);
+        startActivityForResult(intent, RESULT_CHANGE_PASS);
     }
 
     private void setImage() {
@@ -73,6 +104,9 @@ public class ProfileActivity extends AppCompatActivity{
             } else {
                 Toast.makeText(ProfileActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
             }
+        if (reqCode == RESULT_CHANGE_PASS) {
+            password = data.getStringExtra("password");
+        }
     }
 
     private void setActionForTxtCalendar() {

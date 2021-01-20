@@ -6,6 +6,13 @@ import androidx.room.TypeConverters;
 import java.util.Calendar;
 
 public class Habit {
+    public static int RUN_AVAILABLE = 0;
+    public static int SLEEP_AVAILABLE = 0;
+    public static int MEAL_AVAILABLE = 0;
+
+    @ColumnInfo(name = "isVisible")
+    public int isVisible;
+
     public Habit(int type) {//Auto today
 //        this.id = id;
         this.type = type;
@@ -22,6 +29,17 @@ public class Habit {
         this.month=month;
         this.year=year;
         //this.time = time;
+       switch (type){
+           case TYPE_RUN:
+               this.isVisible = RUN_AVAILABLE;
+               break;
+           case TYPE_SLEEP:
+               this.isVisible = SLEEP_AVAILABLE;
+               break;
+           case TYPE_MEAL:
+               this.isVisible = MEAL_AVAILABLE;
+               break;
+       }
     }
 
     public static final int TYPE_RUN = 0;
@@ -43,4 +61,5 @@ public class Habit {
     public int year;
     @ColumnInfo(name="target")
     public int target=0;
+
 }

@@ -18,8 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AccountInfo"></activity>
-        <activity android:name=".test_sync_data"></activity>
+        <activity android:name=".ChangePassActivity"></activity>
+        <activity android:name=".AccountInfo" />
+        <activity android:name=".test_sync_data" />
         <activity android:name=".DoctorOrPatientActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +28,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".doctor.login.LoginActivity"></activity>
-        <activity android:name=".doctor.MainActivity"></activity>
-        <activity android:name=".doctor.AddUserActivity"></activity>
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".doctor.MainActivityDoctor"></activity>
+        <activity android:name=".doctor.login.LoginActivity" />
+        <activity android:name=".doctor.MainActivity" />
+        <activity android:name=".doctor.AddUserActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".doctor.MainActivityDoctor" />
         <activity
             android:name=".LoginActivity2"
-            android:theme="@style/Theme.Design.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:noHistory="true">
@@ -49,8 +50,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".running.RunningTracking"
             android:noHistory="true" />

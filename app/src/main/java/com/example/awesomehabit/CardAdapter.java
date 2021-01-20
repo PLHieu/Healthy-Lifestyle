@@ -51,6 +51,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     String totalSleepdurationString ="no data";
     Context mContext;
     Boolean hideButton=false;
+    int runVisible = 0;
+    int foodVisible = 0;
+    int sleepVisible = 0;
     AppDatabase db;
 
     public void setHabitPairs(List<CustomHabitDao.CustomHabit_DailyCustomHabit> habit_pairs) {
@@ -238,6 +241,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             btnRunStat=itemView.findViewById(R.id.btnRunStatistic);
             btnRun.setOnClickListener(CardAdapter.this);
             btnRunStat.setOnClickListener(CardAdapter.this);
+            if(runVisible == 1)
+                itemView.setVisibility(View.VISIBLE);
+            else
+                itemView.setVisibility(View.GONE);
         }
     }
     public class SleepViewHolder extends RecyclerView.ViewHolder{
@@ -253,6 +260,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             btnSleepStat=itemView.findViewById(R.id.btnSleepStatistic);
             btnSleepStat.setOnClickListener(CardAdapter.this);
             btnSleep.setOnClickListener(CardAdapter.this);
+            if(sleepVisible == 1)
+                itemView.setVisibility(View.VISIBLE);
+            else
+                itemView.setVisibility(View.GONE);
         }
     }
     public class FoodViewHolder extends RecyclerView.ViewHolder{
@@ -265,6 +276,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             btnMeal=itemView.findViewById(R.id.btnMeal);
 
             btnMeal.setOnClickListener(CardAdapter.this);
+            if(foodVisible == 1)
+                itemView.setVisibility(View.VISIBLE);
+            else
+                itemView.setVisibility(View.GONE);
         }
     }
     public class CountViewHolder extends RecyclerView.ViewHolder{
@@ -280,7 +295,6 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             imageView = itemView.findViewById(R.id.countingHabitIcon);
             btnAdd = itemView.findViewById(R.id.btn_countAdd);
             btnMinus = itemView.findViewById(R.id.btn_countMinus);
-
         }
     }
     public class TickViewHolder extends RecyclerView.ViewHolder{
@@ -311,15 +325,28 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         return -1;
     }
 
+    public void updateRunVisible(int isVisible) {
+        runVisible = isVisible;
+    }
+
     public void updateRun(int totalDistance){
         totalDistanceString =String.valueOf((float)totalDistance/1000)+"/";
         notifyDataSetChanged();
     }
+
+    public void updateSleepVisible(int isVisible) {
+        sleepVisible = isVisible;
+    }
+
     public void updateSleep(int totalSleepDuration){
         int seconds = (int) (totalSleepDuration / 1000) % 60 ;
         int minutes = (int) ((totalSleepDuration / (1000*60)) % 60);
         int hours   = (int) ((totalSleepDuration / (1000*60*60)) % 24);
         totalSleepdurationString=String.valueOf(hours)+":"+String.valueOf(minutes)+"/";
+    }
+
+    public void updateMealVisible(int isVisible) {
+        foodVisible = isVisible;
     }
 
     private class TimeViewHolder extends RecyclerView.ViewHolder {

@@ -19,6 +19,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
+import com.example.awesomehabit.database.meal.DailyMeal;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
 import com.example.awesomehabit.meal.MealActivity;
@@ -70,21 +71,25 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             @Override
             public void onChanged(List<Run> runList) {
                 int totalRunDistance=0;
+                int isVisible = 0;
                 if (runList != null && runList.size()>0){
-
+                    isVisible = runList.get(0).isVisible;
                     for(int i=0;i<runList.size();i++){
                         totalRunDistance+=runList.get(i).distance;
                     }
                 }
                 //distance.setText(String.valueOf((float)totalRunDistance/1000)+"/");
                 cardAdapter.updateRun(totalRunDistance);
+                cardAdapter.updateRunVisible(isVisible);
             }
         });
         db.sleepDao().getHabitFrom(day,month,year).observe((AppCompatActivity)mContext, new Observer<List<SleepNight>>() {
             @Override
             public void onChanged(List<SleepNight> sleepNights) {
                 int totalSleepDuration=0;
+                int isVisible = 0;
                 if (sleepNights!=null && sleepNights.size()>0){
+                    isVisible = sleepNights.get(0).isVisible;
                     for (int i=0;i<sleepNights.size();i++){
                         totalSleepDuration+=sleepNights.get(i).getSleepDuration();
                     }
@@ -92,9 +97,19 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
                 else{
                 }
                 cardAdapter.updateSleep(totalSleepDuration);
-
+                cardAdapter.updateSleepVisible(isVisible);
             }
         });
+        db.dailyMealDao().getHabitFrom(day,month,year).observe((AppCompatActivity) mContext, new Observer<DailyMeal>() {
+            @Override
+            public void onChanged(DailyMeal dailyMeal) {
+                int isVisible = 0;
+                if(dailyMeal != null)
+                    isVisible = dailyMeal.isVisible;
+                cardAdapter.updateMealVisible(isVisible);
+            }
+        });
+
         db.customHabitDao().getAllCustomHabitFromDate(day,month,year).observe((AppCompatActivity) mContext, new Observer<List<CustomHabitDao.CustomHabit_DailyCustomHabit>>() {
             @Override
             public void onChanged(List<CustomHabitDao.CustomHabit_DailyCustomHabit> customHabit_dailyCustomHabits) {
