@@ -203,7 +203,7 @@ public class FirstFragment extends Fragment implements UserAdapter.UserInterface
 
                     // khoi dong main activity sau khi update xong
                     Intent i = new Intent(getContext(),MainActivityDoctor.class);
-                    startActivity(i);
+                    startActivityForResult(i,REQUEST_LOGOUT);
 
 
                 },
