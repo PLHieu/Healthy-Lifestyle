@@ -132,7 +132,7 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
 //                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
-//                Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_LONG).show();
 
                 pullDB(preferences.getString("username", null));
 
