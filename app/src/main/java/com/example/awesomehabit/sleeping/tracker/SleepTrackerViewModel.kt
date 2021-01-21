@@ -16,7 +16,7 @@ class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application, private val fragmentManager: FragmentManager) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
-    private var nights = database.getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year)
+    private var nights = database.getHabitFrom(CustomCalendarView.currentDay_Day, CustomCalendarView.currentDay_Month, CustomCalendarView.currentDay_Year)
 //    private var nights = database.getAllNights();
     var snackbarString: String = ""
 
@@ -24,11 +24,11 @@ class SleepTrackerViewModel(
         formatNights(nights, application.resources)
     }
 
-    val startButtonVisible = Transformations.map(tonight) {
+    var startButtonVisible = Transformations.map(tonight) {
         null == it
     }
 
-    val stopButtonVisible = Transformations.map(tonight) {
+    var stopButtonVisible = Transformations.map(tonight) {
         null != it
     }
 
@@ -85,10 +85,29 @@ class SleepTrackerViewModel(
     }
 
     fun onStartTracking() {
+//        val currentTime = System.currentTimeMillis()
+//        val calendar = Calendar.getInstance()
+//        calendar.timeInMillis = currentTime
+//        val day = calendar.get(Calendar.DAY_OF_MONTH)
+//        val month = calendar.get(Calendar.MONTH)
+//        val year = calendar.get(Calendar.YEAR)
+//        if (day == CustomCalendarView.currentDay_Day && month == CustomCalendarView.currentDay_Month && year == CustomCalendarView.currentDay_Year) {
+//            viewModelScope.launch {
+//                val newNight = SleepNight(day, month, year)
+//                insert(newNight)
+//                tonight.value = getTonightFromDatabase()
+//            }
+//        } else {
+//            snackbarString = getApplication<Application>().applicationContext.getString(R.string.invalid_date)
+//            _showSnackbarEvent.value = true
+//        }
         viewModelScope.launch {
-            val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val month = Calendar.getInstance().get(Calendar.MONTH)
-            val year = Calendar.getInstance().get(Calendar.YEAR)
+            val currentTime = System.currentTimeMillis()
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = currentTime
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = calendar.get(Calendar.MONTH)
+            val year = calendar.get(Calendar.YEAR)
             val newNight = SleepNight(day, month, year)
             insert(newNight)
             tonight.value = getTonightFromDatabase()
@@ -106,7 +125,7 @@ class SleepTrackerViewModel(
 
     fun onClear() {
         val clearAllDialog = ClearAllDialogFragment()
-        clearAllDialog.setClearAllDialogLister(object:ClearAllDialogFragment.ClearAllDialogListener {
+        clearAllDialog.setClearAllDialogLister(object : ClearAllDialogFragment.ClearAllDialogListener {
             override fun onDialogPositiveClick(dialog: DialogFragment) {
                 viewModelScope.launch {
                     clear()
