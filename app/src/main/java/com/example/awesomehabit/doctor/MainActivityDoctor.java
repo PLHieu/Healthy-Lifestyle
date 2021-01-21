@@ -239,12 +239,12 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
                     AppDatabase.getDatabase(getApplicationContext()).customHabitDao().updateAll();
                     AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().updateAll();
 
-                    Toast.makeText(this, response.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Upload dữ liệu thành công", Toast.LENGTH_LONG).show();
                     Log.d("sync", "Response is: " + response);
                 },
                 error -> {
                     Log.d("sync", error.toString());
-                    Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
                 }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
