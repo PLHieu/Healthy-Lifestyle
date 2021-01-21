@@ -78,24 +78,6 @@ public class LoginActivity2 extends AppCompatActivity {
             }
         });
         button.setOnClickListener(v -> {
-//            Intent returnIntent = new Intent();
-//            EditText edtUserName = findViewById(R.id.edtUserName);
-//            EditText edtPassWord = findViewById(R.id.edtPassword);
-//
-//            String userName = edtUserName.getText().toString();
-//            String passWord = edtPassWord.getText().toString();
-//
-//            //test
-//            preferences.edit().putString("username", userName).apply();
-//            preferences.edit().putString("email","hello@gmail.com").apply();
-//            preferences.edit().putString("name", "Tran Tuan Dat").apply();
-//            preferences.edit().putString("diachi", "227 Nguyen Van Cu, District 5, HCMC").apply();
-//            preferences.edit().putInt("gioitinh", 0).apply();
-//            preferences.edit().putString("ngaysinh", "09/08/2000").apply();
-//            preferences.edit().putString("avatar", null);
-//            //test
-//            setResult(Activity.RESULT_OK, returnIntent);
-//            finish();
             try {
                 setActionForLoginButton();
             } catch (JSONException e) {
@@ -131,7 +113,7 @@ public class LoginActivity2 extends AppCompatActivity {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
-//                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
+                preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
 //                Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_LONG).show();
 
                 pullDB(preferences.getString("username", null));
@@ -141,11 +123,6 @@ public class LoginActivity2 extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            Log.d("Login", r.toString());
-//            Intent returnIntent = new Intent();
-//            setResult(Activity.RESULT_OK, returnIntent);
-//            finish();
-
         }, e-> {
              Log.d("sync", e.toString());
 //            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
