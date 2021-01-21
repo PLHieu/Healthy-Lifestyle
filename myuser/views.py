@@ -12,6 +12,7 @@ from finalBackend import settings
 from . import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Doctor, Patient, Visible
+from goal.models import Goal
 
 
 
@@ -59,6 +60,10 @@ class PatientRegisterView(APIView):
             
             # tao visible 
             Visible.objects.create(username = new_user.username,visiRun = 0 ,visiSleep = 0, visiMeal = 0)
+            
+            # tao cac goal mac din
+            for i in range(0,3):
+                Goal.objects.create(user = new_user, type = i, target = 0, updated = 0)
 
             # tra ve danh sach cac benh nhan
             patients = Patient.objects.filter(bacsiquanly = bacsiquanly)

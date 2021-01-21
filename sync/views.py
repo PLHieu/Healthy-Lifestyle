@@ -166,6 +166,16 @@ class PatientPostData(APIView):
 class DoctorPostData(APIView):
     permission_classes = (IsAuthenticated,)
 
+    def setGoal(self, user, goalsjs):
+        for onejs in goalsjs:
+            type = onejs.get('type')
+            old_goal = Goal.objects.get(type = type, user = user)
+            goals = GoalSerializer(instance = old_goal ,data = onejs, context={"owner": user})
+            if goals.is_valid():
+                goals.save()
+            else:
+                print(goals.errors)
+
     def put(self, request):
         # lay thong tin benh nhan
         patient_username = request.data.get('username')
@@ -199,7 +209,8 @@ class DoctorPostData(APIView):
         meals = DailyMealSerializer(data=mealjs, many=True, context= {"owner": user})
         hbs = CTHBSerializer(data=customhbjs, many=True, context= {"owner": user})
         dailyhbs = DailyCTHBSerializer(data=dailycustomhbjs, many=True, context= {"owner": user})
-        goals = GoalSerializer(data = goalsjs, many = True, context={"owner": user})
+        # goals = GoalSerializer(data = goalsjs, many = True, context={"owner": user})
+        self.setGoal(user, goalsjs)
 
         if(
             runs.is_valid()
@@ -207,7 +218,7 @@ class DoctorPostData(APIView):
             and meals.is_valid()
             and hbs.is_valid()
             and dailyhbs.is_valid()
-            and goals.is_valid()\
+            # and goals.is_valid()\
         ):
             
 
@@ -222,8 +233,8 @@ class DoctorPostData(APIView):
                 print("push hbs")
                 dailyhbs.save()
                 print("push dailyhb")
-                goals.save()
-                print("push goal")
+                # goals.save()
+                # print("push goal")
         else:
             # print(dailyhbs.is_valid(raise_exception=True))
             print(runs.errors)
