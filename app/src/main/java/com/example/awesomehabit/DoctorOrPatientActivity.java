@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.awesomehabit.doctor.login.LoginActivity;
+import com.example.awesomehabit.patient.MainActivity;
 
 public class DoctorOrPatientActivity extends AppCompatActivity {
     @Override

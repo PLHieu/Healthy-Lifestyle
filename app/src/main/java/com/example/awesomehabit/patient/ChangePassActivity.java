@@ -1,4 +1,4 @@
-package com.example.awesomehabit;
+package com.example.awesomehabit.patient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.awesomehabit.R;
 
 public class ChangePassActivity extends AppCompatActivity {
     String password = "";

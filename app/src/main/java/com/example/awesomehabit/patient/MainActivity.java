@@ -1,4 +1,4 @@
-package com.example.awesomehabit;
+package com.example.awesomehabit.patient;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,15 +25,16 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.awesomehabit.HomeFragment;
+import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
-import com.example.awesomehabit.database.Goal;
 import com.example.awesomehabit.database.custom.CustomHabit;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.meal.DailyMeal;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
+import com.example.awesomehabit.patient.LoginActivity2;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateData() {
         if(preferences.getString("avatar", null) != null)
-            imageView.setImageBitmap(ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
+            imageView.setImageBitmap(LoginActivity2.ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
         txtViewName.setText(preferences.getString("username", "guest"));
         txtViewMail.setText(preferences.getString("email", "guest@gmail.com"));
     }
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.imgViewUserIcon){
-            Intent intent = new Intent(_context, ProfileActivity.class);
+            Intent intent = new Intent(_context, LoginActivity2.ProfileActivity.class);
             startActivityForResult(intent, RESULT_CHANGE_PROFILE);
         }
     }

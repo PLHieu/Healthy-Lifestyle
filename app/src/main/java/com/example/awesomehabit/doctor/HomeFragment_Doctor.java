@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.awesomehabit.AddHabitActivity;
 import com.example.awesomehabit.CustomCalendarView;
 import com.example.awesomehabit.CustomPageAdapter;
 import com.example.awesomehabit.DepthPageTransformer;

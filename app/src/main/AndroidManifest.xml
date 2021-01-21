@@ -18,8 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChangePassActivity"></activity>
-        <activity android:name=".AccountInfo" />
+        <activity android:name=".patient.ChangePassActivity"></activity>
         <activity android:name=".test_sync_data" />
         <activity android:name=".DoctorOrPatientActivity">
             <intent-filter>
@@ -31,37 +30,22 @@
         <activity android:name=".doctor.login.LoginActivity" />
         <activity android:name=".doctor.MainActivity" />
         <activity android:name=".doctor.AddUserActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".patient.LoginActivity2$ProfileActivity" />
         <activity android:name=".doctor.MainActivityDoctor" />
         <activity
-            android:name=".LoginActivity2"
+            android:name=".patient.LoginActivity2"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
-            android:noHistory="true">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity
-            android:name=".MainActivity"
+            android:name=".patient.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".running.RunningTracking"
-            android:noHistory="true" />
-        <activity
-            android:name=".SignupActivity"
             android:noHistory="true" />
 
         <service android:name=".running.RunningService" /> <!-- android:stopWithTask="true" -->
         <activity android:name=".sleeping.SleepTracker" />
         <activity android:name=".meal.MealActivity" />
-        <activity android:name=".AddHabitActivity" />
+        <activity android:name=".doctor.AddHabitActivity" />
         <activity android:name=".statistic.StatisticActivity" />
         <activity android:name=".statistic.WeekSummaryActivity" />
         <activity android:name=".meal.MealConfirmActivity" />
