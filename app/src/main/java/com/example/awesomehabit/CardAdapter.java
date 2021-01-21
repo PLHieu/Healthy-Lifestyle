@@ -57,6 +57,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     int runVisible = 1;
     int foodVisible = 1;
     int sleepVisible = 1;
+
     AppDatabase db;
 
     public void setHabitPairs(List<CustomHabitDao.CustomHabit_DailyCustomHabit> habit_pairs) {
@@ -177,7 +178,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 tickViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        setTickChanged(tickPair);
+                        setTickChanged(tickPair, isChecked);
                     }
                 });
                 break;
@@ -341,6 +342,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             super(itemView);
             textView = itemView.findViewById(R.id.txtViewTickName);
             checkBox = itemView.findViewById(R.id.checkboxTicking);
+            if(hideButton)
+                checkBox.setClickable(false);
         }
     }
 
@@ -449,7 +452,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         LDdailyCustom.observe((AppCompatActivity)mContext, observer);
     }
 
-    private void setTickChanged(CustomHabitDao.CustomHabit_DailyCustomHabit tickPair) {
+    private void setTickChanged(CustomHabitDao.CustomHabit_DailyCustomHabit tickPair, boolean isChecked) {
         db = AppDatabase.getDatabase(mContext);
         LiveData<DailyCustomHabit> LDdailyCustom=db.dailyCustomHabitDao().getHabit(tickPair.customHabit_.HabitID, CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year);
         Observer observer=new Observer<DailyCustomHabit>() {
@@ -457,7 +460,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             public void onChanged(DailyCustomHabit dailyCustom) {
                 LDdailyCustom.removeObserver(this);
                 if(dailyCustom!=null){
-                    if (dailyCustom.current == 0)
+                    if (isChecked)
                         dailyCustom.current=1;
                     else
                         dailyCustom.current=0;
