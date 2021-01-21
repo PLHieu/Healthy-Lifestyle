@@ -150,11 +150,15 @@ public class SetGoalFragment extends Fragment {
 
 
         btnDownWater.setOnClickListener(v -> {
-            tvWaterGoal.setText(String.valueOf(--numWater));
+            numWater = numWater -100;
+            tvWaterGoal.setText(String.valueOf(numWater));
         });
 
 
-        btnAddWater.setOnClickListener(v -> tvWaterGoal.setText(String.valueOf(++numWater)));
+        btnAddWater.setOnClickListener(v -> {
+            numWater = numWater + 100;
+            tvWaterGoal.setText(String.valueOf(numWater));
+        });
 
 //        back.setOnClickListener(v -> {
 //
