@@ -156,9 +156,9 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
             case R.id.action_statistic:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StatisticFragment()).commit();
                 break;
-            //case R.id.action_set_goal:
-             //   getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
-             //   break;
+            case R.id.action_set_goal:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SetGoalFragment()).commit();
+                break;
             case R.id.action_sync:
                 try {
                     doctorpushDB();
