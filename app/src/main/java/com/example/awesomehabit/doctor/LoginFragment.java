@@ -152,6 +152,9 @@ public class LoginFragment extends Fragment {
                 preferences.edit().putString("diachi", r.getString("diachi")).apply();
                 preferences.edit().putInt("gioitinh", Integer.parseInt(r.getString("gioitinh"))).apply();
                 preferences.edit().putString("ngaysinh", r.getString("ngaysinh")).apply();
+                try {
+                    preferences.edit().putString("avatar", r.getString("profile_pic")).apply();
+                } catch (JSONException ignored) { }
 
                 // dang nhap thanh cong thi xoa db user roi  pull ve danh sach benh nhan
                 AppDatabase.getDatabase(getContext()).userDao().deleteAll();

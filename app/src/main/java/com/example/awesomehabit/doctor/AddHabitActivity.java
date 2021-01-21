@@ -1,4 +1,4 @@
-package com.example.awesomehabit;
+package com.example.awesomehabit.doctor;
 
 import android.app.Dialog;
 import android.os.Build;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.awesomehabit.R;
 import com.example.awesomehabit.database.AppDatabase;
 import com.example.awesomehabit.database.custom.CustomHabit;
 

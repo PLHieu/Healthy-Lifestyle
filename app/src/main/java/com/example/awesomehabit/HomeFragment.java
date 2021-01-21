@@ -2,8 +2,6 @@ package com.example.awesomehabit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -14,16 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.awesomehabit.database.AppDatabase;
-import com.example.awesomehabit.statistic.StatisticActivity;
-import com.example.awesomehabit.statistic.WeekSummaryActivity;
+import com.example.awesomehabit.doctor.AddHabitActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mapbox.mapboxsdk.Mapbox;
-
-import java.util.zip.Inflater;
 
 public class HomeFragment extends Fragment implements CustomCalendarView.CustomCalendarViewInterface {
     CustomCalendarView customCalendarView;
