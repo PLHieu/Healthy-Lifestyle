@@ -104,14 +104,12 @@ class PatientPostData(APIView):
         mealjs = json.loads(request.data.get("dailymeal"))
         customhbjs = json.loads(request.data.get("customHB"))
         dailycustomhbjs = json.loads(request.data.get("dailycustomHB"))
-        goalsjs = json.loads(request.data.get("goal"))
 
         runs = RunSerializer(data=runjs, many=True, context= {"owner": user})
         sleeps = SleepSerializer(data=sleepjs, many=True, context= {"owner": user})
         meals = DailyMealSerializer(data=mealjs, many=True, context= {"owner": user})
         hbs = CTHBSerializer(data=customhbjs, many=True, context= {"owner": user})
         dailyhbs = DailyCTHBSerializer(data=dailycustomhbjs, many=True, context= {"owner": user})
-        goals = GoalSerializer(data = goalsjs, many = True, context={"owner": user})
 
         # print(dailycustomhbjs)
         # print(dailyhbs.is_valid(raise_exception=True))
@@ -148,8 +146,6 @@ class PatientPostData(APIView):
                 print("push hbs")
                 dailyhbs.save()
                 print("push dailyhb")
-                goals.save()
-                print("push goal")
         else:
             # print(dailyhbs.is_valid(raise_exception=True))
             print(runs.errors)
