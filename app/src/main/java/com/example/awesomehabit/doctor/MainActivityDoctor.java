@@ -26,10 +26,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.awesomehabit.AccountInfo;
-import com.example.awesomehabit.LoginActivity;
-import com.example.awesomehabit.LoginActivity2;
-import com.example.awesomehabit.ProfileActivity;
 import com.example.awesomehabit.R;
 import com.example.awesomehabit.SetGoalFragment;
 import com.example.awesomehabit.database.AppDatabase;
@@ -40,8 +36,8 @@ import com.example.awesomehabit.database.custom.DailyCustomHabit;
 import com.example.awesomehabit.database.meal.DailyMeal;
 import com.example.awesomehabit.database.running.Run;
 import com.example.awesomehabit.database.sleeping.SleepNight;
+import com.example.awesomehabit.patient.LoginActivity2;
 import com.example.awesomehabit.statistic.StatisticFragment;
-import com.example.awesomehabit.test_sync_data;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -127,7 +123,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
 
     private void updateData() {
         if(preferences.getString("avatar", null) != null)
-            imageView.setImageBitmap(ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
+            imageView.setImageBitmap(LoginActivity2.ProfileActivity.StringToBitMap(preferences.getString("avatar", null)));
         txtViewName.setText(preferences.getString("username", "guest"));
         txtViewMail.setText(preferences.getString("email", "guest@gmail.com"));
     }
@@ -181,7 +177,7 @@ public class MainActivityDoctor extends AppCompatActivity implements NavigationV
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.imgViewUserIcon){
-            startActivity(new Intent(_context, ProfileActivity.class));
+            startActivity(new Intent(_context, LoginActivity2.ProfileActivity.class));
         }
     }
 

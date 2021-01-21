@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChangePassActivity"
+    tools:context=".patient.ChangePassActivity"
     android:padding="20dp"
     android:orientation="vertical"
     android:background="#1031b893">
