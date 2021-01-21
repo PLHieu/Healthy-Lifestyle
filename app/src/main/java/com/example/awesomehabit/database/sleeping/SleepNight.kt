@@ -3,19 +3,17 @@ package com.example.awesomehabit.database.sleeping
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.example.awesomehabit.database.Habit
+import java.util.*
 
 @Entity(tableName = "daily_sleep_quality_table")
-class SleepNight() : Habit(TYPE_SLEEP) {
+class SleepNight(day: Int, month: Int, year: Int) : Habit(TYPE_SLEEP, day, month, year) {
 //    @PrimaryKey(autoGenerate = true)
 //    var id = 0;
 
-    constructor(day:Int,month:Int,year:Int, startTimeMilli: Long, endTimeMilli: Long, sleepQuality: Int) : this() {
+    constructor(day:Int,month:Int,year:Int, startTimeMilli: Long, endTimeMilli: Long, sleepQuality: Int) : this(day, month, year) {
         this.startTimeMilli = startTimeMilli
         this.endTimeMilli = endTimeMilli
         this.sleepQuality = sleepQuality
-        this.day=day
-        this.month=month
-        this.year=year
     }
 
     @ColumnInfo(name = "start_time_milli")

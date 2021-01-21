@@ -10,12 +10,14 @@ import com.example.awesomehabit.database.sleeping.SleepDatabaseDao
 import com.example.awesomehabit.database.sleeping.SleepNight
 import com.example.awesomehabit.sleeping.formatNights
 import kotlinx.coroutines.launch
+import java.util.*
 
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application, private val fragmentManager: FragmentManager) : AndroidViewModel(application) {
     private var tonight = MutableLiveData<SleepNight?>()
-    private val nights = database.getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year)
+    private var nights = database.getHabitFrom(CustomCalendarView.currentDay_Day,CustomCalendarView.currentDay_Month,CustomCalendarView.currentDay_Year)
+//    private var nights = database.getAllNights();
     var snackbarString: String = ""
 
     val nightsString = Transformations.map(nights) { nights ->
@@ -84,7 +86,10 @@ class SleepTrackerViewModel(
 
     fun onStartTracking() {
         viewModelScope.launch {
-            val newNight = SleepNight()
+            val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            val month = Calendar.getInstance().get(Calendar.MONTH)
+            val year = Calendar.getInstance().get(Calendar.YEAR)
+            val newNight = SleepNight(day, month, year)
             insert(newNight)
             tonight.value = getTonightFromDatabase()
         }
