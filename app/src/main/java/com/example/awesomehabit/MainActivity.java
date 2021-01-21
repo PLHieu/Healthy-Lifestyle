@@ -238,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<DailyMeal> meals = AppDatabase.getDatabase(getApplicationContext()).dailyMealDao().getOutdated();
         List<CustomHabit> customHabits = AppDatabase.getDatabase(getApplicationContext()).customHabitDao().getOutdated();
         List<DailyCustomHabit> dailyCustomHabits = AppDatabase.getDatabase(getApplicationContext()).dailyCustomHabitDao().getOutdated();
-        List<Goal> goals = AppDatabase.getDatabase(getApplicationContext()).goalDao().getAllGoal();
 
         Gson gson = new Gson();
         Type typeRun = new TypeToken<List<Run>>(){}.getType();
@@ -246,14 +245,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Type typeDailyMeal = new TypeToken<List<DailyMeal>>(){}.getType();
         Type typeCustomHB = new TypeToken<List<CustomHabit>>(){}.getType();
         Type typeDailyCustomHB = new TypeToken<List<DailyCustomHabit>>(){}.getType();
-        Type typeGoal = new TypeToken<List<Goal>>(){}.getType();
 
         String runjson = gson.toJson(runs, typeRun);
         String sleepjson = gson.toJson(sleepNights, typeSleep);
         String dailymealjson = gson.toJson(meals, typeDailyMeal);
         String customhbjson = gson.toJson(customHabits, typeCustomHB);
         String dlcustomhbjson = gson.toJson(dailyCustomHabits, typeDailyCustomHB);
-        String goaljson = gson.toJson(goals, typeGoal);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("run", runjson);
@@ -261,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         jsonObject.put("dailymeal", dailymealjson);
         jsonObject.put("customHB", customhbjson);
         jsonObject.put("dailycustomHB", dlcustomhbjson);
-        jsonObject.put("goal", goaljson);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,   DOMAIN + "sync/push/",jsonObject,
