@@ -121,7 +121,7 @@ public class RunningService extends LifecycleService {
                 int year=calendar.get(Calendar.YEAR);
                 Run run;
                 if(saveRoute){
-                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime), day,month,year,elapsedMillis, String.valueOf(date.getTime()));
+                    run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime), day,month,year,elapsedMillis, RunningUtils.getStringfromListPoints(data));
                 }else{
                     run = new Run(RunningUtils.doubleKmTointMetter(distance),String.valueOf(currenttime),day,month,year,elapsedMillis, "none");
                 }
