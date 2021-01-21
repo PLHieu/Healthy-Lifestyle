@@ -131,7 +131,6 @@ class PatientPostData(APIView):
             and meals.is_valid()
             and hbs.is_valid()
             and dailyhbs.is_valid()
-            and goals.is_valid()\
         ):
             
 
