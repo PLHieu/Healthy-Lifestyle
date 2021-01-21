@@ -50,7 +50,7 @@ public class Run extends Habit {
     public long runningTime;
 
     @ColumnInfo(name = "updated")
-    public boolean updated;
+    public Integer updated;
 
     public Run(int distance, String timeStart,int day,int month,int year, long runningTime, String routeID) {
         super(Habit.TYPE_RUN);
@@ -62,7 +62,7 @@ public class Run extends Habit {
         this.month=month;
         this.year=year;
         //this.time = time;
-        this.updated = false;
+        this.updated = 0;
     }
 
 
