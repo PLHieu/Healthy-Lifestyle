@@ -103,7 +103,8 @@ class UserLoginView(APIView):
                     'tuoi': user.tuoi,
                     'diachi': user.diachi,
                     'gioitinh': user.gioitinh,
-                    'ngaysinh': user.ngaysinh
+                    'ngaysinh': user.ngaysinh,
+                    'profile_pic': user.profile_pic
                 }
                 return Response(data, status=status.HTTP_200_OK)
 
