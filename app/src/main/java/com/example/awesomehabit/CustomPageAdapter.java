@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.awesomehabit.database.AppDatabase;
+import com.example.awesomehabit.database.Goal;
 import com.example.awesomehabit.database.Habit;
 import com.example.awesomehabit.database.custom.CustomHabitDao;
 import com.example.awesomehabit.database.custom.DailyCustomHabit;
@@ -103,6 +104,16 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             @Override
             public void onChanged(DailyMeal dailyMeal) {
                 int isVisible = Habit.MEAL_AVAILABLE;
+
+                int totalcalo=0;
+                if(dailyMeal!=null){
+
+
+                for(int i=0;i<dailyMeal.mealList.size();i++){
+                    totalcalo+=dailyMeal.mealList.get(i).getCalories();
+                }
+                }
+                cardAdapter.updateMeal(totalcalo);
                 cardAdapter.updateMealVisible(isVisible);
             }
         });
@@ -119,6 +130,25 @@ public class CustomPageAdapter extends PagerAdapter implements View.OnClickListe
             layout.findViewById(R.id.btnMeal).setVisibility(View.GONE);
         }
 
+        db.goalDao().getGoalLive(0).observe((AppCompatActivity) mContext, new Observer<Goal>() {
+            @Override
+            public void onChanged(Goal goal) {
+                cardAdapter.setDistanceGoal(String.valueOf(goal.target));
+            }
+        });
+
+        db.goalDao().getGoalLive(1).observe((AppCompatActivity) mContext, new Observer<Goal>() {
+            @Override
+            public void onChanged(Goal goal) {
+                cardAdapter.setSleepGoal(String.valueOf(goal.target));
+            }
+        });
+        db.goalDao().getGoalLive(2).observe((AppCompatActivity) mContext, new Observer<Goal>() {
+            @Override
+            public void onChanged(Goal goal) {
+                cardAdapter.setMealGoal(String.valueOf(goal.target));
+            }
+        });
 
         collection.addView(layout);
         return layout;

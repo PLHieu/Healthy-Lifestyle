@@ -52,6 +52,28 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     String totalDistanceString ="no data";
     String totalSleepdurationString ="no data";
+    String totalCalories="no data";
+    String mealGoal="";
+    String sleepGoal="";
+    String distanceGoal="";
+
+    public void setMealGoal(String mealGoal) {
+        this.mealGoal = mealGoal;
+        notifyDataSetChanged();
+    }
+
+    public void setDistanceGoal(String distanceGoal) {
+        this.distanceGoal = distanceGoal;
+        notifyDataSetChanged();
+    }
+
+    public void setSleepGoal(String sleepGoal) {
+        this.sleepGoal = sleepGoal;
+        notifyDataSetChanged();
+    }
+
+
+
     Context mContext;
     Boolean hideButton=false;
     int runVisible = 1;
@@ -111,7 +133,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             case viewCardType.RUN:
                 RunViewHolder runViewHolder=(RunViewHolder)holder;
                 runViewHolder.distance.setText(totalDistanceString);
-                runViewHolder.distanceGoal.setText("99.99km");
+                runViewHolder.distanceGoal.setText(distanceGoal + "  meters");
                 if(hideButton){
                     runViewHolder.btnRunStat.setVisibility(View.GONE);
                     runViewHolder.btnRun.setVisibility(View.GONE);
@@ -120,6 +142,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             case viewCardType.SLEEP:
                 SleepViewHolder sleepViewHolder=(SleepViewHolder)holder;
                 sleepViewHolder.sleepTime.setText(totalSleepdurationString);
+                sleepViewHolder.sleepTimeGoal.setText(sleepGoal+":00");
                 if(hideButton)
                 {
                     sleepViewHolder.btnSleep.setVisibility(View.GONE);
@@ -129,6 +152,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 break;
             case viewCardType.FOOD:
                 FoodViewHolder foodViewHolder=(FoodViewHolder)holder;
+                foodViewHolder.caloGoal.setText(mealGoal +" Calories");
+                foodViewHolder.calo.setText(totalCalories);
                 //if(hideButton)
                 //    foodViewHolder.btnMeal.setVisibility(View.GONE);
                 break;
@@ -145,7 +170,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 if(pair.dailyCustomHabit_!=null)
                     countViewHolder.current.setText(String.valueOf(pair.dailyCustomHabit_.current)+"/" );
                 else
-                    countViewHolder.current.setText("NULL /");
+                    countViewHolder.current.setText("0 /");
                 countViewHolder.btnAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -302,7 +327,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             btnMeal=itemView.findViewById(R.id.btnMeal);
-
+            calo=itemView.findViewById(R.id.tvCardCalo);
+            caloGoal=itemView.findViewById(R.id.tvCardCaloGoal);
             btnMeal.setOnClickListener(CardAdapter.this);
             checkBoxAvailable = itemView.findViewById(R.id.checkboxMeal);
             if(Habit.MEAL_AVAILABLE == 1)
@@ -382,6 +408,11 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     public void updateRun(int totalDistance){
         totalDistanceString =String.valueOf((float)totalDistance/1000)+"/";
+        notifyDataSetChanged();
+    }
+
+    public void updateMeal(int totalCalo){
+        totalCalories =String.valueOf((float)totalCalo)+"/";
         notifyDataSetChanged();
     }
 
