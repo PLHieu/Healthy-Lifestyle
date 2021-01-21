@@ -87,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="05dp"
-        android:text="100ml"
+        android:text="Calo"
         app:layout_constraintEnd_toStartOf="@+id/gl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/waterchange" />
@@ -109,7 +109,7 @@
         android:id="@+id/waterGoal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5"
+        android:text="100"
         android:textSize="40dp"
         app:layout_constraintBottom_toTopOf="@+id/gl2"
         app:layout_constraintLeft_toRightOf="@id/btn_Downwater"
